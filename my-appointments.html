@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Appointments - SmileCare Dental Clinic</title>
+    
+    <!-- Supabase JS Library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Config File -->
+    <script src="js/config.js"></script>
+    
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Supabase Config Warning Banner -->
+    <div id="configAlert" class="config-alert">
+        ⚠️ <strong>Supabase Setup Required:</strong> Please open <code>js/config.js</code> and paste your actual <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code>.
+    </div>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="brand-logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C8.5 2 6 4.5 6 7.5C6 9.8 7.1 12 8 14.5C8.9 17 9.5 20.5 10.5 21.5C11 22 11.5 22 12 21C12.5 22 13 22 13.5 21.5C14.5 20.5 15.1 17 16 14.5C16.9 12 18 9.8 18 7.5C18 4.5 15.5 2 12 2Z"/>
+                    </svg>
+                </div>
+                <div class="brand-title">SmileCare <span>Dental</span></div>
+            </a>
+            
+            <div class="nav-links">
+                <a href="index.html" class="nav-btn nav-btn-outline">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                    Book Appointment
+                </a>
+                <a href="my-appointments.html" class="nav-btn nav-btn-outline" style="background-color:var(--primary); color:white; border-color:var(--primary);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                    </svg>
+                    My Appointments
+                </a>
+                <a href="dashboard.html" class="nav-btn nav-btn-outline">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    Doctor Portal
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="hero-header">
+            <span class="hero-badge">📋 Patient Portal</span>
+            <h1 class="hero-title">Check My Appointments</h1>
+            <p class="hero-subtitle">Enter your 10-digit mobile number below to view your scheduled appointments and live status.</p>
+        </div>
+
+        <div class="booking-card-wrapper">
+            <div class="card">
+                <!-- Alert Banner -->
+                <div id="lookupAlert" class="alert alert-danger"></div>
+
+                <!-- Lookup Form -->
+                <form id="lookupForm" novalidate>
+                    <div class="form-group full-width" style="margin-bottom: 20px;">
+                        <label for="mobileNumber">Mobile Number <span class="required-star">*</span></label>
+                        <input type="text" id="mobileNumber" placeholder="Enter your 10-digit mobile number" maxlength="10" required>
+                    </div>
+
+                    <button type="submit" id="lookupBtn" class="btn-submit">
+                        <span class="spinner"></span>
+                        <span id="lookupBtnText">Check Status</span>
+                    </button>
+                </form>
+
+                <!-- Results Container -->
+                <div id="resultsContainer" style="display: none; margin-top: 32px;">
+                    <div class="dashboard-header" style="margin-bottom: 16px;">
+                        <div class="dashboard-title-group">
+                            <h3 style="font-size: 1.25rem; font-weight:700;">Your Appointments</h3>
+                            <p id="resultsCountText" style="font-size: 0.875rem; color:var(--text-muted);">Found appointments</p>
+                        </div>
+                    </div>
+
+                    <div id="cardsList" class="cards-list">
+                        <!-- Cards dynamically rendered by my-appointments.js -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="empty-state" style="display: none;">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                        </svg>
+                        <p id="emptyStateText">No appointments found for this mobile number.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>© 2026 SmileCare Dental Clinic. All Rights Reserved.</p>
+            <p>📍 Address: 123 Health Avenue, Medical City | 📞 Contact: +91 98765 43210</p>
+            <div class="footer-links">
+                <a href="index.html">Patient Booking</a> • 
+                <a href="my-appointments.html">My Appointments</a> • 
+                <a href="dashboard.html">Doctor Portal</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script src="js/my-appointments.js?v=2"></script>
+</body>
+</html>

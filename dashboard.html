@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Portal - SmileCare Dental Clinic</title>
+
+    <!-- Supabase JS Library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Config File -->
+    <script src="js/config.js"></script>
+
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Supabase Config Warning Banner -->
+    <div id="configAlert" class="config-alert">
+        ⚠️ <strong>Supabase Setup Required:</strong> Please open <code>js/config.js</code> and paste your actual <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code>.
+    </div>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="brand-logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C8.5 2 6 4.5 6 7.5C6 9.8 7.1 12 8 14.5C8.9 17 9.5 20.5 10.5 21.5C11 22 11.5 22 12 21C12.5 22 13 22 13.5 21.5C14.5 20.5 15.1 17 16 14.5C16.9 12 18 9.8 18 7.5C18 4.5 15.5 2 12 2Z"/>
+                    </svg>
+                </div>
+                <div class="brand-title">SmileCare <span>Doctor Portal</span></div>
+            </a>
+            
+            <div class="nav-links">
+                <a href="index.html" class="nav-btn nav-btn-outline">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                    Book Appointment
+                </a>
+                <a href="my-appointments.html" class="nav-btn nav-btn-outline">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                    </svg>
+                    My Appointments
+                </a>
+                <!-- Logout Button (Shown when logged in) -->
+                <button id="logoutBtn" class="nav-btn nav-btn-danger" style="display: none;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        
+        <!-- STATE A: Doctor Login View -->
+        <div id="loginState" class="login-card-wrapper">
+            <div class="hero-header">
+                <span class="hero-badge">🔐 Doctor Access Only</span>
+                <h1 class="hero-title" style="font-size: 1.6rem;">Doctor Portal Login</h1>
+                <p class="hero-subtitle">Sign in to view patient appointments and update schedule status.</p>
+            </div>
+
+            <div class="card">
+                <div id="loginAlert" class="alert alert-danger"></div>
+
+                <form id="loginForm">
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label for="doctorEmail">Doctor Email <span class="required-star">*</span></label>
+                        <input type="email" id="doctorEmail" placeholder="doctor@smilecare.com" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label for="doctorPassword">Password <span class="required-star">*</span></label>
+                        <input type="password" id="doctorPassword" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" id="loginBtn" class="btn-submit">
+                        <span class="spinner"></span>
+                        <span id="loginBtnText">Login</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+
+
+        <!-- STATE B: Dashboard View (Shown after authentication) -->
+        <div id="dashboardState" style="display: none;">
+            
+            <div class="dashboard-header">
+                <div class="dashboard-title-group">
+                    <h2 id="doctorWelcomeTitle">Welcome, Doctor</h2>
+                    <p id="doctorWelcomeSubtitle">Manage and update patient appointments in real-time.</p>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Appointments</div>
+                    <div id="statTotal" class="stat-number">0</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--status-pending-text);">
+                    <div class="stat-label">Pending</div>
+                    <div id="statPending" class="stat-number" style="color: var(--status-pending-text);">0</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--status-confirmed-text);">
+                    <div class="stat-label">Confirmed</div>
+                    <div id="statConfirmed" class="stat-number" style="color: var(--status-confirmed-text);">0</div>
+                </div>
+                <div class="stat-card" style="border-left: 4px solid var(--status-completed-text);">
+                    <div class="stat-label">Completed</div>
+                    <div id="statCompleted" class="stat-number" style="color: var(--status-completed-text);">0</div>
+                </div>
+            </div>
+
+            <!-- Search & Filter Controls Section -->
+            <div class="filter-card">
+                <div class="filter-grid">
+                    
+                    <!-- 1. Date Filter -->
+                    <div class="filter-group">
+                        <label for="filterDate">Filter by Date</label>
+                        <div class="date-input-group">
+                            <input type="date" id="filterDate">
+                            <button type="button" id="clearDateBtn" class="btn-clear-date">Clear Date</button>
+                        </div>
+                    </div>
+
+                    <!-- 2. Status Filter -->
+                    <div class="filter-group">
+                        <label for="filterStatus">Filter by Status</label>
+                        <select id="filterStatus">
+                            <option value="">All</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <!-- 3. Search Box (Patient Name) -->
+                    <div class="filter-group">
+                        <label for="filterSearch">Search by Patient Name</label>
+                        <div class="search-input-wrapper">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                            </svg>
+                            <input type="text" id="filterSearch" placeholder="Type patient name...">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Table Card -->
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table id="appointmentsTable">
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Mobile</th>
+                                <th>Issue / Problem</th>
+                                <th>Document</th>
+                                <th>Appointment Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Rows rendered dynamically via dashboard.js -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State Message -->
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                    </svg>
+                    <p id="emptyStateText">No appointments found matching this filter</p>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>© 2026 SmileCare Dental Clinic. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="index.html">Patient Booking</a> • 
+                <a href="dashboard.html">Doctor Portal</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Dashboard Logic Script -->
+    <script src="js/dashboard.js?v=2"></script>
+</body>
+</html>
