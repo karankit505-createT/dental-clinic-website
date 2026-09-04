@@ -552,7 +552,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (!newDocId || newDocId === docId || oldDocId === docId) {
                         fetchAppointments(docId);
-                        if (typeof showToast === "function") showToast("Dashboard synced with latest appointment updates!", "info");
                     }
                 }
             })
