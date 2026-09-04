@@ -1314,4 +1314,353 @@ footer {
     transform: translateX(100%);
 }
 
+/* ==========================================
+   ENHANCED MOBILE RESPONSIVENESS (768px & 480px)
+   ========================================== */
+
+/* Universal Box-Sizing & Overflow Safety */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Tablet & Mobile Screens (max-width: 768px) */
+@media (max-width: 768px) {
+
+    /* Prevent iOS input auto-zoom by setting 16px minimum font size */
+    input[type="text"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+        font-size: 16px !important;
+        min-height: 44px;
+        border-radius: var(--radius-sm);
+    }
+
+    /* Primary & Submit Buttons Touch Target */
+    .btn-submit,
+    .btn-cancel-appointment,
+    .btn-reschedule-appointment,
+    .btn-confirm-yes,
+    .btn-confirm-no,
+    .btn-clear-date {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+    }
+
+    /* Navigation Bar */
+    header {
+        padding: 8px 0;
+    }
+
+    .nav-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 10px 14px;
+        text-align: center;
+    }
+
+    .brand-logo {
+        justify-content: center;
+    }
+
+    .brand-title {
+        font-size: 1.15rem;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .nav-btn {
+        flex: 1 1 auto;
+        min-width: 120px;
+        justify-content: center;
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        min-height: 42px;
+    }
+
+    /* Main Container Padding */
+    main {
+        padding: 16px 12px 32px;
+    }
+
+    .hero-header {
+        padding: 12px 8px 16px;
+        text-align: center;
+    }
+
+    .hero-title {
+        font-size: 1.5rem;
+        line-height: 1.3;
+    }
+
+    .hero-subtitle {
+        font-size: 0.875rem;
+    }
+
+    .booking-card-wrapper {
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .card {
+        padding: 18px 14px;
+        border-radius: 12px;
+        width: 100%;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    /* Time Slot Picker Grid */
+    .time-slots-wrapper {
+        padding: 12px 10px;
+    }
+
+    .slots-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .time-slot-btn {
+        min-height: 44px;
+        padding: 6px 2px;
+        font-size: 0.775rem;
+        line-height: 1.2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    /* Doctor Dashboard Responsive Layout */
+    .dashboard-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .doctor-profile-badge {
+        width: 100%;
+        justify-content: space-between;
+        padding: 10px 12px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 14px 10px;
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 1.4rem;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+    }
+
+    .filter-card {
+        padding: 14px 12px;
+    }
+
+    .filter-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .date-input-group {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .date-input-group input[type="date"] {
+        flex: 1;
+    }
+
+    /* Appointments Table Smooth Horizontal Scroll */
+    .table-card {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        display: block;
+    }
+
+    table {
+        min-width: 620px;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 10px 12px;
+        font-size: 0.825rem;
+        white-space: nowrap;
+    }
+
+    .status-select {
+        font-size: 0.8rem;
+        padding: 5px 8px;
+    }
+
+    /* Patient Portal Appointments List */
+    .appointment-card {
+        padding: 16px 12px;
+        border-radius: 10px;
+    }
+
+    .appointment-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .patient-name-title {
+        font-size: 1rem;
+    }
+
+    .status-badge {
+        align-self: flex-start;
+    }
+
+    .card-details-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .card-action-bar {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
+
+    .btn-cancel-appointment,
+    .btn-reschedule-appointment {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .confirm-btn-group {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .btn-confirm-yes,
+    .btn-confirm-no,
+    .btn-confirm-reschedule {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Toast Notification Positioning */
+    #toastContainer {
+        top: 12px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-width: none;
+    }
+
+    .toast {
+        width: 100%;
+        font-size: 0.85rem;
+        padding: 12px 14px;
+    }
+}
+
+/* Small Mobile Devices (max-width: 480px) */
+@media (max-width: 480px) {
+
+    .brand-title {
+        font-size: 1.05rem;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 6px;
+    }
+
+    .nav-btn {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .hero-title {
+        font-size: 1.35rem;
+    }
+
+    .card {
+        padding: 16px 12px;
+    }
+
+    .slots-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .time-slot-btn {
+        min-height: 42px;
+        font-size: 0.75rem;
+    }
+
+    .card-details-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .stat-card {
+        padding: 10px 8px;
+    }
+
+    .stat-number {
+        font-size: 1.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+    }
+}
+
+
 
