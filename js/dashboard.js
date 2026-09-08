@@ -1175,13 +1175,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     bookedApps.forEach(app => {
                         const timeFormatted = typeof formatTime12Hour === "function" ? formatTime12Hour(app.appointment_time) : app.appointment_time;
-                        appListHtml += `<li style="margin-bottom: 6px;">• <strong>${escapeHtml(app.patient_name)}</strong> at <strong>${escapeHtml(timeFormatted)}</strong> (${escapeHtml(app.status)})</li>`;
+                        appListHtml += `<li style="margin-bottom: 6px;"><strong>${escapeHtml(app.patient_name)}</strong> at <strong>${escapeHtml(timeFormatted)}</strong> (${escapeHtml(app.status)})</li>`;
                     });
 
                     appListHtml += `
                         </ul>
                         <p style="background: #fff1f2; padding: 12px 14px; border-radius: 8px; border: 1px solid #fecdd3; color: #9f1239; font-weight: 600; font-size: 0.88rem; margin: 0;">
-                            Kya aap ye leave mark karna chahte hain? Agar haan, to in sabhi appointments ka status <strong>'Cancelled'</strong> ho jayega.
+                            Are you sure you want to mark this leave? If yes, all these appointments will be marked as <strong>'Cancelled'</strong>.
                         </p>
                     `;
 
