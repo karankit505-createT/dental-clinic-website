@@ -784,6 +784,335 @@ document.addEventListener("DOMContentLoaded", function () {
             .subscribe();
     }
 
+    // ==========================================
+    // DOCTOR AVAILABILITY & LEAVES TAB LOGIC
+    // ==========================================
+
+    const tabBtnAppointments = document.getElementById("tabBtnAppointments");
+    const tabBtnAvailability = document.getElementById("tabBtnAvailability");
+    const appointmentsTabSection = document.getElementById("appointmentsTabSection");
+    const availabilityTabSection = document.getElementById("availabilityTabSection");
+
+    const weeklyScheduleContainer = document.getElementById("weeklyScheduleContainer");
+    const availabilityForm = document.getElementById("availabilityForm");
+    const addLeaveForm = document.getElementById("addLeaveForm");
+    const leavesListContainer = document.getElementById("leavesListContainer");
+    const leaveDateInput = document.getElementById("leaveDate");
+    const leaveReasonInput = document.getElementById("leaveReason");
+
+    if (leaveDateInput) {
+        const todayStr = new Date().toISOString().split("T")[0];
+        leaveDateInput.setAttribute("min", todayStr);
+    }
+
+    function switchDashboardTab(tab) {
+        if (tab === "availability") {
+            if (tabBtnAppointments) {
+                tabBtnAppointments.classList.remove("active");
+                tabBtnAppointments.style.color = "var(--text-muted)";
+                tabBtnAppointments.style.borderBottom = "none";
+            }
+            if (tabBtnAvailability) {
+                tabBtnAvailability.classList.add("active");
+                tabBtnAvailability.style.color = "var(--primary)";
+                tabBtnAvailability.style.borderBottom = "3px solid var(--primary)";
+            }
+            if (appointmentsTabSection) appointmentsTabSection.style.display = "none";
+            if (availabilityTabSection) availabilityTabSection.style.display = "block";
+
+            loadDoctorAvailabilityAndLeaves();
+        } else {
+            if (tabBtnAvailability) {
+                tabBtnAvailability.classList.remove("active");
+                tabBtnAvailability.style.color = "var(--text-muted)";
+                tabBtnAvailability.style.borderBottom = "none";
+            }
+            if (tabBtnAppointments) {
+                tabBtnAppointments.classList.add("active");
+                tabBtnAppointments.style.color = "var(--primary)";
+                tabBtnAppointments.style.borderBottom = "3px solid var(--primary)";
+            }
+            if (availabilityTabSection) availabilityTabSection.style.display = "none";
+            if (appointmentsTabSection) appointmentsTabSection.style.display = "block";
+        }
+    }
+
+    window.switchDashboardTab = switchDashboardTab;
+
+    if (tabBtnAppointments) {
+        tabBtnAppointments.addEventListener("click", () => switchDashboardTab("appointments"));
+    }
+    if (tabBtnAvailability) {
+        tabBtnAvailability.addEventListener("click", () => switchDashboardTab("availability"));
+    }
+
+    const daysOfWeekList = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+    async function loadDoctorAvailabilityAndLeaves() {
+        if (!currentDoctor || !supabaseClient) return;
+
+        try {
+            const { data: availData, error: availError } = await supabaseClient
+                .from("doctor_availability")
+                .select("*")
+                .eq("doctor_id", currentDoctor.id);
+
+            if (availError) {
+                console.warn("Could not fetch doctor availability:", availError);
+            }
+
+            const availMap = {};
+            if (availData && availData.length > 0) {
+                availData.forEach(item => {
+                    availMap[item.day_of_week] = item;
+                });
+            }
+
+            renderWeeklyScheduleRows(availMap);
+            loadUpcomingLeaves();
+
+        } catch (err) {
+            console.error("Error loading availability/leaves:", err);
+        }
+    }
+
+    function renderWeeklyScheduleRows(availMap) {
+        if (!weeklyScheduleContainer) return;
+        weeklyScheduleContainer.innerHTML = "";
+
+        daysOfWeekList.forEach(day => {
+            const existing = availMap[day] || {
+                is_available: day !== "Sunday",
+                start_time: "10:00:00",
+                end_time: "18:00:00"
+            };
+
+            const isChecked = existing.is_available ? "checked" : "";
+            const startTimeVal = String(existing.start_time || "10:00").substring(0, 5);
+            const endTimeVal = String(existing.end_time || "18:00").substring(0, 5);
+
+            const row = document.createElement("div");
+            row.style.cssText = "display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;";
+            
+            row.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px; min-width: 160px;">
+                    <input type="checkbox" id="avail-check-${day}" class="day-avail-checkbox" data-day="${day}" ${isChecked} style="width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary);">
+                    <label for="avail-check-${day}" style="font-weight: 700; font-size: 0.95rem; color: var(--text-dark); cursor: pointer;">${day}</label>
+                </div>
+
+                <div id="time-inputs-container-${day}" style="display: flex; align-items: center; gap: 10px; opacity: ${existing.is_available ? '1' : '0.4'}; pointer-events: ${existing.is_available ? 'auto' : 'none'};">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Start:</span>
+                        <input type="time" id="start-time-${day}" value="${startTimeVal}" style="padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem;">
+                    </div>
+                    <span style="color: var(--text-muted); font-weight: 700;">-</span>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">End:</span>
+                        <input type="time" id="end-time-${day}" value="${endTimeVal}" style="padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem;">
+                    </div>
+                </div>
+
+                <span id="avail-status-badge-${day}" style="font-size: 0.8rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; ${existing.is_available ? 'background: #dcfce7; color: #15803d;' : 'background: #ffe4e6; color: #be123c;'}">
+                    ${existing.is_available ? 'Available' : 'Not Available'}
+                </span>
+            `;
+
+            weeklyScheduleContainer.appendChild(row);
+
+            const checkbox = row.querySelector(`#avail-check-${day}`);
+            const timeContainer = row.querySelector(`#time-inputs-container-${day}`);
+            const statusBadge = row.querySelector(`#avail-status-badge-${day}`);
+
+            checkbox.addEventListener("change", function () {
+                if (this.checked) {
+                    timeContainer.style.opacity = "1";
+                    timeContainer.style.pointerEvents = "auto";
+                    statusBadge.style.background = "#dcfce7";
+                    statusBadge.style.color = "#15803d";
+                    statusBadge.textContent = "Available";
+                } else {
+                    timeContainer.style.opacity = "0.4";
+                    timeContainer.style.pointerEvents = "none";
+                    statusBadge.style.background = "#ffe4e6";
+                    statusBadge.style.color = "#be123c";
+                    statusBadge.textContent = "Not Available";
+                }
+            });
+        });
+    }
+
+    if (availabilityForm) {
+        availabilityForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            if (!currentDoctor || !supabaseClient) return;
+
+            const saveBtn = document.getElementById("saveAvailabilityBtn");
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.textContent = "Saving...";
+            }
+
+            try {
+                const upsertRows = daysOfWeekList.map(day => {
+                    const isAvailable = document.getElementById(`avail-check-${day}`)?.checked || false;
+                    const startTime = document.getElementById(`start-time-${day}`)?.value || "10:00";
+                    const endTime = document.getElementById(`end-time-${day}`)?.value || "18:00";
+
+                    return {
+                        doctor_id: currentDoctor.id,
+                        day_of_week: day,
+                        is_available: isAvailable,
+                        start_time: startTime + (startTime.length === 5 ? ":00" : ""),
+                        end_time: endTime + (endTime.length === 5 ? ":00" : "")
+                    };
+                });
+
+                const { error } = await supabaseClient
+                    .from("doctor_availability")
+                    .upsert(upsertRows, { onConflict: "doctor_id,day_of_week" });
+
+                if (error) {
+                    console.error("Error saving availability:", error);
+                    alert("Failed to save availability: " + error.message);
+                } else {
+                    if (typeof showToast === "function") {
+                        showToast("✅ Weekly working schedule saved successfully!", "success");
+                    }
+                }
+
+            } catch (err) {
+                console.error("Save availability exception:", err);
+            } finally {
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = "💾 Save Availability";
+                }
+            }
+        });
+    }
+
+    async function loadUpcomingLeaves() {
+        if (!currentDoctor || !supabaseClient || !leavesListContainer) return;
+
+        try {
+            const todayStr = new Date().toISOString().split("T")[0];
+            const { data: leaves, error } = await supabaseClient
+                .from("doctor_leaves")
+                .select("*")
+                .eq("doctor_id", currentDoctor.id)
+                .gte("leave_date", todayStr)
+                .order("leave_date", { ascending: true });
+
+            if (error) {
+                console.warn("Could not fetch doctor leaves:", error);
+                leavesListContainer.innerHTML = `<p style="color: #e11d48;">Error loading leaves.</p>`;
+                return;
+            }
+
+            if (!leaves || leaves.length === 0) {
+                leavesListContainer.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">No upcoming marked leaves.</p>`;
+                return;
+            }
+
+            let html = `<div style="display: flex; flex-direction: column; gap: 8px;">`;
+            leaves.forEach(item => {
+                const formattedLeaveDate = item.leave_date;
+                const reasonText = item.reason ? ` (${escapeHtml(item.reason)})` : "";
+
+                html += `
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #fff1f2; border: 1px solid #fecdd3; border-radius: 8px;">
+                        <div>
+                            <strong style="color: #be123c; font-size: 0.95rem;">🗓️ ${formattedLeaveDate}</strong>
+                            <span style="color: #881337; font-size: 0.88rem; margin-left: 6px;">${reasonText}</span>
+                        </div>
+                        <button type="button" class="btn-delete-leave" data-leave-id="${item.id}" style="padding: 4px 10px; font-size: 0.78rem; background: #ffe4e6; color: #be123c; border: 1px solid #fca5a5; border-radius: 6px; font-weight: 700; cursor: pointer;">
+                            🗑️ Delete
+                        </button>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            leavesListContainer.innerHTML = html;
+
+            leavesListContainer.querySelectorAll(".btn-delete-leave").forEach(btn => {
+                btn.addEventListener("click", async function () {
+                    const leaveId = this.getAttribute("data-leave-id");
+                    if (confirm("Are you sure you want to delete this leave record?")) {
+                        await deleteLeaveRecord(leaveId);
+                    }
+                });
+            });
+
+        } catch (err) {
+            console.error("Load leaves exception:", err);
+        }
+    }
+
+    if (addLeaveForm) {
+        addLeaveForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            if (!currentDoctor || !supabaseClient) return;
+
+            const dateVal = leaveDateInput ? leaveDateInput.value : "";
+            const reasonVal = leaveReasonInput ? leaveReasonInput.value.trim() : "";
+
+            if (!dateVal) return;
+
+            const addBtn = document.getElementById("addLeaveBtn");
+            if (addBtn) addBtn.disabled = true;
+
+            try {
+                const { error } = await supabaseClient
+                    .from("doctor_leaves")
+                    .upsert([{
+                        doctor_id: currentDoctor.id,
+                        leave_date: dateVal,
+                        reason: reasonVal
+                    }], { onConflict: "doctor_id,leave_date" });
+
+                if (error) {
+                    console.error("Error adding leave:", error);
+                    alert("Failed to mark leave: " + error.message);
+                } else {
+                    if (leaveReasonInput) leaveReasonInput.value = "";
+                    if (leaveDateInput) leaveDateInput.value = "";
+                    if (typeof showToast === "function") {
+                        showToast(`🏖️ Leave marked for ${dateVal}!`, "success");
+                    }
+                    loadUpcomingLeaves();
+                }
+            } catch (err) {
+                console.error("Add leave exception:", err);
+            } finally {
+                if (addBtn) addBtn.disabled = false;
+            }
+        });
+    }
+
+    async function deleteLeaveRecord(leaveId) {
+        if (!leaveId || !supabaseClient) return;
+
+        try {
+            const { error } = await supabaseClient
+                .from("doctor_leaves")
+                .delete()
+                .eq("id", leaveId);
+
+            if (error) {
+                console.error("Error deleting leave:", error);
+                alert("Failed to delete leave: " + error.message);
+            } else {
+                if (typeof showToast === "function") {
+                    showToast("Leave record deleted.", "info");
+                }
+                loadUpcomingLeaves();
+            }
+        } catch (err) {
+            console.error("Delete leave exception:", err);
+        }
+    }
+
     // Initial session check & setup Realtime listeners
     checkAuthSession();
     setupRealtimeDashboard();

@@ -40,7 +40,6 @@ CREATE TABLE IF NOT EXISTS public.appointments (
     issue TEXT NOT NULL,
     document_url TEXT,
     doctor_report_url TEXT,
-    payment_id TEXT,
     diagnosis TEXT,
     medicine TEXT,
     next_visit_date DATE,
@@ -53,7 +52,6 @@ CREATE TABLE IF NOT EXISTS public.appointments (
 
 -- SQL Migration Command for existing database (Run in Supabase SQL Editor):
 -- ALTER TABLE public.appointments 
--- ADD COLUMN IF NOT EXISTS payment_id TEXT,
 -- ADD COLUMN IF NOT EXISTS diagnosis TEXT,
 -- ADD COLUMN IF NOT EXISTS medicine TEXT,
 -- ADD COLUMN IF NOT EXISTS next_visit_date DATE;
@@ -165,4 +163,87 @@ USING (bucket_id = 'patient-documents');
 -- --------------------------------------------------------------------
 ALTER PUBLICATION supabase_realtime ADD TABLE public.doctors;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.appointments;
+
+
+-- --------------------------------------------------------------------
+-- 8. DOCTOR AVAILABILITY & LEAVES TABLES
+-- --------------------------------------------------------------------
+
+-- Table 1: doctor_availability (Weekly schedule per doctor)
+CREATE TABLE IF NOT EXISTS public.doctor_availability (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    doctor_id UUID NOT NULL REFERENCES public.doctors(id) ON DELETE CASCADE,
+    day_of_week TEXT NOT NULL,
+    start_time TIME NOT NULL DEFAULT '10:00:00',
+    end_time TIME NOT NULL DEFAULT '18:00:00',
+    is_available BOOLEAN NOT NULL DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    UNIQUE (doctor_id, day_of_week)
+);
+
+COMMENT ON TABLE public.doctor_availability IS 'Stores weekly working schedule for doctors';
+
+-- Table 2: doctor_leaves (Specific leave dates marked by doctors)
+CREATE TABLE IF NOT EXISTS public.doctor_leaves (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    doctor_id UUID NOT NULL REFERENCES public.doctors(id) ON DELETE CASCADE,
+    leave_date DATE NOT NULL,
+    reason TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    UNIQUE (doctor_id, leave_date)
+);
+
+COMMENT ON TABLE public.doctor_leaves IS 'Stores specific leave dates marked by doctors';
+
+-- Indexes for performance
+CREATE INDEX IF NOT EXISTS idx_doctor_availability_doc ON public.doctor_availability(doctor_id);
+CREATE INDEX IF NOT EXISTS idx_doctor_leaves_doc_date ON public.doctor_leaves(doctor_id, leave_date);
+
+-- Enable RLS
+ALTER TABLE public.doctor_availability ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.doctor_leaves ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies: Allow public read, insert, update, delete
+CREATE POLICY "Allow public read access to doctor_availability"
+ON public.doctor_availability FOR SELECT TO public USING (true);
+
+CREATE POLICY "Allow public insert/update/delete to doctor_availability"
+ON public.doctor_availability FOR ALL TO public USING (true) WITH CHECK (true);
+
+CREATE POLICY "Allow public read access to doctor_leaves"
+ON public.doctor_leaves FOR SELECT TO public USING (true);
+
+CREATE POLICY "Allow public insert/update/delete to doctor_leaves"
+ON public.doctor_leaves FOR ALL TO public USING (true) WITH CHECK (true);
+
+-- Enable Realtime for availability and leaves
+ALTER PUBLICATION supabase_realtime ADD TABLE public.doctor_availability;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.doctor_leaves;
+
+
+-- --------------------------------------------------------------------
+-- 9. INITIAL SAMPLE AVAILABILITY DATA (Mon-Sat 10 AM - 6 PM, Sunday Off)
+-- Populate default availability for all registered doctors
+-- --------------------------------------------------------------------
+DO $$
+DECLARE
+    doc RECORD;
+    d_day TEXT;
+    days_arr TEXT[] := ARRAY['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+BEGIN
+    FOR doc IN SELECT id FROM public.doctors LOOP
+        FOREACH d_day IN ARRAY days_arr LOOP
+            INSERT INTO public.doctor_availability (doctor_id, day_of_week, start_time, end_time, is_available)
+            VALUES (
+                doc.id, 
+                d_day, 
+                '10:00:00'::time, 
+                '18:00:00'::time, 
+                CASE WHEN d_day = 'Sunday' THEN false ELSE true END
+            )
+            ON CONFLICT (doctor_id, day_of_week) DO NOTHING;
+        END LOOP;
+    END LOOP;
+END $$;
+
 

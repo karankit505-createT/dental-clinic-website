@@ -11,9 +11,6 @@
     <!-- jsPDF Library CDN for Client-Side PDF Generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <!-- Razorpay Checkout Script CDN for Test Payments -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
     <!-- Config File & Utilities -->
     <script src="js/config.js"></script>
     <script src="js/pdf-generator.js?v=8"></script>
@@ -206,14 +203,11 @@
                             <div id="selectedSlotInfo" class="selected-slot-info"></div>
                         </div>
 
-                        <!-- Consultation Fee Notice & Submit Button -->
-                        <div class="form-group full-width" style="margin-top: 8px;">
-                            <div style="margin-bottom: 12px; font-size: 0.925rem; font-weight: 600; color: #0369a1; background: #e0f2fe; border: 1px solid #bae6fd; padding: 10px 14px; border-radius: 8px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                💳 Consultation Fee: <strong style="color: #0284c7;">Rs. 100</strong> <span style="font-size: 0.8rem; font-weight: normal; color: #64748b;">(Razorpay Test Mode)</span>
-                            </div>
+                        <!-- Submit Button -->
+                        <div class="form-group full-width">
                             <button type="submit" id="submitBtn" class="btn-submit">
                                 <span class="spinner"></span>
-                                <span id="submitBtnText">Pay & Book Appointment</span>
+                                <span id="submitBtnText">Book Appointment</span>
                             </button>
                         </div>
 
@@ -228,7 +222,7 @@
                         </svg>
                     </div>
                     <h2 class="confirmation-title">Appointment Booked Successfully!</h2>
-                    <p class="confirmation-subtitle">Your payment was processed and your appointment has been scheduled.</p>
+                    <p class="confirmation-subtitle">Your appointment has been scheduled. We will confirm your visit shortly.</p>
 
                     <div class="summary-box">
                         <div class="summary-row">
@@ -246,14 +240,6 @@
                         <div class="summary-row">
                             <span class="summary-label">Appointment Time</span>
                             <span id="summaryTime" class="summary-value">-</span>
-                        </div>
-                        <div class="summary-row">
-                            <span class="summary-label">Payment Status</span>
-                            <span id="summaryPayment" class="summary-value" style="color:var(--status-completed-text); font-weight: 700;">Payment Successful! Amount Paid: Rs. 100 ✅</span>
-                        </div>
-                        <div class="summary-row" id="summaryPaymentIdRow">
-                            <span class="summary-label">Payment ID</span>
-                            <span id="summaryPaymentId" class="summary-value" style="font-family: monospace; font-size: 0.85rem; color: #0f766e;">-</span>
                         </div>
                         <div class="summary-row">
                             <span class="summary-label">Status</span>

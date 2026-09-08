@@ -131,15 +131,55 @@ document.addEventListener("DOMContentLoaded", function () {
         return t;
     }
 
+    // Helper: Convert time string to minutes from midnight (e.g. "10:30 AM" -> 630, "18:00:00" -> 1080)
+    function parseTimeToMinutes(t) {
+        if (!t) return 0;
+        t = String(t).trim().toUpperCase();
+        const match = t.match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)?$/);
+        if (!match) return 0;
+        let h = parseInt(match[1], 10);
+        const m = parseInt(match[2], 10);
+        const period = match[3];
+
+        if (period === "PM" && h < 12) h += 12;
+        if (period === "AM" && h === 12) h = 0;
+
+        return h * 60 + m;
+    }
+
+    function setAvailabilityNotice(htmlMsg, type = "error") {
+        let noticeElem = document.getElementById("bookedSlotsNotice");
+        if (!noticeElem) {
+            const wrapper = document.querySelector(".time-slots-wrapper");
+            if (wrapper && wrapper.parentNode) {
+                noticeElem = document.createElement("div");
+                noticeElem.id = "bookedSlotsNotice";
+                noticeElem.className = "booked-slots-notice";
+                wrapper.parentNode.appendChild(noticeElem);
+            }
+        }
+        if (noticeElem) {
+            if (htmlMsg) {
+                noticeElem.innerHTML = `<div style="padding: 12px 16px; background: ${type === 'error' ? '#fff1f2' : '#f8fafc'}; border: 1.5px solid ${type === 'error' ? '#fecdd3' : '#cbd5e1'}; border-radius: 8px; color: ${type === 'error' ? '#be123c' : '#475569'}; font-size: 0.92rem; font-weight: 500;">${htmlMsg}</div>`;
+            } else {
+                noticeElem.innerHTML = "";
+            }
+        }
+    }
+
     const selectDoctorDateNotice = document.getElementById("selectDoctorDateNotice");
     const timeSlotsWrapper = document.getElementById("timeSlotsWrapper");
 
-    // 3c. Fetch & Disable Already Booked Time Slots for Selected Doctor & Date
+    // 3c. Fetch Availability, Leaves & Disable Booked Slots for Selected Doctor & Date
     async function fetchAndHideBookedSlots() {
         const selectedDate = dateInput ? dateInput.value : null;
         const selectedDoctorId = doctorSelect ? doctorSelect.value : null;
 
-        // Reset any previously selected slot when doctor or date changes
+        // Reset inputs and slot states
+        if (dateInput) {
+            dateInput.style.borderColor = "";
+            dateInput.style.backgroundColor = "";
+        }
         slotButtons.forEach(btn => btn.classList.remove("selected"));
         if (hiddenTimeInput) hiddenTimeInput.value = "";
         if (selectedSlotInfo) selectedSlotInfo.innerHTML = "";
@@ -148,15 +188,75 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!selectedDate || !selectedDoctorId || !supabaseClient) {
             if (selectDoctorDateNotice) selectDoctorDateNotice.style.display = "block";
             if (timeSlotsWrapper) timeSlotsWrapper.style.display = "none";
-            updateSlotNotice(0, slotButtons.length);
+            setAvailabilityNotice("", "info");
             return;
         }
 
-        // Show slot selector grid
-        if (selectDoctorDateNotice) selectDoctorDateNotice.style.display = "none";
-        if (timeSlotsWrapper) timeSlotsWrapper.style.display = "flex";
+        const selectedOption = doctorSelect.options[doctorSelect.selectedIndex];
+        const docName = selectedOption ? selectedOption.text.split("-")[0].trim() : "Doctor";
 
         try {
+            // STEP 1: Check doctor_leaves table
+            const { data: leaves, error: leavesErr } = await supabaseClient
+                .from("doctor_leaves")
+                .select("*")
+                .eq("doctor_id", selectedDoctorId)
+                .eq("leave_date", selectedDate);
+
+            if (!leavesErr && leaves && leaves.length > 0) {
+                if (selectDoctorDateNotice) selectDoctorDateNotice.style.display = "none";
+                if (timeSlotsWrapper) timeSlotsWrapper.style.display = "none";
+                if (dateInput) {
+                    dateInput.style.borderColor = "#e11d48";
+                    dateInput.style.backgroundColor = "#fff1f2";
+                }
+                const reasonText = leaves[0].reason ? ` (Reason: ${leaves[0].reason})` : "";
+                setAvailabilityNotice(`⚠️ <strong>${escapeHtml(docName)}</strong> is on leave on this date${reasonText}. Please select another date.`, "error");
+                return;
+            }
+
+            // STEP 2: Check doctor_availability table for day_of_week
+            const dateObj = new Date(selectedDate + "T00:00:00");
+            const daysArr = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const dayName = daysArr[dateObj.getDay()];
+
+            const { data: avail, error: availErr } = await supabaseClient
+                .from("doctor_availability")
+                .select("*")
+                .eq("doctor_id", selectedDoctorId)
+                .eq("day_of_week", dayName);
+
+            let startTimeMin = 600;  // Default 10:00 AM (600 mins)
+            let endTimeMin = 1080;   // Default 06:00 PM (1080 mins)
+            let isAvailableDay = true;
+
+            if (!availErr && avail && avail.length > 0) {
+                const a = avail[0];
+                if (a.is_available === false) {
+                    isAvailableDay = false;
+                } else {
+                    if (a.start_time) startTimeMin = parseTimeToMinutes(a.start_time);
+                    if (a.end_time) endTimeMin = parseTimeToMinutes(a.end_time);
+                }
+            }
+
+            if (!isAvailableDay) {
+                if (selectDoctorDateNotice) selectDoctorDateNotice.style.display = "none";
+                if (timeSlotsWrapper) timeSlotsWrapper.style.display = "none";
+                if (dateInput) {
+                    dateInput.style.borderColor = "#e11d48";
+                    dateInput.style.backgroundColor = "#fff1f2";
+                }
+                setAvailabilityNotice(`⚠️ <strong>${escapeHtml(docName)}</strong> is not available on <strong>${dayName}s</strong>. Please select another date.`, "error");
+                return;
+            }
+
+            // STEP 3: Doctor is available! Clear notice and show slot grid
+            setAvailabilityNotice("", "info");
+            if (selectDoctorDateNotice) selectDoctorDateNotice.style.display = "none";
+            if (timeSlotsWrapper) timeSlotsWrapper.style.display = "flex";
+
+            // STEP 4: Fetch booked appointments
             let query = supabaseClient
                 .from("appointments")
                 .select("appointment_time, status, doctor_id")
@@ -166,8 +266,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const { data, error } = await query;
 
             if (error) {
-                console.warn("Could not check booked slots for date & doctor:", error);
-                return;
+                console.warn("Could not check booked slots:", error);
             }
 
             const bookedTimes = new Set(
@@ -177,50 +276,52 @@ document.addEventListener("DOMContentLoaded", function () {
             );
 
             let bookedCount = 0;
+            let visibleCount = 0;
+
             slotButtons.forEach(btn => {
                 const rawTime = btn.getAttribute("data-time");
                 const normTime = normalizeTime(rawTime);
-                
-                if (bookedTimes.has(normTime) || bookedTimes.has(rawTime)) {
-                    btn.classList.add("is-booked-disabled");
-                    btn.disabled = true;
-                    bookedCount++;
+                const slotMin = parseTimeToMinutes(rawTime);
+
+                // Slot is visible only within [startTimeMin, endTimeMin]
+                if (slotMin >= startTimeMin && slotMin <= endTimeMin) {
+                    btn.style.display = "";
+                    visibleCount++;
+
+                    if (bookedTimes.has(normTime) || bookedTimes.has(rawTime)) {
+                        btn.classList.add("is-booked-disabled");
+                        btn.disabled = true;
+                        bookedCount++;
+                    } else {
+                        btn.classList.remove("is-booked-disabled");
+                        btn.disabled = false;
+                    }
                 } else {
-                    btn.classList.remove("is-booked-disabled");
-                    btn.disabled = false;
+                    btn.style.display = "none";
                 }
             });
 
-            updateSlotNotice(bookedCount, slotButtons.length);
+            // Hide slot groups if all buttons inside are hidden
+            document.querySelectorAll(".slot-group").forEach(group => {
+                const hasVisibleBtns = Array.from(group.querySelectorAll(".time-slot-btn")).some(b => b.style.display !== "none");
+                group.style.display = hasVisibleBtns ? "block" : "none";
+            });
+
+            updateSlotNotice(bookedCount, visibleCount);
 
         } catch (err) {
-            console.error("Error fetching booked slots:", err);
+            console.error("Error checking availability & booked slots:", err);
         }
     }
 
-    function updateSlotNotice(bookedCount, totalSlots) {
-        let noticeElem = document.getElementById("bookedSlotsNotice");
-        if (!noticeElem) {
-            const wrapper = document.querySelector(".time-slots-wrapper");
-            if (wrapper) {
-                noticeElem = document.createElement("div");
-                noticeElem.id = "bookedSlotsNotice";
-                noticeElem.className = "booked-slots-notice";
-                wrapper.parentNode.appendChild(noticeElem);
-            }
-        }
-
-        if (!noticeElem) return;
-
-        if (bookedCount >= totalSlots && totalSlots > 0) {
-            noticeElem.innerHTML = `<span style="color:#e11d48; font-weight:600;">⚠️ All slots are fully booked for this doctor on ${dateInput.value}. Please choose another date or doctor.</span>`;
+    function updateSlotNotice(bookedCount, visibleSlots) {
+        if (bookedCount >= visibleSlots && visibleSlots > 0) {
+            setAvailabilityNotice(`⚠️ All available slots are fully booked for this doctor on ${dateInput.value}. Please choose another date or doctor.`, "error");
             if (typeof showToast === "function") {
                 showToast("All slots are fully booked for this doctor on this date.", "warning");
             }
         } else if (bookedCount > 0) {
-            noticeElem.innerHTML = `<span style="color:var(--text-muted); font-size:0.85rem;">🔒 <strong>${bookedCount}</strong> slot(s) are already booked for this doctor on this date.</span>`;
-        } else {
-            noticeElem.innerHTML = "";
+            setAvailabilityNotice(`🔒 <strong>${bookedCount}</strong> slot(s) are already booked for this doctor on this date.`, "info");
         }
     }
 
@@ -253,24 +354,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Helper: Set Loading State
-    function setLoading(isLoading, customText) {
+    function setLoading(isLoading) {
         if (isLoading) {
             submitBtn.disabled = true;
             submitBtn.classList.add("loading");
-            submitBtnText.textContent = customText || "Processing Booking...";
+            submitBtnText.textContent = "Processing Booking...";
         } else {
             submitBtn.disabled = false;
             submitBtn.classList.remove("loading");
-            submitBtnText.textContent = "Pay & Book Appointment";
+            submitBtnText.textContent = "Book Appointment";
         }
     }
 
-    // 4. Form Submit Handler (Razorpay Test Mode Payment + Appointment Booking)
+    // 4. Form Submit Handler
     bookingForm.addEventListener("submit", async function (e) {
         e.preventDefault();
         hideError();
 
-        // Check Supabase config
+        // Check config
         if (!isSupabaseConfigured() || !supabaseClient) {
             showError("Supabase credentials missing! Please configure config.js with your SUPABASE_URL and SUPABASE_ANON_KEY.");
             return;
@@ -338,90 +439,14 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Validate Razorpay Config
-        if (!isRazorpayConfigured()) {
-            showError(
-                "Razorpay Test Key missing!\n\n" +
-                "👉 FIX: Please open 'js/config.js' and paste your RAZORPAY_KEY_ID (e.g. 'rzp_test_xxxxxxxxxxxxxx').\n" +
-                "You can get your free Test Key from Razorpay Dashboard -> Settings -> API Keys."
-            );
-            return;
-        }
-
-        if (typeof window.Razorpay === "undefined") {
-            showError("Razorpay SDK script failed to load. Please check your internet connection and refresh the page.");
-            return;
-        }
-
-        // STEP 1: Launch Razorpay Checkout Popup (Amount: Rs. 100 = 10000 paise)
-        setLoading(true, "Opening Payment Gateway...");
-
-        const options = {
-            key: RAZORPAY_KEY_ID,
-            amount: 10000, // Rs. 100 in paise
-            currency: "INR",
-            name: "SmileCare Dental Clinic",
-            description: "Dental Consultation Fee (Rs. 100)",
-            prefill: {
-                name: patient_name,
-                email: email || "",
-                contact: mobile
-            },
-            theme: {
-                color: "#0d9488" // Brand Teal
-            },
-            handler: async function (response) {
-                // Payment Successful!
-                const payment_id = response.razorpay_payment_id || `pay_test_${Date.now()}`;
-                setLoading(true, "Payment Successful! Saving Booking...");
-
-                await processAppointmentSave({
-                    doctor_id,
-                    patient_name,
-                    age,
-                    gender,
-                    email,
-                    mobile,
-                    issue,
-                    appointment_date,
-                    appointment_time,
-                    file,
-                    payment_id
-                });
-            },
-            modal: {
-                ondismiss: function () {
-                    setLoading(false);
-                    showError("Payment failed or cancelled, please try again.");
-                }
-            }
-        };
-
-        try {
-            const rzp = new window.Razorpay(options);
-            rzp.on("payment.failed", function (resp) {
-                console.error("Razorpay Payment Failed:", resp.error);
-                setLoading(false);
-                const reason = (resp.error && (resp.error.description || resp.error.reason)) ? resp.error.description || resp.error.reason : "";
-                showError(`Payment failed, please try again.${reason ? " (" + reason + ")" : ""}`);
-            });
-            rzp.open();
-        } catch (rzpErr) {
-            console.error("Razorpay Popup Error:", rzpErr);
-            setLoading(false);
-            showError("Failed to open Razorpay payment popup. Please check your Razorpay Key ID in config.js.");
-        }
-    });
-
-    // Helper: Save Appointment to Supabase after Payment Success
-    async function processAppointmentSave(data) {
-        const { doctor_id, patient_name, age, gender, email, mobile, issue, appointment_date, appointment_time, file, payment_id } = data;
+        // Start Submit Process
+        setLoading(true);
 
         try {
             let document_url = null;
             let uploadWarning = false;
 
-            // Upload Document if attached
+            // STEP 1: Upload Document to Supabase Storage Bucket if provided (Non-blocking fallback)
             if (file) {
                 try {
                     const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
@@ -444,7 +469,12 @@ document.addEventListener("DOMContentLoaded", function () {
                             upsert: false
                         });
 
-                    if (!uploadError) {
+                    if (uploadError) {
+                        console.warn("Storage Upload Warning (Proceeding with booking without document):", uploadError);
+                        uploadWarning = true;
+                        document_url = null;
+                    } else {
+                        // Get Public URL of uploaded document
                         const { data: publicUrlData } = supabaseClient
                             .storage
                             .from("patient-documents")
@@ -453,15 +483,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         if (publicUrlData && publicUrlData.publicUrl) {
                             document_url = publicUrlData.publicUrl;
                         }
-                    } else {
-                        uploadWarning = true;
                     }
                 } catch (storageException) {
+                    console.warn("Storage Exception (Proceeding without document):", storageException);
                     uploadWarning = true;
+                    document_url = null;
                 }
             }
 
-            // Insert into 'appointments' table
+            // STEP 2: Insert record into 'appointments' table
             let payload = {
                 patient_name,
                 age,
@@ -473,7 +503,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 appointment_date,
                 appointment_time,
                 doctor_id,
-                payment_id: payment_id || null,
                 status: "Pending"
             };
 
@@ -482,33 +511,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 .insert([payload])
                 .select();
 
-            // Retry fallback if payment_id column is missing in database schema
-            if (dbError && (dbError.message.includes("payment_id") || dbError.message.includes("schema cache"))) {
-                console.warn("payment_id column missing in Supabase table schema. Retrying with payment_id in issue text...");
-                delete payload.payment_id;
-                payload.issue = `${issue} [Payment ID: ${payment_id}]`;
-
-                const retryRes = await supabaseClient
-                    .from("appointments")
-                    .insert([payload])
-                    .select();
-
-                dbError = retryRes.error;
-                insertData = retryRes.data;
-            }
-
-            // Retry fallback if gender column is missing
+            // If gender or doctor_id column issue occurs, retry
             if (dbError && (dbError.message.includes("gender") || dbError.message.includes("schema cache"))) {
+                console.warn("Gender column missing in Supabase table schema. Retrying with gender appended to issue...");
                 delete payload.gender;
-                payload.issue = `${payload.issue} [Gender: ${gender}]`;
-
+                payload.issue = `${issue} [Gender: ${gender}]`;
+                
                 const retryRes = await supabaseClient
                     .from("appointments")
                     .insert([payload])
                     .select();
-
+                
                 dbError = retryRes.error;
-                insertData = retryRes.data;
             }
 
             if (dbError) {
@@ -524,11 +538,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 throw new Error(dbErrStr);
             }
 
-            // Show Success Confirmation View
+            // STEP 3: Show Success Confirmation View
             if (typeof showToast === "function") {
-                showToast("Payment Successful! Appointment booked.", "success");
+                showToast("Appointment booked successfully!", "success");
             }
-
             const createdApp = (insertData && insertData[0]) ? insertData[0] : {};
             const displayId = (typeof formatBookingId === "function") ? formatBookingId(createdApp.id) : (createdApp.id || 'N/A');
             const summaryBookingIdElem = document.getElementById("summaryBookingId");
@@ -544,15 +557,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const formattedTime = (typeof formatTime12Hour === "function") ? formatTime12Hour(appointment_time) : appointment_time;
             document.getElementById("summaryDate").textContent = appointment_date;
             document.getElementById("summaryTime").textContent = formattedTime;
-
-            const summaryPaymentElem = document.getElementById("summaryPayment");
-            if (summaryPaymentElem) {
-                summaryPaymentElem.innerHTML = `Payment Successful! Amount Paid: Rs. 100 ✅`;
-            }
-            const summaryPaymentIdElem = document.getElementById("summaryPaymentId");
-            if (summaryPaymentIdElem) {
-                summaryPaymentIdElem.textContent = payment_id || "N/A";
-            }
 
             if (uploadWarning) {
                 document.getElementById("summaryStatus").innerHTML = "Pending <br><small style='color:var(--text-muted);'>(Document upload failed, but appointment was booked successfully)</small>";
@@ -570,8 +574,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 appointment_date: appointment_date,
                 appointment_time: formattedTime,
                 issue: issue,
-                payment_id: payment_id,
-                payment_status: "Paid (Rs. 100)",
                 status: "Pending"
             };
 
@@ -588,12 +590,12 @@ document.addEventListener("DOMContentLoaded", function () {
             confirmationCard.classList.add("active");
 
         } catch (err) {
-            console.error("Booking save failed:", err);
-            showError("Payment was successful, but saving appointment failed: " + (err.message || "Unknown Error"));
+            console.error("Booking failed:", err);
+            showError("Something went wrong, please try again.\n" + (err.message || "Unknown Error"));
         } finally {
             setLoading(false);
         }
-    }
+    });
 
     // 5. "Book Another Appointment" Button Click Handler
     bookAnotherBtn.addEventListener("click", function () {
