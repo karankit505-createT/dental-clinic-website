@@ -522,9 +522,11 @@ input[type="file"] {
     margin-bottom: 24px;
 }
 
-.dashboard-title-group h2 {
+.dashboard-title-group h2,
+#doctorWelcomeTitle {
     font-size: 1.5rem;
     font-weight: 700;
+    color: #0284c7;
 }
 
 .dashboard-title-group p {
