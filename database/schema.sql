@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS public.appointments (
     diagnosis TEXT,
     medicine TEXT,
     next_visit_date DATE,
+    cancellation_reason TEXT,
     appointment_date DATE NOT NULL,
     appointment_time TEXT NOT NULL,
     doctor_id UUID REFERENCES public.doctors(id) ON DELETE SET NULL,
@@ -54,7 +55,8 @@ CREATE TABLE IF NOT EXISTS public.appointments (
 -- ALTER TABLE public.appointments 
 -- ADD COLUMN IF NOT EXISTS diagnosis TEXT,
 -- ADD COLUMN IF NOT EXISTS medicine TEXT,
--- ADD COLUMN IF NOT EXISTS next_visit_date DATE;
+-- ADD COLUMN IF NOT EXISTS next_visit_date DATE,
+-- ADD COLUMN IF NOT EXISTS cancellation_reason TEXT;
 
 -- Comments on appointments table columns
 COMMENT ON TABLE public.appointments IS 'Stores all patient appointment bookings and live statuses';
@@ -69,6 +71,8 @@ COMMENT ON COLUMN public.appointments.doctor_report_url IS 'Public Supabase stor
 COMMENT ON COLUMN public.appointments.diagnosis IS 'Doctor checkup diagnosis notes';
 COMMENT ON COLUMN public.appointments.medicine IS 'Prescription / medicine instructions';
 COMMENT ON COLUMN public.appointments.next_visit_date IS 'Recommended next follow-up appointment date';
+COMMENT ON COLUMN public.appointments.cancellation_reason IS 'Reason why an appointment was cancelled (e.g. Doctor emergency leave)';
+COMMENT ON COLUMN public.appointments.appointment_date IS 'Selected appointment date';
 COMMENT ON COLUMN public.appointments.appointment_date IS 'Selected appointment date';
 COMMENT ON COLUMN public.appointments.appointment_time IS 'Selected appointment time slot (e.g., 10:00 AM)';
 COMMENT ON COLUMN public.appointments.doctor_id IS 'Foreign key referencing the assigned doctor';

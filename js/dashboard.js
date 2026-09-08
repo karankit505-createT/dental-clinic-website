@@ -1049,6 +1049,92 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Emergency Leave Warning Modal Setup
+    const emergencyLeaveModal = document.getElementById("emergencyLeaveModal");
+    const emergencyLeaveModalBody = document.getElementById("emergencyLeaveModalBody");
+    const cancelLeaveBtn = document.getElementById("cancelLeaveBtn");
+    const confirmEmergencyLeaveBtn = document.getElementById("confirmEmergencyLeaveBtn");
+
+    let pendingLeaveData = null; // Holds { dateVal, reasonVal } when modal is open
+
+    function closeEmergencyLeaveModal() {
+        if (emergencyLeaveModal) emergencyLeaveModal.style.display = "none";
+        pendingLeaveData = null;
+    }
+
+    if (cancelLeaveBtn) {
+        cancelLeaveBtn.addEventListener("click", function () {
+            closeEmergencyLeaveModal();
+        });
+    }
+
+    if (emergencyLeaveModal) {
+        emergencyLeaveModal.addEventListener("click", function (e) {
+            if (e.target === emergencyLeaveModal) {
+                closeEmergencyLeaveModal();
+            }
+        });
+    }
+
+    if (confirmEmergencyLeaveBtn) {
+        confirmEmergencyLeaveBtn.addEventListener("click", async function () {
+            if (!pendingLeaveData || !currentDoctor || !supabaseClient) return;
+
+            const { dateVal, reasonVal } = pendingLeaveData;
+            confirmEmergencyLeaveBtn.disabled = true;
+            confirmEmergencyLeaveBtn.textContent = "Processing...";
+
+            try {
+                // 1. Save Leave to 'doctor_leaves' table
+                const { error: leaveErr } = await supabaseClient
+                    .from("doctor_leaves")
+                    .upsert([{
+                        doctor_id: currentDoctor.id,
+                        leave_date: dateVal,
+                        reason: reasonVal
+                    }], { onConflict: "doctor_id,leave_date" });
+
+                if (leaveErr) {
+                    console.error("Error saving emergency leave:", leaveErr);
+                    alert("Failed to mark leave: " + leaveErr.message);
+                    return;
+                }
+
+                // 2. Cancel all affected Pending/Confirmed appointments for this doctor on this leave date
+                const { error: cancelErr } = await supabaseClient
+                    .from("appointments")
+                    .update({
+                        status: "Cancelled",
+                        cancellation_reason: "Doctor unavailable due to emergency leave"
+                    })
+                    .eq("doctor_id", currentDoctor.id)
+                    .eq("appointment_date", dateVal)
+                    .in("status", ["Pending", "Confirmed"]);
+
+                if (cancelErr) {
+                    console.error("Error cancelling affected appointments:", cancelErr);
+                    alert("Leave marked, but failed to cancel affected appointments: " + cancelErr.message);
+                } else {
+                    if (leaveReasonInput) leaveReasonInput.value = "";
+                    if (leaveDateInput) leaveDateInput.value = "";
+
+                    if (typeof showToast === "function") {
+                        showToast(`⚠️ Emergency leave marked & affected appointments cancelled for ${dateVal}!`, "warning");
+                    }
+
+                    loadUpcomingLeaves();
+                    fetchAppointments(currentDoctor.id);
+                }
+            } catch (err) {
+                console.error("Confirm emergency leave exception:", err);
+            } finally {
+                confirmEmergencyLeaveBtn.disabled = false;
+                confirmEmergencyLeaveBtn.textContent = "Yes, Mark Leave & Cancel These Appointments";
+                closeEmergencyLeaveModal();
+            }
+        });
+    }
+
     if (addLeaveForm) {
         addLeaveForm.addEventListener("submit", async function (e) {
             e.preventDefault();
@@ -1063,6 +1149,49 @@ document.addEventListener("DOMContentLoaded", function () {
             if (addBtn) addBtn.disabled = true;
 
             try {
+                // Step 1: Check 'appointments' table for active bookings on this date for this doctor
+                const { data: bookedApps, error: checkErr } = await supabaseClient
+                    .from("appointments")
+                    .select("id, patient_name, appointment_time, status")
+                    .eq("doctor_id", currentDoctor.id)
+                    .eq("appointment_date", dateVal)
+                    .in("status", ["Pending", "Confirmed"])
+                    .order("appointment_time", { ascending: true });
+
+                if (checkErr) {
+                    console.error("Error checking appointments for leave date:", checkErr);
+                }
+
+                // If 1 or more appointments exist, show Warning Modal before saving leave!
+                if (bookedApps && bookedApps.length > 0) {
+                    pendingLeaveData = { dateVal, reasonVal };
+
+                    let appListHtml = `
+                        <p style="font-weight: 700; color: #be123c; margin-bottom: 12px; font-size: 0.95rem;">
+                            ⚠️ <strong>${bookedApps.length}</strong> appointment(s) already booked on this date (${dateVal}):
+                        </p>
+                        <ul style="padding-left: 20px; margin-bottom: 16px; color: #334155; font-size: 0.9rem;">
+                    `;
+
+                    bookedApps.forEach(app => {
+                        const timeFormatted = typeof formatTime12Hour === "function" ? formatTime12Hour(app.appointment_time) : app.appointment_time;
+                        appListHtml += `<li style="margin-bottom: 6px;">• <strong>${escapeHtml(app.patient_name)}</strong> at <strong>${escapeHtml(timeFormatted)}</strong> (${escapeHtml(app.status)})</li>`;
+                    });
+
+                    appListHtml += `
+                        </ul>
+                        <p style="background: #fff1f2; padding: 12px 14px; border-radius: 8px; border: 1px solid #fecdd3; color: #9f1239; font-weight: 600; font-size: 0.88rem; margin: 0;">
+                            Kya aap ye leave mark karna chahte hain? Agar haan, to in sabhi appointments ka status <strong>'Cancelled'</strong> ho jayega.
+                        </p>
+                    `;
+
+                    if (emergencyLeaveModalBody) emergencyLeaveModalBody.innerHTML = appListHtml;
+                    if (emergencyLeaveModal) emergencyLeaveModal.style.display = "flex";
+
+                    return;
+                }
+
+                // Step 2: If 0 appointments exist, save leave normally with NO extra popup
                 const { error } = await supabaseClient
                     .from("doctor_leaves")
                     .upsert([{

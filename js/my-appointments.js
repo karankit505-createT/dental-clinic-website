@@ -245,10 +245,58 @@ document.addEventListener("DOMContentLoaded", function () {
             const resDateId = `resDate-${item.id || Math.random().toString(36).substr(2, 9)}`;
             const resTimeId = `resTime-${item.id || Math.random().toString(36).substr(2, 9)}`;
 
+            let cancellationNoteHtml = "";
+            if (status === "Cancelled" && item.cancellation_reason) {
+                cancellationNoteHtml = `
+                    <div class="cancellation-note-banner" style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: 8px; padding: 10px 14px; margin-top: 12px; color: #be123c; font-size: 0.88rem; font-weight: 500; display: flex; align-items: flex-start; gap: 8px;">
+                        <span style="font-size: 1.1rem; line-height: 1;">⚠️</span>
+                        <div><strong>This appointment was cancelled:</strong> ${escapeHtml(item.cancellation_reason)}</div>
+                    </div>
+                `;
+            }
+
             if (status === "Cancelled") {
                 actionHtml = `
                     <div class="card-action-bar" style="gap: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
                         <span class="cancelled-info-badge">❌ Appointment Cancelled</span>
+                        <button type="button" class="btn-reschedule-appointment btn-res-trigger" data-target="${resBoxId}" data-id="${item.id}" data-doctor="${item.doctor_id || ''}" data-date-id="${resDateId}" data-time-id="${resTimeId}">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                            </svg>
+                            Reschedule
+                        </button>
+                    </div>
+
+                    <!-- Reschedule Dialog Box -->
+                    <div id="${resBoxId}" class="reschedule-card-box">
+                        <div class="reschedule-title">
+                            📅 Reschedule Appointment
+                        </div>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label style="font-size:0.8rem;">Select New Date <span class="required-star">*</span></label>
+                            <input type="date" id="${resDateId}" min="${todayStr}" value="${item.appointment_date || ''}">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label style="font-size:0.8rem;">Select New Time Slot <span class="required-star">*</span></label>
+                            <select id="${resTimeId}">
+                                ${generateSlotOptionsHtml(new Set(), item.appointment_time)}
+                            </select>
+                        </div>
+                        <div class="confirm-btn-group">
+                            <button type="button" class="btn-submit btn-confirm-reschedule" 
+                                    style="padding: 8px 16px; font-size: 0.85rem; width: auto;"
+                                    data-id="${item.id || ''}" 
+                                    data-mobile="${escapeHtml(item.mobile)}"
+                                    data-date-id="${resDateId}" 
+                                    data-time-id="${resTimeId}"
+                                    data-box-id="${resBoxId}">
+                                <span class="spinner" style="width: 14px; height: 14px;"></span>
+                                Confirm Reschedule
+                            </button>
+                            <button type="button" class="btn-confirm-no" data-target="${resBoxId}">
+                                Cancel
+                            </button>
+                        </div>
                     </div>
                 `;
             } else if (status === "Completed") {
@@ -359,6 +407,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     ${doctorReportHtml}
                 </div>
+
+                ${cancellationNoteHtml}
 
                 ${actionHtml}
             `;

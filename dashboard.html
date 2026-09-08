@@ -262,7 +262,33 @@
 
     </main>
 
+    <!-- Emergency Leave Warning Modal -->
+    <div id="emergencyLeaveModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 16px;">
+        <div style="background: white; border-radius: 16px; max-width: 520px; width: 100%; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2), 0 10px 10px -5px rgba(0,0,0,0.1); border: 1px solid #fecdd3;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; border-bottom: 1px solid #ffe4e6; padding-bottom: 14px;">
+                <div style="background: #ffe4e6; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #be123c; flex-shrink: 0;">
+                    ⚠️
+                </div>
+                <div>
+                    <h3 style="font-size: 1.15rem; font-weight: 700; color: #9f1239; margin: 0;">Emergency Leave Warning</h3>
+                    <p style="font-size: 0.84rem; color: #881337; margin: 2px 0 0 0;">Appointments are already booked on this date</p>
+                </div>
+            </div>
 
+            <div id="emergencyLeaveModalBody" style="font-size: 0.92rem; color: #334155; line-height: 1.6; margin-bottom: 20px;">
+                <!-- Dynamic content populated via dashboard.js -->
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap;">
+                <button type="button" id="cancelLeaveBtn" style="padding: 10px 18px; font-size: 0.88rem; font-weight: 600; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; transition: background 0.15s;">
+                    Cancel
+                </button>
+                <button type="button" id="confirmEmergencyLeaveBtn" style="padding: 10px 18px; font-size: 0.88rem; font-weight: 700; background: #e11d48; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 6px rgba(225, 29, 72, 0.3); transition: background 0.15s;">
+                    Yes, Mark Leave & Cancel These Appointments
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>
@@ -276,6 +302,6 @@
     </footer>
 
     <!-- Dashboard Logic Script -->
-    <script src="js/dashboard.js?v=4"></script>
+    <script src="js/dashboard.js?v=5"></script>
 </body>
 </html>
