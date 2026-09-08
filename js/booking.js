@@ -150,18 +150,22 @@ document.addEventListener("DOMContentLoaded", function () {
     function setAvailabilityNotice(htmlMsg, type = "error") {
         let noticeElem = document.getElementById("bookedSlotsNotice");
         if (!noticeElem) {
-            const wrapper = document.querySelector(".time-slots-wrapper");
-            if (wrapper && wrapper.parentNode) {
+            const container = document.getElementById("selectDoctorDateNotice")?.parentNode;
+            if (container) {
                 noticeElem = document.createElement("div");
                 noticeElem.id = "bookedSlotsNotice";
-                noticeElem.className = "booked-slots-notice";
-                wrapper.parentNode.appendChild(noticeElem);
+                container.appendChild(noticeElem);
             }
         }
         if (noticeElem) {
             if (htmlMsg) {
-                noticeElem.innerHTML = `<div style="padding: 12px 16px; background: ${type === 'error' ? '#fff1f2' : '#f8fafc'}; border: 1.5px solid ${type === 'error' ? '#fecdd3' : '#cbd5e1'}; border-radius: 8px; color: ${type === 'error' ? '#be123c' : '#475569'}; font-size: 0.92rem; font-weight: 500;">${htmlMsg}</div>`;
+                noticeElem.style.display = "block";
+                noticeElem.innerHTML = `
+                    <div style="padding: 14px 18px; background: ${type === 'error' ? '#fff1f2' : '#f8fafc'}; border: 1.5px solid ${type === 'error' ? '#fecdd3' : '#cbd5e1'}; border-radius: 10px; color: ${type === 'error' ? '#be123c' : '#475569'}; font-size: 0.95rem; font-weight: 600; margin-top: 6px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(190, 18, 60, 0.08);">
+                        ${htmlMsg}
+                    </div>`;
             } else {
+                noticeElem.style.display = "none";
                 noticeElem.innerHTML = "";
             }
         }
