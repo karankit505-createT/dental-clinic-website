@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
             cleanName = "Dr. " + cleanName;
         }
         if (doctorWelcomeTitle) {
-            doctorWelcomeTitle.textContent = `Welcome, ${cleanName}`;
+            doctorWelcomeTitle.innerHTML = `Welcome, <span class="doctor-name-teal">${escapeHtml(cleanName)}</span>`;
         }
         if (doctorWelcomeSubtitle) {
             const spec = doc.specialization ? ` | Specialization: ${doc.specialization}` : "";

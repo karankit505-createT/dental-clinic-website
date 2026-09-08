@@ -526,7 +526,13 @@ input[type="file"] {
 #doctorWelcomeTitle {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #0284c7;
+    color: #0f172a;
+}
+
+#doctorWelcomeTitle .doctor-name-teal,
+.doctor-name-teal {
+    color: #0d9488;
+    font-weight: 700;
 }
 
 .dashboard-title-group p {
