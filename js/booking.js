@@ -339,8 +339,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 const normTime = normalizeTime(rawTime);
                 const slotMin = parseTimeToMinutes(rawTime);
 
-                // Slot is visible only within [startTimeMin, endTimeMin]
-                if (slotMin >= startTimeMin && slotMin <= endTimeMin) {
+                // Slot is visible only within [startTimeMin, endTimeMin] and excluding Lunch Break (01:00 PM - 02:00 PM, 780-839 mins)
+                const isLunchBreak = (slotMin >= 780 && slotMin < 840);
+                if (slotMin >= startTimeMin && slotMin <= endTimeMin && !isLunchBreak) {
                     btn.style.display = "";
                     visibleCount++;
 
