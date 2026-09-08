@@ -1704,8 +1704,74 @@ html, body {
         font-size: 1.25rem;
     }
 
-    .stat-label {
-        font-size: 0.75rem;
+}
+
+
+/* ====================================================================
+   DOCTOR PORTAL STRICT FULL SCREEN (100% EDGE-TO-EDGE) LAYOUT
+   ==================================================================== */
+
+main.dashboard-full-width {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 24px 32px 60px !important;
+    box-sizing: border-box !important;
+}
+
+header.dashboard-full-width-header .nav-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 16px 32px !important;
+    box-sizing: border-box !important;
+}
+
+@media (min-width: 992px) {
+    main.dashboard-full-width {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding-left: 32px !important;
+        padding-right: 32px !important;
+    }
+
+    .dashboard-full-width #dashboardState {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .dashboard-full-width .stats-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 24px !important;
+        width: 100% !important;
+    }
+
+    .dashboard-full-width .filter-card {
+        width: 100% !important;
+        padding: 20px 24px !important;
+    }
+
+    .dashboard-full-width .filter-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr 1.5fr !important;
+        gap: 24px !important;
+        width: 100% !important;
+    }
+
+    .dashboard-full-width .table-card {
+        width: 100% !important;
+    }
+
+    .dashboard-full-width #appointmentsTable {
+        width: 100% !important;
+        table-layout: auto !important;
+    }
+
+    .dashboard-full-width #appointmentsTable th,
+    .dashboard-full-width #appointmentsTable td {
+        padding: 14px 20px !important;
+        font-size: 0.88rem !important;
     }
 }
 
