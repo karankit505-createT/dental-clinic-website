@@ -171,6 +171,27 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    let currentDoctorAvailabilityStatus = {
+        isAvailable: true,
+        message: "",
+        type: null
+    };
+
+    function setSubmitBtnAvailability(isAvailable) {
+        if (!submitBtn) return;
+        if (isAvailable) {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = "1";
+            submitBtn.style.cursor = "pointer";
+            submitBtn.title = "";
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = "0.6";
+            submitBtn.style.cursor = "not-allowed";
+            submitBtn.title = "Doctor is not available on this date. Please select a different date.";
+        }
+    }
+
     const selectDoctorDateNotice = document.getElementById("selectDoctorDateNotice");
     const timeSlotsWrapper = document.getElementById("timeSlotsWrapper");
 
@@ -193,6 +214,8 @@ document.addEventListener("DOMContentLoaded", function () {
             if (selectDoctorDateNotice) selectDoctorDateNotice.style.display = "block";
             if (timeSlotsWrapper) timeSlotsWrapper.style.display = "none";
             setAvailabilityNotice("", "info");
+            currentDoctorAvailabilityStatus = { isAvailable: true, message: "", type: null };
+            setSubmitBtnAvailability(true);
             return;
         }
 
@@ -215,7 +238,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     dateInput.style.backgroundColor = "#fff1f2";
                 }
                 const reasonText = leaves[0].reason ? ` (Reason: ${leaves[0].reason})` : "";
-                setAvailabilityNotice(`⚠️ <strong>${escapeHtml(docName)}</strong> is on leave on this date${reasonText}. Please select another date.`, "error");
+                const noticeMsg = `⚠️ <strong>${escapeHtml(docName)}</strong> is on leave on this date. Please select a different date.`;
+                
+                currentDoctorAvailabilityStatus = {
+                    isAvailable: false,
+                    type: "leave",
+                    message: `Dr. ${docName} is on leave on this date. Please select a different date.`
+                };
+                setSubmitBtnAvailability(false);
+                setAvailabilityNotice(noticeMsg, "error");
                 return;
             }
 
@@ -251,11 +282,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     dateInput.style.borderColor = "#e11d48";
                     dateInput.style.backgroundColor = "#fff1f2";
                 }
-                setAvailabilityNotice(`⚠️ <strong>${escapeHtml(docName)}</strong> is not available on <strong>${dayName}s</strong>. Please select another date.`, "error");
+                const noticeMsg = `⚠️ <strong>${escapeHtml(docName)}</strong> is not available on <strong>${dayName}s</strong>. Please select a different date.`;
+                
+                currentDoctorAvailabilityStatus = {
+                    isAvailable: false,
+                    type: "weekly_off",
+                    message: `Dr. ${docName} is not available on ${dayName}s. Please select a different date.`
+                };
+                setSubmitBtnAvailability(false);
+                setAvailabilityNotice(noticeMsg, "error");
                 return;
             }
 
-            // STEP 3: Doctor is available! Clear notice and show slot grid
+            // STEP 3: Doctor is available! Clear notice, enable submit button and show slot grid
+            currentDoctorAvailabilityStatus = { isAvailable: true, message: "", type: null };
+            setSubmitBtnAvailability(true);
             setAvailabilityNotice("", "info");
             if (selectDoctorDateNotice) selectDoctorDateNotice.style.display = "none";
             if (timeSlotsWrapper) timeSlotsWrapper.style.display = "flex";
@@ -311,16 +352,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 group.style.display = hasVisibleBtns ? "block" : "none";
             });
 
-            updateSlotNotice(bookedCount, visibleCount);
+            updateSlotNotice(bookedCount, visibleCount, docName);
 
         } catch (err) {
             console.error("Error checking availability & booked slots:", err);
         }
     }
 
-    function updateSlotNotice(bookedCount, visibleSlots) {
+    function updateSlotNotice(bookedCount, visibleSlots, docName) {
         if (bookedCount >= visibleSlots && visibleSlots > 0) {
-            setAvailabilityNotice(`⚠️ All available slots are fully booked for this doctor on ${dateInput.value}. Please choose another date or doctor.`, "error");
+            currentDoctorAvailabilityStatus = {
+                isAvailable: false,
+                type: "fully_booked",
+                message: `All available slots are fully booked for Dr. ${docName} on ${dateInput.value}. Please choose another date or doctor.`
+            };
+            setSubmitBtnAvailability(false);
+            setAvailabilityNotice(`⚠️ All available slots are fully booked for <strong>${escapeHtml(docName)}</strong> on ${dateInput.value}. Please choose another date or doctor.`, "error");
             if (typeof showToast === "function") {
                 showToast("All slots are fully booked for this doctor on this date.", "warning");
             }
@@ -435,6 +482,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (appointment_date < today) {
             showError("Past dates cannot be selected. Please select a future date.");
+            return;
+        }
+
+        // Check Doctor Availability Status
+        if (!currentDoctorAvailabilityStatus.isAvailable) {
+            const selectedOption = doctorSelect.options[doctorSelect.selectedIndex];
+            const docName = selectedOption ? selectedOption.text.split("-")[0].trim() : "Doctor";
+            
+            showError(`Dr. ${docName} is not available on the selected date. Please choose another date.`);
             return;
         }
 
