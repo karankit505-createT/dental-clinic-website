@@ -186,6 +186,10 @@ main {
     padding: 32px 20px 60px;
 }
 
+main:has(#dashboardState) {
+    max-width: 1400px;
+}
+
 /* Hero Section */
 .hero-header {
     text-align: center;
@@ -666,15 +670,33 @@ th {
     letter-spacing: 0.5px;
 }
 
-td {
-    padding: 14px 16px;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--text-dark);
-    vertical-align: middle;
+#dashboardState {
+    max-width: 100%;
+    width: 100%;
+}
+
+#appointmentsTable th {
+    padding: 10px 8px;
+    font-size: 0.72rem;
+    white-space: nowrap;
+}
+
+#appointmentsTable td {
+    padding: 10px 8px;
+    font-size: 0.82rem;
+    white-space: nowrap;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #ffffff;
 }
 
 tbody tr:hover {
-    background-color: #f1f5f9;
+    background-color: #f1f5f9 !important;
 }
 
 tbody tr:last-child td {

@@ -65,14 +65,17 @@ document.addEventListener("DOMContentLoaded", function () {
     dateInput.setAttribute("min", today);
 
     // 3. Show selected filename preview
-    documentFileInput.addEventListener("change", function () {
-        if (this.files && this.files[0]) {
-            const file = this.files[0];
-            fileNamePreview.textContent = `📁 Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
-        } else {
-            fileNamePreview.textContent = "";
-        }
-    });
+    if (documentFileInput) {
+        documentFileInput.addEventListener("change", function () {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const fileNamePreview = document.getElementById("fileNamePreview");
+                if (fileNamePreview) {
+                    fileNamePreview.textContent = `📁 Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+                }
+            }
+        });
+    }
 
     // 3b. Interactive Time Slot Picker Logic
     const slotButtons = document.querySelectorAll(".time-slot-btn");
@@ -284,7 +287,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const issue = document.getElementById("issue").value.trim();
         const appointment_date = document.getElementById("appointmentDate").value;
         const appointment_time = document.getElementById("appointmentTime").value;
-        const file = documentFileInput.files[0] || null;
+        const file = (documentFileInput && documentFileInput.files) ? (documentFileInput.files[0] || null) : null;
 
         // Validation Checks
         if (!doctor_id) {
@@ -346,13 +349,22 @@ document.addEventListener("DOMContentLoaded", function () {
             if (file) {
                 try {
                     const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+                    const fileExt = (file.name.split('.').pop() || "").toLowerCase();
                     const filePath = `${Date.now()}_${cleanFileName}`;
+
+                    let detectedMime = file.type;
+                    if (!detectedMime || detectedMime === "application/octet-stream") {
+                        if (fileExt === "pdf") detectedMime = "application/pdf";
+                        else if (fileExt === "png") detectedMime = "image/png";
+                        else if (fileExt === "jpg" || fileExt === "jpeg") detectedMime = "image/jpeg";
+                    }
 
                     const { data: storageData, error: uploadError } = await supabaseClient
                         .storage
                         .from("patient-documents")
                         .upload(filePath, file, {
                             cacheControl: "3600",
+                            contentType: detectedMime || "application/pdf",
                             upsert: false
                         });
 
@@ -429,13 +441,21 @@ document.addEventListener("DOMContentLoaded", function () {
             if (typeof showToast === "function") {
                 showToast("Appointment booked successfully!", "success");
             }
+            const createdApp = (insertData && insertData[0]) ? insertData[0] : {};
+            const displayId = (typeof formatBookingId === "function") ? formatBookingId(createdApp.id) : (createdApp.id || 'N/A');
+            const summaryBookingIdElem = document.getElementById("summaryBookingId");
+            if (summaryBookingIdElem) summaryBookingIdElem.textContent = displayId;
+
             document.getElementById("summaryName").textContent = patient_name;
             const summaryDocElem = document.getElementById("summaryDoctor");
+            let doctorNameText = "SmileCare Specialist";
             if (summaryDocElem && doctorSelect && doctorSelect.selectedIndex >= 0) {
-                summaryDocElem.textContent = doctorSelect.options[doctorSelect.selectedIndex].text;
+                doctorNameText = doctorSelect.options[doctorSelect.selectedIndex].text;
+                summaryDocElem.textContent = doctorNameText;
             }
+            const formattedTime = (typeof formatTime12Hour === "function") ? formatTime12Hour(appointment_time) : appointment_time;
             document.getElementById("summaryDate").textContent = appointment_date;
-            document.getElementById("summaryTime").textContent = (typeof formatTime12Hour === "function") ? formatTime12Hour(appointment_time) : appointment_time;
+            document.getElementById("summaryTime").textContent = formattedTime;
 
             if (uploadWarning) {
                 document.getElementById("summaryStatus").innerHTML = "Pending <br><small style='color:var(--text-muted);'>(Document upload failed, but appointment was booked successfully)</small>";
@@ -443,9 +463,28 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("summaryStatus").textContent = "Pending";
             }
 
+            window.lastBookedAppointment = {
+                id: createdApp.id || 'N/A',
+                patient_name: patient_name,
+                age: age,
+                gender: gender,
+                mobile: mobile,
+                doctor_name: doctorNameText,
+                appointment_date: appointment_date,
+                appointment_time: formattedTime,
+                issue: issue,
+                status: "Pending"
+            };
+
+            window.triggerBookingPdfDownload = function () {
+                if (window.lastBookedAppointment && typeof generateAppointmentPDF === "function") {
+                    generateAppointmentPDF(window.lastBookedAppointment);
+                }
+            };
+
             bookingForm.reset();
             resetTimeSlots();
-            fileNamePreview.textContent = "";
+            if (fileNamePreview) fileNamePreview.textContent = "";
             bookingForm.style.display = "none";
             confirmationCard.classList.add("active");
 
@@ -462,6 +501,7 @@ document.addEventListener("DOMContentLoaded", function () {
         confirmationCard.classList.remove("active");
         bookingForm.style.display = "block";
         resetTimeSlots();
+        if (fileNamePreview) fileNamePreview.textContent = "";
         hideError();
     });
 

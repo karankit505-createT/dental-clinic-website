@@ -397,21 +397,55 @@ document.addEventListener("DOMContentLoaded", function () {
         if (appointmentsTable) appointmentsTable.style.display = "table";
         emptyState.style.display = "none";
 
-        list.forEach(item => {
+        list.forEach((item, index) => {
             const tr = document.createElement("tr");
 
-            // Document View Link
-            let docHtml = `<span class="no-doc">No File</span>`;
-            if (item.document_url) {
-                docHtml = `
-                    <a href="${item.document_url}" target="_blank" class="doc-link" title="Open document in new tab">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                        </svg>
-                        View
-                    </a>
+            // Doctor Report Upload Column Logic
+            const reportInputId = `doctorReportInput-${item.id}`;
+            const dropdownId = `doctorReportDropdown-${item.id}`;
+            const existingReportUrls = item.doctor_report_url 
+                ? String(item.doctor_report_url).split(",").map(u => u.trim()).filter(Boolean) 
+                : [];
+
+            let reportDropdownHtml = "";
+            if (existingReportUrls.length > 0) {
+                const reportItemsHtml = existingReportUrls.map((rUrl, rIndex) => {
+                    const label = existingReportUrls.length > 1 ? `Report ${rIndex + 1}` : `Report`;
+                    return `
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-bottom: 1px solid #f1f5f9; background: white;">
+                            <button type="button" onclick="if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(rUrl)}', '${escapeHtml(item.patient_name)}_Report_${rIndex+1}')}else{window.open('${escapeHtml(rUrl)}', '_blank')}" style="padding: 4px 8px; font-size: 0.76rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; flex: 1; text-align: left;" title="View report file">
+                                👁️ ${label}
+                            </button>
+                            <button type="button" class="btn-delete-doctor-report" data-id="${item.id}" data-index="${rIndex}" style="padding: 4px 6px; font-size: 0.8rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px;" title="Delete this report">
+                                🗑️
+                            </button>
+                        </div>
+                    `;
+                }).join("");
+
+                reportDropdownHtml = `
+                    <div style="position: relative; display: inline-block;">
+                        <button type="button" class="btn-toggle-reports-dropdown" data-target="${dropdownId}" style="padding: 5px 10px; font-size: 0.75rem; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; transition: all 0.15s;">
+                            📄 Reports (${existingReportUrls.length}) <span style="font-size: 0.65rem;">▾</span>
+                        </button>
+                        <div id="${dropdownId}" class="reports-dropdown-menu" style="display: none; position: absolute; right: 0; top: calc(100% + 4px); background: white; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); width: 195px; z-index: 99; overflow: hidden;">
+                            ${reportItemsHtml}
+                        </div>
+                    </div>
                 `;
             }
+
+            const uploadBtnLabel = existingReportUrls.length > 0 ? "➕ Add Report" : "📤 Upload Report";
+
+            let doctorReportHtml = `
+                <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+                    <input type="file" id="${reportInputId}" accept="image/jpeg,image/png,image/jpg,.pdf" style="display:none;" data-id="${item.id}">
+                    <button type="button" class="btn-upload-doctor-report" data-input-id="${reportInputId}" style="padding: 5px 10px; font-size: 0.75rem; background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(15, 118, 110, 0.2); white-space: nowrap;">
+                        ${uploadBtnLabel}
+                    </button>
+                    ${reportDropdownHtml}
+                </div>
+            `;
 
             // Date formatting
             const formattedDate = item.appointment_date || "-";
@@ -428,12 +462,13 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             tr.innerHTML = `
+                <td style="font-weight: 600; color: #64748b;">${index + 1}</td>
                 <td><strong>${escapeHtml(item.patient_name)}</strong></td>
                 <td>${item.age || '-'}</td>
                 <td>${escapeHtml(genderDisplay)}</td>
                 <td>${escapeHtml(item.mobile || '-')}</td>
                 <td style="max-width:220px; word-wrap:break-word;">${escapeHtml(issueDisplay)}</td>
-                <td>${docHtml}</td>
+                <td>${doctorReportHtml}</td>
                 <td>${formattedDate}</td>
                 <td>${formattedTime}</td>
                 <td>
@@ -447,6 +482,197 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
 
             tableBody.appendChild(tr);
+        });
+
+        // Attach click listeners to toggle Reports Dropdowns
+        document.querySelectorAll(".btn-toggle-reports-dropdown").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                const targetId = this.getAttribute("data-target");
+                const targetMenu = document.getElementById(targetId);
+                
+                // Hide all other open dropdown menus first
+                document.querySelectorAll(".reports-dropdown-menu").forEach(menu => {
+                    if (menu !== targetMenu) menu.style.display = "none";
+                });
+
+                if (targetMenu) {
+                    targetMenu.style.display = (targetMenu.style.display === "none" || !targetMenu.style.display) ? "block" : "none";
+                }
+            });
+        });
+
+        // Close all dropdowns when clicking anywhere outside
+        document.addEventListener("click", function () {
+            document.querySelectorAll(".reports-dropdown-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+        });
+
+        // Attach click listener to Upload Report buttons
+        document.querySelectorAll(".btn-upload-doctor-report").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const inputId = this.getAttribute("data-input-id");
+                const inputElem = document.getElementById(inputId);
+                if (inputElem) inputElem.click();
+            });
+        });
+
+        // Attach change listener to file inputs for Doctor Report Upload
+        document.querySelectorAll("input[id^='doctorReportInput-']").forEach(fileInput => {
+            fileInput.addEventListener("change", async function () {
+                if (!this.files || !this.files[0]) return;
+                const file = this.files[0];
+                const appId = this.getAttribute("data-id");
+
+                const maxSizeBytes = 5 * 1024 * 1024;
+                if (file.size > maxSizeBytes) {
+                    if (typeof showToast === "function") {
+                        showToast(`File size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds maximum limit of 5MB.`, "error");
+                    } else {
+                        alert(`File size exceeds 5MB limit. Please select a smaller file.`);
+                    }
+                    this.value = "";
+                    return;
+                }
+
+                const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "application/pdf"];
+                const fileExt = (file.name.split('.').pop() || "").toLowerCase();
+                const isAllowed = allowedTypes.includes(file.type) || ["pdf", "jpg", "jpeg", "png"].includes(fileExt);
+
+                if (!isAllowed) {
+                    if (typeof showToast === "function") {
+                        showToast("Invalid file type. Only JPG, PNG images and PDF documents are allowed.", "error");
+                    } else {
+                        alert("Invalid file type. Only JPG, PNG images and PDF documents are allowed.");
+                    }
+                    this.value = "";
+                    return;
+                }
+
+                if (typeof showToast === "function") {
+                    showToast("Uploading Doctor Report...", "info");
+                }
+
+                try {
+                    const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+                    const filePath = `doc_report_${Date.now()}_${cleanFileName}`;
+
+                    let mimeType = file.type;
+                    if (!mimeType || mimeType === "application/octet-stream") {
+                        mimeType = fileExt === "pdf" ? "application/pdf" : "image/jpeg";
+                    }
+
+                    const { data: storageData, error: uploadError } = await supabaseClient
+                        .storage
+                        .from("patient-documents")
+                        .upload(filePath, file, {
+                            cacheControl: "3600",
+                            contentType: mimeType,
+                            upsert: false
+                        });
+
+                    if (uploadError) {
+                        console.error("Storage upload error:", uploadError);
+                        let errStr = uploadError.message || "Storage upload failed";
+                        throw new Error("Storage upload failed: " + errStr);
+                    }
+
+                    const { data: publicUrlData } = supabaseClient
+                        .storage
+                        .from("patient-documents")
+                        .getPublicUrl(filePath);
+
+                    const publicUrl = publicUrlData ? publicUrlData.publicUrl : null;
+
+                    if (!publicUrl) {
+                        throw new Error("Could not retrieve public URL for uploaded report.");
+                    }
+
+                    const parsedId = isNaN(Number(appId)) ? appId : Number(appId);
+                    const targetItem = allAppointments.find(a => String(a.id) === String(parsedId));
+                    let currentUrls = [];
+                    if (targetItem && targetItem.doctor_report_url) {
+                        currentUrls = String(targetItem.doctor_report_url).split(",").map(u => u.trim()).filter(Boolean);
+                    }
+                    currentUrls.push(publicUrl);
+                    const updatedDoctorReportUrl = currentUrls.join(", ");
+
+                    const { error: dbError } = await supabaseClient
+                        .from("appointments")
+                        .update({ doctor_report_url: updatedDoctorReportUrl })
+                        .eq("id", parsedId);
+
+                    if (dbError) {
+                        console.error("Database update error:", dbError);
+                        throw new Error("Failed to save report URL to database: " + dbError.message);
+                    }
+
+                    if (typeof showToast === "function") {
+                        showToast("Doctor Report uploaded successfully!", "success");
+                    }
+
+                    const doctorIdToRefresh = currentDoctor ? currentDoctor.id : null;
+                    fetchAppointments(doctorIdToRefresh);
+
+                } catch (err) {
+                    console.error("Doctor Report Upload Exception:", err);
+                    if (typeof showToast === "function") {
+                        showToast("Error uploading report: " + err.message, "error");
+                    } else {
+                        alert("Error uploading report: " + err.message);
+                    }
+                } finally {
+                    this.value = "";
+                }
+            });
+        });
+
+        // Attach click listener to Delete Report buttons
+        document.querySelectorAll(".btn-delete-doctor-report").forEach(btn => {
+            btn.addEventListener("click", async function () {
+                const appId = this.getAttribute("data-id");
+                const reportIndex = parseInt(this.getAttribute("data-index"), 10);
+
+                if (!confirm("Are you sure you want to remove this doctor report file?")) return;
+
+                try {
+                    const parsedId = isNaN(Number(appId)) ? appId : Number(appId);
+                    const targetItem = allAppointments.find(a => String(a.id) === String(parsedId));
+
+                    if (!targetItem || !targetItem.doctor_report_url) return;
+
+                    let currentUrls = String(targetItem.doctor_report_url).split(",").map(u => u.trim()).filter(Boolean);
+
+                    if (reportIndex >= 0 && reportIndex < currentUrls.length) {
+                        currentUrls.splice(reportIndex, 1);
+                    }
+
+                    const updatedDoctorReportUrl = currentUrls.length > 0 ? currentUrls.join(", ") : null;
+
+                    const { error: dbError } = await supabaseClient
+                        .from("appointments")
+                        .update({ doctor_report_url: updatedDoctorReportUrl })
+                        .eq("id", parsedId);
+
+                    if (dbError) throw new Error("Failed to remove report file: " + dbError.message);
+
+                    if (typeof showToast === "function") {
+                        showToast("Doctor Report file removed successfully!", "success");
+                    }
+
+                    const doctorIdToRefresh = currentDoctor ? currentDoctor.id : null;
+                    fetchAppointments(doctorIdToRefresh);
+
+                } catch (err) {
+                    console.error("Delete report error:", err);
+                    if (typeof showToast === "function") {
+                        showToast("Error removing report: " + err.message, "error");
+                    } else {
+                        alert("Error removing report: " + err.message);
+                    }
+                }
+            });
         });
 
         // Attach event listener to status dropdowns

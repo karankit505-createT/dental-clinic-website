@@ -39,12 +39,22 @@ CREATE TABLE IF NOT EXISTS public.appointments (
     mobile TEXT NOT NULL,
     issue TEXT NOT NULL,
     document_url TEXT,
+    doctor_report_url TEXT,
+    diagnosis TEXT,
+    medicine TEXT,
+    next_visit_date DATE,
     appointment_date DATE NOT NULL,
     appointment_time TEXT NOT NULL,
     doctor_id UUID REFERENCES public.doctors(id) ON DELETE SET NULL,
     status TEXT NOT NULL DEFAULT 'Pending',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- SQL Migration Command for existing database (Run in Supabase SQL Editor):
+-- ALTER TABLE public.appointments 
+-- ADD COLUMN IF NOT EXISTS diagnosis TEXT,
+-- ADD COLUMN IF NOT EXISTS medicine TEXT,
+-- ADD COLUMN IF NOT EXISTS next_visit_date DATE;
 
 -- Comments on appointments table columns
 COMMENT ON TABLE public.appointments IS 'Stores all patient appointment bookings and live statuses';
@@ -54,7 +64,11 @@ COMMENT ON COLUMN public.appointments.gender IS 'Gender of the patient (Male/Fem
 COMMENT ON COLUMN public.appointments.email IS 'Patient optional contact email';
 COMMENT ON COLUMN public.appointments.mobile IS '10-digit mobile number used for lookup and identification';
 COMMENT ON COLUMN public.appointments.issue IS 'Dental problem / concern description';
-COMMENT ON COLUMN public.appointments.document_url IS 'Public Supabase storage URL for attached prescription/X-ray file';
+COMMENT ON COLUMN public.appointments.document_url IS 'Public Supabase storage URL for patient attached file';
+COMMENT ON COLUMN public.appointments.doctor_report_url IS 'Public Supabase storage URL for doctor uploaded prescription/report file';
+COMMENT ON COLUMN public.appointments.diagnosis IS 'Doctor checkup diagnosis notes';
+COMMENT ON COLUMN public.appointments.medicine IS 'Prescription / medicine instructions';
+COMMENT ON COLUMN public.appointments.next_visit_date IS 'Recommended next follow-up appointment date';
 COMMENT ON COLUMN public.appointments.appointment_date IS 'Selected appointment date';
 COMMENT ON COLUMN public.appointments.appointment_time IS 'Selected appointment time slot (e.g., 10:00 AM)';
 COMMENT ON COLUMN public.appointments.doctor_id IS 'Foreign key referencing the assigned doctor';
@@ -108,15 +122,25 @@ WITH CHECK (true);
 -- --------------------------------------------------------------------
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('patient-documents', 'patient-documents', true)
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET public = true;
 
--- Storage RLS Policy: Allow public file uploads
-CREATE POLICY "Allow public document uploads"
+-- Storage RLS Policies: Allow public file uploads, updates and views
+DROP POLICY IF EXISTS "Allow public document uploads" ON storage.objects;
+DROP POLICY IF EXISTS "Allow public document viewing" ON storage.objects;
+DROP POLICY IF EXISTS "Allow public storage uploads" ON storage.objects;
+DROP POLICY IF EXISTS "Allow public storage select" ON storage.objects;
+DROP POLICY IF EXISTS "Allow public storage update" ON storage.objects;
+
+CREATE POLICY "Allow public storage uploads"
 ON storage.objects FOR INSERT TO public
 WITH CHECK (bucket_id = 'patient-documents');
 
--- Storage RLS Policy: Allow public file views
-CREATE POLICY "Allow public document viewing"
+CREATE POLICY "Allow public storage update"
+ON storage.objects FOR UPDATE TO public
+USING (bucket_id = 'patient-documents')
+WITH CHECK (bucket_id = 'patient-documents');
+
+CREATE POLICY "Allow public storage select"
 ON storage.objects FOR SELECT TO public
 USING (bucket_id = 'patient-documents');
 

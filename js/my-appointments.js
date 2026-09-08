@@ -15,9 +15,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const resultsCountText = document.getElementById("resultsCountText");
 
     const ALL_TIME_SLOTS = [
-        "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
-        "12:00 PM", "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", "04:00 PM",
-        "04:30 PM", "05:00 PM", "05:30 PM"
+        "08:00 AM", "08:30 AM", "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
+        "12:00 PM", "12:30 PM", "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", "04:00 PM", "04:30 PM",
+        "05:00 PM", "05:30 PM", "06:00 PM", "06:30 PM", "07:00 PM", "07:30 PM", "08:00 PM"
     ];
 
     function normalizeTime(t) {
@@ -219,22 +219,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 doctorNameDisplay = formatDoctorName(item.doctor_name);
             }
 
-            // Document link
-            let docHtml = "";
-            if (item.document_url) {
-                docHtml = `
-                    <div class="card-detail-item">
-                        <span class="card-detail-label">Attached Document</span>
-                        <a href="${item.document_url}" target="_blank" class="doc-link" style="margin-top: 4px; display:inline-flex;" title="View attached document">
-                            📄 View Document
-                        </a>
+
+
+            // Doctor's Reports Button Check
+            const hasReportFile = !!(item.doctor_report_url && String(item.doctor_report_url).trim());
+
+            let doctorReportHtml = "";
+            const reportsBtnId = `openReportsModalBtn-${item.id || Math.random().toString(36).substr(2, 9)}`;
+
+            if (hasReportFile) {
+                doctorReportHtml = `
+                    <div class="card-detail-item" style="grid-column: 1 / -1; margin-top: 8px;">
+                        <button type="button" id="${reportsBtnId}" class="btn-open-reports-modal" style="width: 100%; padding: 10px 16px; background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; border: none; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 5px rgba(15, 118, 110, 0.25); transition: transform 0.15s, box-shadow 0.15s;">
+                            🩺 Doctor's Reports
+                        </button>
                     </div>
                 `;
             }
 
             const todayStr = new Date().toISOString().split("T")[0];
 
-            // Cancel Button, Reschedule Button, and Status Notice Bar
             let actionHtml = "";
             const cancelBoxId = `cancelBox-${item.id || Math.random().toString(36).substr(2, 9)}`;
             const resBoxId = `resBox-${item.id || Math.random().toString(36).substr(2, 9)}`;
@@ -242,12 +246,20 @@ document.addEventListener("DOMContentLoaded", function () {
             const resTimeId = `resTime-${item.id || Math.random().toString(36).substr(2, 9)}`;
 
             if (status === "Cancelled") {
-                actionHtml = `<div class="card-action-bar"><span class="cancelled-info-badge">❌ Appointment Cancelled</span></div>`;
+                actionHtml = `
+                    <div class="card-action-bar" style="gap: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                        <span class="cancelled-info-badge">❌ Appointment Cancelled</span>
+                    </div>
+                `;
             } else if (status === "Completed") {
-                actionHtml = `<div class="card-action-bar"><span class="completed-info-badge">✓ Appointment Completed</span></div>`;
+                actionHtml = `
+                    <div class="card-action-bar" style="gap: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                        <span class="completed-info-badge">✓ Appointment Completed</span>
+                    </div>
+                `;
             } else {
                 actionHtml = `
-                    <div class="card-action-bar" style="gap: 10px;">
+                    <div class="card-action-bar" style="gap: 10px; flex-wrap: wrap; align-items: center;">
                         <button type="button" class="btn-reschedule-appointment btn-res-trigger" data-target="${resBoxId}" data-id="${item.id}" data-doctor="${item.doctor_id || ''}" data-date-id="${resDateId}" data-time-id="${resTimeId}">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
@@ -267,10 +279,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="cancel-confirm-text">⚠️ Are you sure you want to cancel your appointment for ${item.appointment_date || ''} at ${formatTime12Hour(item.appointment_time)}?</div>
                         <div class="confirm-btn-group">
                             <button type="button" class="btn-confirm-yes" 
-                                    data-id="${item.id || ''}" 
-                                    data-mobile="${escapeHtml(item.mobile)}" 
-                                    data-date="${escapeHtml(item.appointment_date)}" 
-                                    data-time="${escapeHtml(item.appointment_time)}">
+                                     data-id="${item.id || ''}" 
+                                     data-mobile="${escapeHtml(item.mobile)}" 
+                                     data-date="${escapeHtml(item.appointment_date)}" 
+                                     data-time="${escapeHtml(item.appointment_time)}">
                                 Yes, Cancel Booking
                             </button>
                             <button type="button" class="btn-confirm-no" data-target="${cancelBoxId}">
@@ -345,14 +357,93 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span class="card-detail-value">${escapeHtml(issueDisplay)}</span>
                     </div>
 
-                    ${docHtml}
+                    ${doctorReportHtml}
                 </div>
 
                 ${actionHtml}
             `;
 
             cardsList.appendChild(card);
+
+            // Bind click handler for Doctor's Reports & Prescriptions Button
+            const reportsBtnElem = document.getElementById(reportsBtnId);
+            if (reportsBtnElem) {
+                reportsBtnElem.addEventListener("click", function () {
+                    openReportsModalForItem(item, doctorNameDisplay, genderDisplay);
+                });
+            }
         });
+
+    // Helper: Readable Date Formatter
+    function formatReadableDate(dateStr) {
+        if (!dateStr) return "-";
+        try {
+            const parts = String(dateStr).trim().split("T")[0].split("-");
+            if (parts.length === 3) {
+                const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+                return dateObj.toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
+            }
+            return dateStr;
+        } catch (e) {
+            return dateStr;
+        }
+    }
+
+    // Helper: Populate and Open Doctor's Reports Modal
+    function openReportsModalForItem(item, doctorNameDisplay, genderDisplay) {
+        const modal = document.getElementById("reportsModal");
+        const modalBody = document.getElementById("reportsModalBody");
+        if (!modal || !modalBody) return;
+
+        const hasReportFile = !!(item.doctor_report_url && String(item.doctor_report_url).trim());
+        let buttonsList = [];
+
+        // Doctor Uploaded Report File Button(s) (Report 1, Report 2, etc.)
+        if (hasReportFile) {
+            const reportUrls = String(item.doctor_report_url).split(",").map(u => u.trim()).filter(Boolean);
+            reportUrls.forEach((url, idx) => {
+                const label = `📄 Doctor Report ${idx + 1}`;
+                buttonsList.push(`
+                    <button type="button" onclick="if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(url)}', '${escapeHtml(item.patient_name)}_Report_${idx+1}')}else{window.open('${escapeHtml(url)}', '_blank')}" style="width: 100%; padding: 14px 18px; background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; border: none; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.92rem; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; box-shadow: 0 2px 6px rgba(15, 118, 110, 0.25);">
+                        <span style="display: flex; align-items: center; gap: 10px;">${label}</span>
+                        <span style="font-size: 0.76rem; background: rgba(255,255,255,0.22); padding: 4px 12px; border-radius: 20px; font-weight: 600;">Open / Download ↗</span>
+                    </button>
+                `);
+            });
+        }
+
+        modalBody.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 12px; padding: 6px 0;">
+                ${buttonsList.length > 0 ? buttonsList.join("") : '<div style="text-align:center; color:#64748b;">No reports available for this appointment.</div>'}
+            </div>
+        `;
+
+        modal.style.display = "flex";
+    }
+
+    // Modal Close Event Handlers Setup
+    function initModalCloseHandlers() {
+        const modal = document.getElementById("reportsModal");
+        const closeX = document.getElementById("closeReportsModal");
+        const closeBtn = document.getElementById("closeReportsModalBtn");
+
+        function closeModal() {
+            if (modal) modal.style.display = "none";
+        }
+
+        if (closeX) closeX.onclick = closeModal;
+        if (closeBtn) closeBtn.onclick = closeModal;
+        if (modal) {
+            modal.onclick = function (e) {
+                if (e.target === modal) closeModal();
+            };
+        }
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") closeModal();
+        });
+    }
+
+    initModalCloseHandlers();
 
         // Helper: Fetch available slots for Reschedule Date
         async function loadRescheduleSlots(doctorId, selectedDate, selectElem, currentAppId) {
