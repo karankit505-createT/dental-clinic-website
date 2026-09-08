@@ -7,6 +7,14 @@
 const SUPABASE_URL = "https://zachsbcilzegjyrseehu.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Q9uJ9RYVX2QhEtS9OCCLAQ_NvLTbreh";
 
+// ==========================================
+// RAZORPAY PAYMENT CONFIGURATION (TEST MODE)
+// ==========================================
+// Replace 'PASTE_YOUR_RAZORPAY_TEST_KEY_HERE' with your actual Razorpay Test Key ID.
+// Example format: rzp_test_xxxxxxxxxxxxxx
+// You can get this key from: Razorpay Dashboard -> Settings -> API Keys (Test Mode)
+const RAZORPAY_KEY_ID = "PASTE_YOUR_RAZORPAY_TEST_KEY_HERE";
+
 // Check if Supabase keys have been configured by the user
 function isSupabaseConfigured() {
     return (
@@ -14,6 +22,15 @@ function isSupabaseConfigured() {
         SUPABASE_ANON_KEY &&
         !SUPABASE_URL.includes("PASTE_YOUR_") &&
         !SUPABASE_ANON_KEY.includes("PASTE_YOUR_")
+    );
+}
+
+// Check if Razorpay Test Key ID has been configured
+function isRazorpayConfigured() {
+    return (
+        typeof RAZORPAY_KEY_ID !== "undefined" &&
+        RAZORPAY_KEY_ID &&
+        !RAZORPAY_KEY_ID.includes("PASTE_YOUR_")
     );
 }
 

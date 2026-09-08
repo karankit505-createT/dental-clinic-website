@@ -253,24 +253,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Helper: Set Loading State
-    function setLoading(isLoading) {
+    function setLoading(isLoading, customText) {
         if (isLoading) {
             submitBtn.disabled = true;
             submitBtn.classList.add("loading");
-            submitBtnText.textContent = "Processing Booking...";
+            submitBtnText.textContent = customText || "Processing Booking...";
         } else {
             submitBtn.disabled = false;
             submitBtn.classList.remove("loading");
-            submitBtnText.textContent = "Book Appointment";
+            submitBtnText.textContent = "Pay & Book Appointment";
         }
     }
 
-    // 4. Form Submit Handler
+    // 4. Form Submit Handler (Razorpay Test Mode Payment + Appointment Booking)
     bookingForm.addEventListener("submit", async function (e) {
         e.preventDefault();
         hideError();
 
-        // Check config
+        // Check Supabase config
         if (!isSupabaseConfigured() || !supabaseClient) {
             showError("Supabase credentials missing! Please configure config.js with your SUPABASE_URL and SUPABASE_ANON_KEY.");
             return;
@@ -338,14 +338,90 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        // Start Submit Process
-        setLoading(true);
+        // Validate Razorpay Config
+        if (!isRazorpayConfigured()) {
+            showError(
+                "Razorpay Test Key missing!\n\n" +
+                "👉 FIX: Please open 'js/config.js' and paste your RAZORPAY_KEY_ID (e.g. 'rzp_test_xxxxxxxxxxxxxx').\n" +
+                "You can get your free Test Key from Razorpay Dashboard -> Settings -> API Keys."
+            );
+            return;
+        }
+
+        if (typeof window.Razorpay === "undefined") {
+            showError("Razorpay SDK script failed to load. Please check your internet connection and refresh the page.");
+            return;
+        }
+
+        // STEP 1: Launch Razorpay Checkout Popup (Amount: Rs. 100 = 10000 paise)
+        setLoading(true, "Opening Payment Gateway...");
+
+        const options = {
+            key: RAZORPAY_KEY_ID,
+            amount: 10000, // Rs. 100 in paise
+            currency: "INR",
+            name: "SmileCare Dental Clinic",
+            description: "Dental Consultation Fee (Rs. 100)",
+            prefill: {
+                name: patient_name,
+                email: email || "",
+                contact: mobile
+            },
+            theme: {
+                color: "#0d9488" // Brand Teal
+            },
+            handler: async function (response) {
+                // Payment Successful!
+                const payment_id = response.razorpay_payment_id || `pay_test_${Date.now()}`;
+                setLoading(true, "Payment Successful! Saving Booking...");
+
+                await processAppointmentSave({
+                    doctor_id,
+                    patient_name,
+                    age,
+                    gender,
+                    email,
+                    mobile,
+                    issue,
+                    appointment_date,
+                    appointment_time,
+                    file,
+                    payment_id
+                });
+            },
+            modal: {
+                ondismiss: function () {
+                    setLoading(false);
+                    showError("Payment failed or cancelled, please try again.");
+                }
+            }
+        };
+
+        try {
+            const rzp = new window.Razorpay(options);
+            rzp.on("payment.failed", function (resp) {
+                console.error("Razorpay Payment Failed:", resp.error);
+                setLoading(false);
+                const reason = (resp.error && (resp.error.description || resp.error.reason)) ? resp.error.description || resp.error.reason : "";
+                showError(`Payment failed, please try again.${reason ? " (" + reason + ")" : ""}`);
+            });
+            rzp.open();
+        } catch (rzpErr) {
+            console.error("Razorpay Popup Error:", rzpErr);
+            setLoading(false);
+            showError("Failed to open Razorpay payment popup. Please check your Razorpay Key ID in config.js.");
+        }
+    });
+
+    // Helper: Save Appointment to Supabase after Payment Success
+    async function processAppointmentSave(data) {
+        const { doctor_id, patient_name, age, gender, email, mobile, issue, appointment_date, appointment_time, file, payment_id } = data;
 
         try {
             let document_url = null;
             let uploadWarning = false;
 
-            // STEP 1: Upload Document to Supabase Storage Bucket if provided (Non-blocking fallback)
+            // Upload Document if attached
             if (file) {
                 try {
                     const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
@@ -368,12 +444,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             upsert: false
                         });
 
-                    if (uploadError) {
-                        console.warn("Storage Upload Warning (Proceeding with booking without document):", uploadError);
-                        uploadWarning = true;
-                        document_url = null;
-                    } else {
-                        // Get Public URL of uploaded document
+                    if (!uploadError) {
                         const { data: publicUrlData } = supabaseClient
                             .storage
                             .from("patient-documents")
@@ -382,15 +453,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         if (publicUrlData && publicUrlData.publicUrl) {
                             document_url = publicUrlData.publicUrl;
                         }
+                    } else {
+                        uploadWarning = true;
                     }
                 } catch (storageException) {
-                    console.warn("Storage Exception (Proceeding without document):", storageException);
                     uploadWarning = true;
-                    document_url = null;
                 }
             }
 
-            // STEP 2: Insert record into 'appointments' table
+            // Insert into 'appointments' table
             let payload = {
                 patient_name,
                 age,
@@ -402,6 +473,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 appointment_date,
                 appointment_time,
                 doctor_id,
+                payment_id: payment_id || null,
                 status: "Pending"
             };
 
@@ -410,18 +482,33 @@ document.addEventListener("DOMContentLoaded", function () {
                 .insert([payload])
                 .select();
 
-            // If gender or doctor_id column issue occurs, retry
-            if (dbError && (dbError.message.includes("gender") || dbError.message.includes("schema cache"))) {
-                console.warn("Gender column missing in Supabase table schema. Retrying with gender appended to issue...");
-                delete payload.gender;
-                payload.issue = `${issue} [Gender: ${gender}]`;
-                
+            // Retry fallback if payment_id column is missing in database schema
+            if (dbError && (dbError.message.includes("payment_id") || dbError.message.includes("schema cache"))) {
+                console.warn("payment_id column missing in Supabase table schema. Retrying with payment_id in issue text...");
+                delete payload.payment_id;
+                payload.issue = `${issue} [Payment ID: ${payment_id}]`;
+
                 const retryRes = await supabaseClient
                     .from("appointments")
                     .insert([payload])
                     .select();
-                
+
                 dbError = retryRes.error;
+                insertData = retryRes.data;
+            }
+
+            // Retry fallback if gender column is missing
+            if (dbError && (dbError.message.includes("gender") || dbError.message.includes("schema cache"))) {
+                delete payload.gender;
+                payload.issue = `${payload.issue} [Gender: ${gender}]`;
+
+                const retryRes = await supabaseClient
+                    .from("appointments")
+                    .insert([payload])
+                    .select();
+
+                dbError = retryRes.error;
+                insertData = retryRes.data;
             }
 
             if (dbError) {
@@ -437,10 +524,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 throw new Error(dbErrStr);
             }
 
-            // STEP 3: Show Success Confirmation View
+            // Show Success Confirmation View
             if (typeof showToast === "function") {
-                showToast("Appointment booked successfully!", "success");
+                showToast("Payment Successful! Appointment booked.", "success");
             }
+
             const createdApp = (insertData && insertData[0]) ? insertData[0] : {};
             const displayId = (typeof formatBookingId === "function") ? formatBookingId(createdApp.id) : (createdApp.id || 'N/A');
             const summaryBookingIdElem = document.getElementById("summaryBookingId");
@@ -456,6 +544,15 @@ document.addEventListener("DOMContentLoaded", function () {
             const formattedTime = (typeof formatTime12Hour === "function") ? formatTime12Hour(appointment_time) : appointment_time;
             document.getElementById("summaryDate").textContent = appointment_date;
             document.getElementById("summaryTime").textContent = formattedTime;
+
+            const summaryPaymentElem = document.getElementById("summaryPayment");
+            if (summaryPaymentElem) {
+                summaryPaymentElem.innerHTML = `Payment Successful! Amount Paid: Rs. 100 ✅`;
+            }
+            const summaryPaymentIdElem = document.getElementById("summaryPaymentId");
+            if (summaryPaymentIdElem) {
+                summaryPaymentIdElem.textContent = payment_id || "N/A";
+            }
 
             if (uploadWarning) {
                 document.getElementById("summaryStatus").innerHTML = "Pending <br><small style='color:var(--text-muted);'>(Document upload failed, but appointment was booked successfully)</small>";
@@ -473,6 +570,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 appointment_date: appointment_date,
                 appointment_time: formattedTime,
                 issue: issue,
+                payment_id: payment_id,
+                payment_status: "Paid (Rs. 100)",
                 status: "Pending"
             };
 
@@ -489,12 +588,12 @@ document.addEventListener("DOMContentLoaded", function () {
             confirmationCard.classList.add("active");
 
         } catch (err) {
-            console.error("Booking failed:", err);
-            showError("Something went wrong, please try again.\n" + (err.message || "Unknown Error"));
+            console.error("Booking save failed:", err);
+            showError("Payment was successful, but saving appointment failed: " + (err.message || "Unknown Error"));
         } finally {
             setLoading(false);
         }
-    });
+    }
 
     // 5. "Book Another Appointment" Button Click Handler
     bookAnotherBtn.addEventListener("click", function () {

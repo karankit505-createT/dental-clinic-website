@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS public.appointments (
     issue TEXT NOT NULL,
     document_url TEXT,
     doctor_report_url TEXT,
+    payment_id TEXT,
     diagnosis TEXT,
     medicine TEXT,
     next_visit_date DATE,
@@ -52,6 +53,7 @@ CREATE TABLE IF NOT EXISTS public.appointments (
 
 -- SQL Migration Command for existing database (Run in Supabase SQL Editor):
 -- ALTER TABLE public.appointments 
+-- ADD COLUMN IF NOT EXISTS payment_id TEXT,
 -- ADD COLUMN IF NOT EXISTS diagnosis TEXT,
 -- ADD COLUMN IF NOT EXISTS medicine TEXT,
 -- ADD COLUMN IF NOT EXISTS next_visit_date DATE;
