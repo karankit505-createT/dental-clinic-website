@@ -186,8 +186,11 @@ main {
     padding: 32px 20px 60px;
 }
 
+main.dashboard-full-width,
 main:has(#dashboardState) {
-    max-width: 1400px;
+    max-width: 96% !important;
+    width: 96% !important;
+    padding: 24px 20px 60px !important;
 }
 
 /* Hero Section */
