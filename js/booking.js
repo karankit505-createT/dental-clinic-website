@@ -16,6 +16,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const doctorSelect = document.getElementById("doctorSelect");
 
+    // Helper: HTML Escaper
+    function escapeHtml(str) {
+        if (!str) return "";
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
     // 1b. Fetch & Populate Doctors Dropdown from Supabase
     async function loadDoctorsList() {
         if (!doctorSelect) return;
