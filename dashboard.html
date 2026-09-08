@@ -8,8 +8,12 @@
     <!-- Supabase JS Library CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Config File -->
+    <!-- jsPDF Library CDN for Client-Side PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Config File & Utilities -->
     <script src="js/config.js"></script>
+    <script src="js/pdf-generator.js?v=8"></script>
 
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="css/style.css">
@@ -167,12 +171,13 @@
                     <table id="appointmentsTable">
                         <thead>
                             <tr>
+                                <th>#</th>
                                 <th>Patient Name</th>
                                 <th>Age</th>
                                 <th>Gender</th>
                                 <th>Mobile</th>
                                 <th>Issue / Problem</th>
-                                <th>Document</th>
+                                <th>Report</th>
                                 <th>Appointment Date</th>
                                 <th>Time</th>
                                 <th>Status</th>
@@ -197,6 +202,8 @@
 
     </main>
 
+
+
     <!-- Footer -->
     <footer>
         <div class="footer-content">
@@ -209,6 +216,6 @@
     </footer>
 
     <!-- Dashboard Logic Script -->
-    <script src="js/dashboard.js?v=3"></script>
+    <script src="js/dashboard.js?v=4"></script>
 </body>
 </html>
