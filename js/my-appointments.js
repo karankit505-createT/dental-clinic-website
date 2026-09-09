@@ -222,7 +222,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             // Doctor's Reports Button Check
-            const hasReportFile = !!(item.doctor_report_url && String(item.doctor_report_url).trim());
+            const itemReports = (typeof getAppointmentReports === "function") 
+                ? getAppointmentReports(item) 
+                : [];
+            const hasReportFile = itemReports.length > 0;
 
             let doctorReportHtml = "";
             const reportsBtnId = `openReportsModalBtn-${item.id || Math.random().toString(36).substr(2, 9)}`;
@@ -445,17 +448,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const modalBody = document.getElementById("reportsModalBody");
         if (!modal || !modalBody) return;
 
-        const hasReportFile = !!(item.doctor_report_url && String(item.doctor_report_url).trim());
+        const reports = (typeof getAppointmentReports === "function") 
+            ? getAppointmentReports(item) 
+            : [];
         let buttonsList = [];
 
-        // Doctor Uploaded Report File Button(s) (Report 1, Report 2, etc.)
-        if (hasReportFile) {
-            const reportUrls = String(item.doctor_report_url).split(",").map(u => u.trim()).filter(Boolean);
-            reportUrls.forEach((url, idx) => {
-                const label = `📄 Doctor Report ${idx + 1}`;
+        // Doctor Uploaded Report File Button(s) (X-Ray Report, Prescription, etc.)
+        if (reports.length > 0) {
+            reports.forEach((report, idx) => {
+                const label = `📄 ${report.name}`;
                 buttonsList.push(`
-                    <button type="button" onclick="if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(url)}', '${escapeHtml(item.patient_name)}_Report_${idx+1}')}else{window.open('${escapeHtml(url)}', '_blank')}" style="width: 100%; padding: 14px 18px; background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; border: none; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.92rem; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; box-shadow: 0 2px 6px rgba(15, 118, 110, 0.25);">
-                        <span style="display: flex; align-items: center; gap: 10px;">${label}</span>
+                    <button type="button" onclick="if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(report.url)}', '${escapeHtml(item.patient_name)}_${escapeHtml(report.name)}')}else{window.open('${escapeHtml(report.url)}', '_blank')}" style="width: 100%; padding: 14px 18px; background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; border: none; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.92rem; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; box-shadow: 0 2px 6px rgba(15, 118, 110, 0.25);">
+                        <span style="display: flex; align-items: center; gap: 10px;">${escapeHtml(label)}</span>
                         <span style="font-size: 0.76rem; background: rgba(255,255,255,0.22); padding: 4px 12px; border-radius: 20px; font-weight: 600;">Open / Download ↗</span>
                     </button>
                 `);

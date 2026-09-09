@@ -35,6 +35,9 @@ function showToast(message, type = "info", duration = 3500) {
         document.body.appendChild(container);
     }
 
+    // Clear previous toasts so only one active toast is shown at a time
+    container.innerHTML = "";
+
     const toast = document.createElement("div");
     toast.className = `toast toast-${type}`;
 
@@ -96,3 +99,57 @@ function escapeHtml(str) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
+// Global Helper to retrieve normalized array of doctor reports [{ name, url }]
+function getAppointmentReports(item) {
+    if (!item) return [];
+    let reports = [];
+
+    // 1. Try parsing doctor_reports column (JSONB / JSON array)
+    if (item.doctor_reports) {
+        try {
+            const parsed = typeof item.doctor_reports === 'string' 
+                ? JSON.parse(item.doctor_reports) 
+                : item.doctor_reports;
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                reports = parsed.map((r, i) => {
+                    if (r && typeof r === 'object') {
+                        return {
+                            name: (r.name && String(r.name).trim()) ? String(r.name).trim() : `Report ${i + 1}`,
+                            url: r.url ? String(r.url).trim() : ''
+                        };
+                    } else if (typeof r === 'string' && r.trim()) {
+                        return {
+                            name: `Report ${i + 1}`,
+                            url: r.trim()
+                        };
+                    }
+                    return null;
+                }).filter(r => r && r.url);
+            }
+        } catch (e) {
+            console.error("Error parsing doctor_reports JSON:", e);
+        }
+    }
+
+    // 2. Fallback to doctor_report_url comma-separated text string if reports array is empty
+    if (reports.length === 0 && item.doctor_report_url) {
+        const parts = String(item.doctor_report_url).split(",").map(u => u.trim()).filter(Boolean);
+        reports = parts.map((part, i) => {
+            if (part.includes("|||")) {
+                const [url, name] = part.split("|||");
+                return {
+                    name: (name && name.trim()) ? name.trim() : `Report ${i + 1}`,
+                    url: (url && url.trim()) ? url.trim() : ''
+                };
+            }
+            return {
+                name: `Report ${i + 1}`,
+                url: part
+            };
+        }).filter(r => r.url);
+    }
+
+    return reports;
+}
+

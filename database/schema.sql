@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS public.appointments (
     issue TEXT NOT NULL,
     document_url TEXT,
     doctor_report_url TEXT,
+    doctor_reports JSONB DEFAULT '[]'::jsonb,
     diagnosis TEXT,
     medicine TEXT,
     next_visit_date DATE,
@@ -53,10 +54,7 @@ CREATE TABLE IF NOT EXISTS public.appointments (
 
 -- SQL Migration Command for existing database (Run in Supabase SQL Editor):
 -- ALTER TABLE public.appointments 
--- ADD COLUMN IF NOT EXISTS diagnosis TEXT,
--- ADD COLUMN IF NOT EXISTS medicine TEXT,
--- ADD COLUMN IF NOT EXISTS next_visit_date DATE,
--- ADD COLUMN IF NOT EXISTS cancellation_reason TEXT;
+-- ADD COLUMN IF NOT EXISTS doctor_reports JSONB DEFAULT '[]'::jsonb;
 
 -- Comments on appointments table columns
 COMMENT ON TABLE public.appointments IS 'Stores all patient appointment bookings and live statuses';
@@ -68,6 +66,7 @@ COMMENT ON COLUMN public.appointments.mobile IS '10-digit mobile number used for
 COMMENT ON COLUMN public.appointments.issue IS 'Dental problem / concern description';
 COMMENT ON COLUMN public.appointments.document_url IS 'Public Supabase storage URL for patient attached file';
 COMMENT ON COLUMN public.appointments.doctor_report_url IS 'Public Supabase storage URL for doctor uploaded prescription/report file';
+COMMENT ON COLUMN public.appointments.doctor_reports IS 'JSON array of doctor uploaded reports with name and url, e.g. [{"name": "X-Ray Report", "url": "https://..."}]';
 COMMENT ON COLUMN public.appointments.diagnosis IS 'Doctor checkup diagnosis notes';
 COMMENT ON COLUMN public.appointments.medicine IS 'Prescription / medicine instructions';
 COMMENT ON COLUMN public.appointments.next_visit_date IS 'Recommended next follow-up appointment date';
