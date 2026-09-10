@@ -33,10 +33,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const tabBtnAppointments = document.getElementById("tabBtnAppointments");
     const tabBtnManageTeam = document.getElementById("tabBtnManageTeam");
+    const tabBtnPatientHistory = document.getElementById("tabBtnPatientHistory");
     const tabBtnAnalytics = document.getElementById("tabBtnAnalytics");
 
     const appointmentsTabSection = document.getElementById("appointmentsTabSection");
     const manageTeamTabSection = document.getElementById("manageTeamTabSection");
+    const patientHistoryTabSection = document.getElementById("patientHistoryTabSection");
     const analyticsTabSection = document.getElementById("analyticsTabSection");
 
     let allAppointments = [];
@@ -307,7 +309,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Tab Navigation Handling
     function resetTabStyles() {
-        [tabBtnAppointments, tabBtnManageTeam, tabBtnAnalytics].forEach(btn => {
+        [tabBtnAppointments, tabBtnManageTeam, tabBtnPatientHistory, tabBtnAnalytics].forEach(btn => {
             if (btn) {
                 btn.classList.remove("active");
                 btn.style.color = "var(--text-muted)";
@@ -316,6 +318,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         if (appointmentsTabSection) appointmentsTabSection.style.display = "none";
         if (manageTeamTabSection) manageTeamTabSection.style.display = "none";
+        if (patientHistoryTabSection) patientHistoryTabSection.style.display = "none";
         if (analyticsTabSection) analyticsTabSection.style.display = "none";
     }
 
@@ -337,6 +340,18 @@ document.addEventListener("DOMContentLoaded", function () {
             tabBtnManageTeam.style.borderBottom = "3px solid var(--primary)";
             if (manageTeamTabSection) manageTeamTabSection.style.display = "block";
             fetchTeamLists();
+        });
+    }
+
+    if (tabBtnPatientHistory) {
+        tabBtnPatientHistory.addEventListener("click", function () {
+            resetTabStyles();
+            tabBtnPatientHistory.classList.add("active");
+            tabBtnPatientHistory.style.color = "var(--primary)";
+            tabBtnPatientHistory.style.borderBottom = "3px solid var(--primary)";
+            if (patientHistoryTabSection) patientHistoryTabSection.style.display = "block";
+            const searchVal = document.getElementById("patientHistorySearchInput") ? document.getElementById("patientHistorySearchInput").value : "";
+            renderPatientReportHistory(searchVal);
         });
     }
 
@@ -440,6 +455,10 @@ document.addEventListener("DOMContentLoaded", function () {
             updateStatsCounters();
             applyClientFilters();
             renderBusinessAnalytics();
+            if (patientHistoryTabSection && patientHistoryTabSection.style.display !== "none") {
+                const searchVal = document.getElementById("patientHistorySearchInput") ? document.getElementById("patientHistorySearchInput").value : "";
+                renderPatientReportHistory(searchVal);
+            }
 
         } catch (err) {
             console.error("Fetch appointments exception:", err);
@@ -447,9 +466,25 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function updateStatsCounters() {
-        const totalAppointments = allAppointments.length;
-        const completedApps = allAppointments.filter(a => a.status === "Completed");
+        let sourceApps = [...allAppointments];
+
+        // Sync Stats Cards with Doctor Filter if a specific doctor is selected
+        if (filterDoctor && filterDoctor.value && filterDoctor.value !== "All") {
+            const selectedDocId = String(filterDoctor.value);
+            sourceApps = sourceApps.filter(a => String(a.doctor_id) === selectedDocId);
+        }
+
+        // Sync Stats Cards with Date Filter if selected
+        if (filterDate && filterDate.value) {
+            sourceApps = sourceApps.filter(a => a.appointment_date === filterDate.value);
+        }
+
+        const totalAppointments = sourceApps.length;
+        const pendingCount = sourceApps.filter(a => a.status === "Pending").length;
+        const confirmedCount = sourceApps.filter(a => a.status === "Confirmed").length;
+        const completedApps = sourceApps.filter(a => a.status === "Completed");
         const totalCompleted = completedApps.length;
+        const cancelledCount = sourceApps.filter(a => a.status === "Cancelled").length;
 
         let withReportsCount = 0;
         completedApps.forEach(item => {
@@ -459,13 +494,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const pendingReportsCount = totalCompleted - withReportsCount;
 
-        if (statTotal) statTotal.textContent = totalAppointments;
-        if (statCompleted) statCompleted.textContent = totalCompleted;
-        if (statWithReports) statWithReports.textContent = withReportsCount;
-        if (statPendingReports) statPendingReports.textContent = pendingReportsCount;
+        const elTotal = document.getElementById("statTotal");
+        const elPending = document.getElementById("statPending");
+        const elConfirmed = document.getElementById("statConfirmed");
+        const elCompleted = document.getElementById("statCompleted");
+        const elCancelled = document.getElementById("statCancelled");
+        const elWithReports = document.getElementById("statWithReports");
+        const elPendingReports = document.getElementById("statPendingReports");
+
+        if (elTotal) elTotal.textContent = totalAppointments;
+        if (elPending) elPending.textContent = pendingCount;
+        if (elConfirmed) elConfirmed.textContent = confirmedCount;
+        if (elCompleted) elCompleted.textContent = totalCompleted;
+        if (elCancelled) elCancelled.textContent = cancelledCount;
+        if (elWithReports) elWithReports.textContent = withReportsCount;
+        if (elPendingReports) elPendingReports.textContent = pendingReportsCount;
     }
 
     function applyClientFilters() {
+        updateStatsCounters();
+
         let filtered = [...allAppointments];
 
         if (filterDate && filterDate.value) {
@@ -496,6 +544,17 @@ document.addEventListener("DOMContentLoaded", function () {
     if (filterDoctor) filterDoctor.addEventListener("change", applyClientFilters);
     if (filterSearch) filterSearch.addEventListener("input", applyClientFilters);
 
+    // Card Click Listener for Status Filtering (Compatible with Doctor Filter)
+    document.querySelectorAll(".filter-card-btn").forEach(card => {
+        card.addEventListener("click", function() {
+            const statusToFilter = this.getAttribute("data-status");
+            if (filterStatus && statusToFilter) {
+                filterStatus.value = statusToFilter;
+                applyClientFilters();
+            }
+        });
+    });
+
     // Render Appointments Table (With Edit & Delete options)
     function renderAppointmentsTable(list) {
         if (!tableBody) return;
@@ -521,10 +580,12 @@ document.addEventListener("DOMContentLoaded", function () {
             let reportDropdownHtml = "";
             if (existingReports.length > 0) {
                 const reportItemsHtml = existingReports.map((r, rIndex) => {
+                    const dateDisplay = r.report_date || r.upload_date || "Date not recorded";
+                    const labelWithDate = `${r.name} (${dateDisplay})`;
                     return `
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-bottom: 1px solid #f1f5f9; background: white;">
-                            <button type="button" onclick="event.stopPropagation(); if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(r.url)}', '${escapeHtml(item.patient_name)}_${escapeHtml(r.name)}')}else{window.open('${escapeHtml(r.url)}', '_blank')}" style="padding: 4px 8px; font-size: 0.76rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="View ${escapeHtml(r.name)}">
-                                👁️ ${escapeHtml(r.name)}
+                            <button type="button" onclick="event.stopPropagation(); if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(r.url)}', '${escapeHtml(item.patient_name)}_${escapeHtml(r.name)}')}else{window.open('${escapeHtml(r.url)}', '_blank')}" style="padding: 4px 8px; font-size: 0.76rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="View ${escapeHtml(labelWithDate)}">
+                                👁️ ${escapeHtml(labelWithDate)}
                             </button>
                             <button type="button" onclick="deleteAdminDoctorReport('${item.id}', ${rIndex}, event)" class="btn-delete-report" style="padding: 4px 6px; font-size: 0.8rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; flex-shrink: 0;" title="Delete report">
                                 🗑️
@@ -979,8 +1040,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (reportTypeSelect && reportNameInput) {
         reportTypeSelect.addEventListener("change", function () {
-            if (this.value && this.value !== "Other") reportNameInput.value = this.value;
-            else if (this.value === "Other") { reportNameInput.value = ""; reportNameInput.focus(); }
+            if (this.value === "Other") {
+                reportNameInput.style.display = "block";
+                reportNameInput.required = true;
+                reportNameInput.value = "";
+                reportNameInput.focus();
+            } else {
+                reportNameInput.style.display = "none";
+                reportNameInput.required = false;
+                reportNameInput.value = this.value;
+            }
         });
     }
 
@@ -1003,7 +1072,15 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("uploadReportAppId").value = appId;
         document.getElementById("uploadReportPatientName").textContent = `Patient: ${patientName || '-'}`;
         if (reportTypeSelect) reportTypeSelect.value = "";
-        if (reportNameInput) reportNameInput.value = "";
+        if (reportNameInput) {
+            reportNameInput.value = "";
+            reportNameInput.style.display = "none";
+            reportNameInput.required = false;
+        }
+        const reportDateInput = document.getElementById("reportDateInput");
+        if (reportDateInput) {
+            reportDateInput.value = new Date().toISOString().split("T")[0];
+        }
         if (reportFileInput) reportFileInput.value = "";
         if (reportFileNamePreview) reportFileNamePreview.style.display = "none";
         uploadReportModal.style.display = "flex";
@@ -1020,11 +1097,27 @@ document.addEventListener("DOMContentLoaded", function () {
         uploadReportForm.addEventListener("submit", async function (e) {
             e.preventDefault();
             const appId = document.getElementById("uploadReportAppId").value;
-            const reportName = reportNameInput ? reportNameInput.value.trim() : "";
+            const typeVal = reportTypeSelect ? reportTypeSelect.value : "";
+            let reportName = "";
+            if (typeVal === "Other") {
+                reportName = reportNameInput ? reportNameInput.value.trim() : "";
+            } else {
+                reportName = typeVal;
+            }
             const file = (reportFileInput && reportFileInput.files && reportFileInput.files.length > 0) ? reportFileInput.files[0] : null;
 
-            if (!reportName || !file) {
-                if (typeof showToast === "function") showToast("Please select a report name and file.", "error");
+            const reportDateInput = document.getElementById("reportDateInput");
+            const reportDateVal = reportDateInput ? reportDateInput.value : "";
+            let formattedReportDate = "Date not recorded";
+            if (reportDateVal) {
+                const dateObj = new Date(reportDateVal + "T00:00:00");
+                if (!isNaN(dateObj.getTime())) {
+                    formattedReportDate = dateObj.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+                }
+            }
+
+            if (!typeVal || !reportName || !reportDateVal || !file) {
+                if (typeof showToast === "function") showToast("Please fill all required fields (Name, Date, File).", "error");
                 return;
             }
 
@@ -1047,11 +1140,35 @@ document.addEventListener("DOMContentLoaded", function () {
                 const parsedId = isNaN(Number(appId)) ? appId : Number(appId);
                 let targetItem = allAppointments.find(a => String(a.id) === String(parsedId));
                 let currentReports = (targetItem && typeof getAppointmentReports === "function") ? getAppointmentReports(targetItem) : [];
-                currentReports.push({ name: reportName, url: publicUrl });
+                
+                const now = new Date();
+                const uploadDateFormatted = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                currentReports.push({ 
+                    name: reportName, 
+                    url: publicUrl,
+                    report_date: formattedReportDate,
+                    upload_date: uploadDateFormatted,
+                    created_at: now.toISOString()
+                });
 
                 const updatedDoctorReportUrl = currentReports.map(r => `${r.url}|||${r.name}`).join(", ");
 
-                const { error: dbError } = await supabaseClient.from("appointments").update({ doctor_reports: currentReports, doctor_report_url: updatedDoctorReportUrl }).eq("id", parsedId);
+                let { error: dbError } = await supabaseClient.from("appointments").update({ 
+                    doctor_reports: currentReports, 
+                    doctor_report_url: updatedDoctorReportUrl,
+                    report_date: reportDateVal || null
+                }).eq("id", parsedId);
+
+                if (dbError && (dbError.message.includes("report_date") || dbError.code === "PGRST204" || dbError.message.includes("schema cache"))) {
+                    console.warn("report_date column missing in appointments table, falling back to doctor_reports update:", dbError.message);
+                    const fallbackRes = await supabaseClient.from("appointments").update({
+                        doctor_reports: currentReports,
+                        doctor_report_url: updatedDoctorReportUrl
+                    }).eq("id", parsedId);
+                    dbError = fallbackRes.error;
+                }
+
                 if (dbError) throw dbError;
 
                 if (typeof showToast === "function") showToast(`Report "${reportName}" uploaded successfully!`, "success");
@@ -1364,6 +1481,166 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         container.innerHTML = html;
+    }
+
+    // Patient Report History Handler
+    function renderPatientReportHistory(searchQuery = "") {
+        const resultsContainer = document.getElementById("patientHistoryResultsContainer");
+        if (!resultsContainer) return;
+
+        const query = (searchQuery || "").trim().toLowerCase();
+
+        // 1. Gather all reports across all appointments
+        const patientMap = {};
+
+        (allAppointments || []).forEach(app => {
+            const pName = (app.patient_name || "").trim();
+            const pPhone = (app.phone_number || "").trim();
+
+            if (!pName && !pPhone) return;
+
+            const reports = (typeof getAppointmentReports === "function") ? getAppointmentReports(app) : [];
+            if (reports.length === 0) return;
+
+            const mapKey = (pPhone ? pPhone : pName.toLowerCase()).replace(/\s+/g, "");
+
+            if (!patientMap[mapKey]) {
+                patientMap[mapKey] = {
+                    patientName: pName || "Unknown Patient",
+                    phone: pPhone || "N/A",
+                    reports: []
+                };
+            }
+
+            reports.forEach(r => {
+                const dateStr = r.upload_date || (r.created_at ? new Date(r.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : (app.appointment_date || 'N/A'));
+                patientMap[mapKey].reports.push({
+                    reportName: r.name || 'Medical Report',
+                    reportUrl: r.url,
+                    uploadDate: dateStr,
+                    createdAt: r.created_at || app.created_at || app.appointment_date || '',
+                    doctorName: app.doctor_name || (app.doctors && app.doctors.name ? app.doctors.name : 'General Dentist'),
+                    issue: app.issue || 'General Consultation',
+                    appDate: app.appointment_date || ''
+                });
+            });
+        });
+
+        // 2. Filter patient groups based on query
+        let matchedPatients = Object.values(patientMap);
+
+        if (query) {
+            matchedPatients = matchedPatients.filter(p => 
+                p.patientName.toLowerCase().includes(query) || 
+                p.phone.toLowerCase().includes(query)
+            );
+        }
+
+        if (matchedPatients.length === 0) {
+            resultsContainer.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 48px 24px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+                    <div style="font-size: 3rem; margin-bottom: 12px;">🔍</div>
+                    <h3 style="margin: 0 0 8px 0; font-size: 1.15rem; color: var(--text);">No Patient Reports Found</h3>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">
+                        ${query ? `No medical reports matching "${escapeHtml(query)}" were found.` : 'No patient medical reports have been uploaded yet.'}
+                    </p>
+                </div>
+            `;
+            return;
+        }
+
+        // 3. Sort each patient's reports by date descending
+        matchedPatients.forEach(p => {
+            p.reports.sort((a, b) => {
+                const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return timeB - timeA;
+            });
+        });
+
+        // Sort patient list by newest report date descending
+        matchedPatients.sort((a, b) => {
+            const newestA = a.reports[0]?.createdAt ? new Date(a.reports[0].createdAt).getTime() : 0;
+            const newestB = b.reports[0]?.createdAt ? new Date(b.reports[0].createdAt).getTime() : 0;
+            return newestB - newestA;
+        });
+
+        // 4. Render output HTML
+        let html = '';
+        matchedPatients.forEach(p => {
+            html += `
+                <div style="background: white; border-radius: 14px; padding: 22px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 14px; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.15rem; color: var(--text); display: flex; align-items: center; gap: 8px;">
+                                <span style="background: var(--primary-light); color: var(--primary); width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 700;">👤</span>
+                                <strong>${escapeHtml(p.patientName)}</strong>
+                            </h3>
+                            <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 4px; margin-left: 42px;">
+                                📱 Mobile: <strong>${escapeHtml(p.phone)}</strong>
+                            </div>
+                        </div>
+                        <span style="background: #e0f2fe; color: #0369a1; padding: 5px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;">
+                            ${p.reports.length} ${p.reports.length === 1 ? 'Report' : 'Reports'} Total
+                        </span>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+            `;
+
+            p.reports.forEach(r => {
+                html += `
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 14px 18px; border-radius: 10px; border-left: 4px solid var(--primary); flex-wrap: wrap; gap: 12px;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                                <span style="background: #e0e7ff; color: #3730a3; padding: 3px 10px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                                    📅 ${escapeHtml(r.uploadDate)}
+                                </span>
+                                <span style="font-size: 1.05rem; font-weight: 700; color: var(--text);">
+                                    ${escapeHtml(r.reportName)}
+                                </span>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; display: flex; gap: 12px; flex-wrap: wrap;">
+                                <span>👨‍⚕️ <strong>Doctor:</strong> ${escapeHtml(r.doctorName)}</span>
+                                <span>•</span>
+                                <span>📋 <strong>Visit/Issue:</strong> ${escapeHtml(r.issue)} ${r.appDate ? `(${escapeHtml(r.appDate)})` : ''}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <a href="${r.reportUrl}" target="_blank" class="btn btn-sm btn-outline-primary" style="text-decoration: none; padding: 6px 14px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; border-radius: 8px;">
+                                👁️ View
+                            </a>
+                            <a href="${r.reportUrl}" download target="_blank" class="btn btn-sm btn-primary" style="text-decoration: none; padding: 6px 14px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; border-radius: 8px;">
+                                📥 Download
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                </div>
+            `;
+        });
+
+        resultsContainer.innerHTML = html;
+    }
+
+    const patientHistorySearchInput = document.getElementById("patientHistorySearchInput");
+    const patientHistorySearchBtn = document.getElementById("patientHistorySearchBtn");
+
+    if (patientHistorySearchInput) {
+        patientHistorySearchInput.addEventListener("input", function () {
+            renderPatientReportHistory(this.value);
+        });
+    }
+
+    if (patientHistorySearchBtn) {
+        patientHistorySearchBtn.addEventListener("click", function () {
+            const val = patientHistorySearchInput ? patientHistorySearchInput.value : "";
+            renderPatientReportHistory(val);
+        });
     }
 
     function setupRealtimeAdmin() {

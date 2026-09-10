@@ -332,16 +332,23 @@
                     <label for="reportTypeSelect" style="font-weight: 700; font-size: 0.88rem; display: block; margin-bottom: 6px; color: #334155;">
                         Report Name / Label <span style="color:#e11d48;">*</span>
                     </label>
-                    <select id="reportTypeSelect" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; margin-bottom: 8px; background-color: #f8fafc; color: #1e293b;">
-                        <option value="">-- Choose Quick Option or Type Below --</option>
+                    <select id="reportTypeSelect" required style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; margin-bottom: 8px; background-color: #f8fafc; color: #1e293b;">
+                        <option value="">-- Select Report Type --</option>
                         <option value="X-Ray Report">X-Ray Report</option>
                         <option value="Prescription">Prescription</option>
-                        <option value="Lab Report">Lab Report</option>
                         <option value="Blood Test Report">Blood Test Report</option>
+                        <option value="Lab Report">Lab Report</option>
                         <option value="Treatment Summary">Treatment Summary</option>
                         <option value="Other">Other (Custom Name)</option>
                     </select>
-                    <input type="text" id="reportNameInput" placeholder="e.g. X-Ray Report, Prescription, Blood Test" required style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem;">
+                    <input type="text" id="reportNameInput" placeholder="Type custom report name..." style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; display: none;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="reportDateInput" style="font-weight: 700; font-size: 0.88rem; display: block; margin-bottom: 6px; color: #334155;">
+                        📅 Report Date <span style="color:#e11d48;">*</span>
+                    </label>
+                    <input type="date" id="reportDateInput" required style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; background-color: #f8fafc; color: #1e293b;">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 24px;">

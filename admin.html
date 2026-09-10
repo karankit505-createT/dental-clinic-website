@@ -141,6 +141,9 @@
                 <button type="button" id="tabBtnManageTeam" class="dashboard-tab-btn" style="padding: 10px 18px; font-weight: 700; font-size: 0.95rem; border: none; background: none; cursor: pointer; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;">
                     👥 Manage Team (Doctors & Staff)
                 </button>
+                <button type="button" id="tabBtnPatientHistory" class="dashboard-tab-btn" style="padding: 10px 18px; font-weight: 700; font-size: 0.95rem; border: none; background: none; cursor: pointer; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;">
+                    📜 Patient History
+                </button>
                 <button type="button" id="tabBtnAnalytics" class="dashboard-tab-btn" style="padding: 10px 18px; font-weight: 700; font-size: 0.95rem; border: none; background: none; cursor: pointer; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;">
                     📊 Business Analytics
                 </button>
@@ -148,45 +151,81 @@
 
             <!-- TAB 1: APPOINTMENTS SECTION -->
             <div id="appointmentsTabSection">
-                <!-- Stats Summary Cards -->
-                <div class="stats-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
-                    <div class="stat-card" style="background: white; padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px;">
-                        <div style="background: #e0f2fe; color: #0284c7; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
-                            📋
+                <!-- Stats Summary Cards (7 Cards across 2 Rows) -->
+                <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
+                    <!-- Row 1: Status Breakdown (Total, Pending, Confirmed, Completed) -->
+                    <div class="stats-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <div class="stat-card filter-card-btn" id="cardTotal" data-status="All" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                            <div style="background: #f1f5f9; color: #475569; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                📊
+                            </div>
+                            <div>
+                                <div id="statTotal" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">0</div>
+                                <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Total Appointments</div>
+                            </div>
                         </div>
-                        <div>
-                            <div id="statTotal" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">0</div>
-                            <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Total Appointments</div>
+
+                        <div class="stat-card filter-card-btn" id="cardPending" data-status="Pending" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                            <div style="background: #fef3c7; color: #d97706; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                ⏳
+                            </div>
+                            <div>
+                                <div id="statPending" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">0</div>
+                                <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Pending</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card filter-card-btn" id="cardConfirmed" data-status="Confirmed" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                            <div style="background: #e0f2fe; color: #0284c7; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                📅
+                            </div>
+                            <div>
+                                <div id="statConfirmed" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">0</div>
+                                <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Confirmed</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card filter-card-btn" id="cardCompleted" data-status="Completed" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                            <div style="background: #dcfce7; color: #15803d; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                ✅
+                            </div>
+                            <div>
+                                <div id="statCompleted" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">0</div>
+                                <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Completed</div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="stat-card" style="background: white; padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px;">
-                        <div style="background: #f0fdf4; color: #059669; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
-                            ✅
+                    <!-- Row 2: Cancelled & Report Stats (Cancelled, Reports Uploaded, Pending Reports) -->
+                    <div class="stats-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <div class="stat-card filter-card-btn" id="cardCancelled" data-status="Cancelled" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                            <div style="background: #ffe4e6; color: #e11d48; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                ❌
+                            </div>
+                            <div>
+                                <div id="statCancelled" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">0</div>
+                                <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Cancelled</div>
+                            </div>
                         </div>
-                        <div>
-                            <div id="statCompleted" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">0</div>
-                            <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Completed Appointments</div>
-                        </div>
-                    </div>
 
-                    <div class="stat-card" style="background: white; padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px;">
-                        <div style="background: #f0fdf4; color: #0d9488; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
-                            📄
+                        <div class="stat-card" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm);">
+                            <div style="background: #ccfbf1; color: #0f766e; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                📄
+                            </div>
+                            <div>
+                                <div id="statWithReports" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">0</div>
+                                <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Reports Uploaded</div>
+                            </div>
                         </div>
-                        <div>
-                            <div id="statWithReports" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">0</div>
-                            <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Reports Uploaded</div>
-                        </div>
-                    </div>
 
-                    <div class="stat-card" style="background: white; padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px;">
-                        <div style="background: #fff7ed; color: #ea580c; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
-                            ⏳
-                        </div>
-                        <div>
-                            <div id="statPendingReports" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">0</div>
-                            <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Pending Reports</div>
+                        <div class="stat-card" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm);">
+                            <div style="background: #ffedd5; color: #c2410c; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                                📤
+                            </div>
+                            <div>
+                                <div id="statPendingReports" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark);">0</div>
+                                <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Pending Reports</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -335,7 +374,34 @@
             </div>
 
 
-            <!-- TAB 3: BUSINESS ANALYTICS SECTION -->
+            <!-- TAB 3: PATIENT REPORT HISTORY SECTION -->
+            <div id="patientHistoryTabSection" style="display: none;">
+                <div class="card" style="padding: 24px; margin-bottom: 24px;">
+                    <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
+                        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-dark); margin: 0;">📜 Patient Report & Medical History</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 2px 0 0 0;">Search any patient by Name or Mobile to view their complete timeline of medical reports across all visits</p>
+                    </div>
+
+                    <!-- Search Controls -->
+                    <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+                        <div style="position: relative; flex: 1; min-width: 260px;">
+                            <input type="text" id="patientHistorySearchInput" placeholder="Search by Patient Name or 10-digit Mobile..." style="width: 100%; padding: 11px 16px 11px 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.92rem; background: #f8fafc;">
+                            <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 1.1rem; color: #64748b;">🔍</span>
+                        </div>
+                        <button type="button" id="patientHistorySearchBtn" style="padding: 11px 22px; font-weight: 700; background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; border: none; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                            🔎 Search History
+                        </button>
+                    </div>
+
+                    <!-- Patient History Results Container -->
+                    <div id="patientHistoryResultsContainer">
+                        <!-- Loaded dynamically via JS -->
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- TAB 4: BUSINESS ANALYTICS SECTION -->
             <div id="analyticsTabSection" style="display: none;">
                 
                 <!-- Quick Analytics Stats Row -->
@@ -478,16 +544,23 @@
                     <label for="reportTypeSelect" style="font-weight: 700; font-size: 0.88rem; display: block; margin-bottom: 6px; color: #334155;">
                         Report Name / Label <span style="color:#e11d48;">*</span>
                     </label>
-                    <select id="reportTypeSelect" style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; margin-bottom: 8px; background-color: #f8fafc; color: #1e293b;">
-                        <option value="">-- Choose Quick Option or Type Below --</option>
+                    <select id="reportTypeSelect" required style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; margin-bottom: 8px; background-color: #f8fafc; color: #1e293b;">
+                        <option value="">-- Select Report Type --</option>
                         <option value="X-Ray Report">X-Ray Report</option>
                         <option value="Prescription">Prescription</option>
-                        <option value="Lab Report">Lab Report</option>
                         <option value="Blood Test Report">Blood Test Report</option>
+                        <option value="Lab Report">Lab Report</option>
                         <option value="Treatment Summary">Treatment Summary</option>
                         <option value="Other">Other (Custom Name)</option>
                     </select>
-                    <input type="text" id="reportNameInput" placeholder="e.g. X-Ray Report, Prescription, Blood Test" required style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem;">
+                    <input type="text" id="reportNameInput" placeholder="Type custom report name..." style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; display: none;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="reportDateInput" style="font-weight: 700; font-size: 0.88rem; display: block; margin-bottom: 6px; color: #334155;">
+                        📅 Report Date <span style="color:#e11d48;">*</span>
+                    </label>
+                    <input type="date" id="reportDateInput" required style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; background-color: #f8fafc; color: #1e293b;">
                 </div>
 
                 <div class="form-group" style="margin-bottom: 24px;">

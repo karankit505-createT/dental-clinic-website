@@ -456,11 +456,22 @@ document.addEventListener("DOMContentLoaded", function () {
         // Doctor Uploaded Report File Button(s) (X-Ray Report, Prescription, etc.)
         if (reports.length > 0) {
             reports.forEach((report, idx) => {
-                const label = `📄 ${report.name}`;
+                let dateDisplay = report.report_date || report.upload_date;
+                if (!dateDisplay && item.appointment_date) {
+                    const d = new Date(item.appointment_date.includes('T') ? item.appointment_date : item.appointment_date + 'T00:00:00');
+                    dateDisplay = !isNaN(d.getTime()) ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : item.appointment_date;
+                }
+                if (!dateDisplay) dateDisplay = 'Date not recorded';
+
                 buttonsList.push(`
                     <button type="button" onclick="if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(report.url)}', '${escapeHtml(item.patient_name)}_${escapeHtml(report.name)}')}else{window.open('${escapeHtml(report.url)}', '_blank')}" style="width: 100%; padding: 14px 18px; background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; border: none; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.92rem; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; box-shadow: 0 2px 6px rgba(15, 118, 110, 0.25);">
-                        <span style="display: flex; align-items: center; gap: 10px;">${escapeHtml(label)}</span>
-                        <span style="font-size: 0.76rem; background: rgba(255,255,255,0.22); padding: 4px 12px; border-radius: 20px; font-weight: 600;">Open / Download ↗</span>
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <span style="display: flex; align-items: center; gap: 8px; font-size: 0.96rem; font-weight: 700;">📄 ${escapeHtml(report.name)}</span>
+                            <span style="font-size: 0.8rem; opacity: 0.92; font-weight: 500; display: flex; align-items: center; gap: 4px; margin-left: 24px;">
+                                📅 <strong>Report Date:</strong> ${escapeHtml(dateDisplay)}
+                            </span>
+                        </div>
+                        <span style="font-size: 0.76rem; background: rgba(255,255,255,0.22); padding: 6px 14px; border-radius: 20px; font-weight: 600; white-space: nowrap;">Open / Download ↗</span>
                     </button>
                 `);
             });

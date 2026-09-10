@@ -441,10 +441,12 @@ document.addEventListener("DOMContentLoaded", function () {
             let reportDropdownHtml = "";
             if (existingReports.length > 0) {
                 const reportItemsHtml = existingReports.map((r, rIndex) => {
+                    const dateDisplay = r.report_date || r.upload_date || "Date not recorded";
+                    const labelWithDate = `${r.name} (${dateDisplay})`;
                     return `
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-bottom: 1px solid #f1f5f9; background: white;">
-                            <button type="button" onclick="event.stopPropagation(); if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(r.url)}', '${escapeHtml(item.patient_name)}_${escapeHtml(r.name)}')}else{window.open('${escapeHtml(r.url)}', '_blank')}" style="padding: 4px 8px; font-size: 0.76rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="View ${escapeHtml(r.name)}">
-                                👁️ ${escapeHtml(r.name)}
+                            <button type="button" onclick="event.stopPropagation(); if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(r.url)}', '${escapeHtml(item.patient_name)}_${escapeHtml(r.name)}')}else{window.open('${escapeHtml(r.url)}', '_blank')}" style="padding: 4px 8px; font-size: 0.76rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="View ${escapeHtml(labelWithDate)}">
+                                👁️ ${escapeHtml(labelWithDate)}
                             </button>
                             <button type="button" onclick="deleteStaffDoctorReport('${item.id}', ${rIndex}, event)" class="btn-delete-report" style="padding: 4px 6px; font-size: 0.8rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; flex-shrink: 0;" title="Delete report">
                                 🗑️
@@ -764,8 +766,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (reportTypeSelect && reportNameInput) {
         reportTypeSelect.addEventListener("change", function () {
-            if (this.value && this.value !== "Other") reportNameInput.value = this.value;
-            else if (this.value === "Other") { reportNameInput.value = ""; reportNameInput.focus(); }
+            if (this.value === "Other") {
+                reportNameInput.style.display = "block";
+                reportNameInput.required = true;
+                reportNameInput.value = "";
+                reportNameInput.focus();
+            } else {
+                reportNameInput.style.display = "none";
+                reportNameInput.required = false;
+                reportNameInput.value = this.value;
+            }
         });
     }
 
@@ -788,7 +798,15 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("uploadReportAppId").value = appId;
         document.getElementById("uploadReportPatientName").textContent = `Patient: ${patientName || '-'}`;
         if (reportTypeSelect) reportTypeSelect.value = "";
-        if (reportNameInput) reportNameInput.value = "";
+        if (reportNameInput) {
+            reportNameInput.value = "";
+            reportNameInput.style.display = "none";
+            reportNameInput.required = false;
+        }
+        const reportDateInput = document.getElementById("reportDateInput");
+        if (reportDateInput) {
+            reportDateInput.value = new Date().toISOString().split("T")[0];
+        }
         if (reportFileInput) reportFileInput.value = "";
         if (reportFileNamePreview) reportFileNamePreview.style.display = "none";
         uploadReportModal.style.display = "flex";
@@ -805,11 +823,27 @@ document.addEventListener("DOMContentLoaded", function () {
         uploadReportForm.addEventListener("submit", async function (e) {
             e.preventDefault();
             const appId = document.getElementById("uploadReportAppId").value;
-            const reportName = reportNameInput ? reportNameInput.value.trim() : "";
+            const typeVal = reportTypeSelect ? reportTypeSelect.value : "";
+            let reportName = "";
+            if (typeVal === "Other") {
+                reportName = reportNameInput ? reportNameInput.value.trim() : "";
+            } else {
+                reportName = typeVal;
+            }
             const file = (reportFileInput && reportFileInput.files && reportFileInput.files.length > 0) ? reportFileInput.files[0] : null;
 
-            if (!reportName || !file) {
-                if (typeof showToast === "function") showToast("Please select a report name and file.", "error");
+            const reportDateInput = document.getElementById("reportDateInput");
+            const reportDateVal = reportDateInput ? reportDateInput.value : "";
+            let formattedReportDate = "Date not recorded";
+            if (reportDateVal) {
+                const dateObj = new Date(reportDateVal + "T00:00:00");
+                if (!isNaN(dateObj.getTime())) {
+                    formattedReportDate = dateObj.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+                }
+            }
+
+            if (!typeVal || !reportName || !reportDateVal || !file) {
+                if (typeof showToast === "function") showToast("Please fill all required fields (Name, Date, File).", "error");
                 return;
             }
 
@@ -832,11 +866,35 @@ document.addEventListener("DOMContentLoaded", function () {
                 const parsedId = isNaN(Number(appId)) ? appId : Number(appId);
                 let targetItem = completedAppointments.find(a => String(a.id) === String(parsedId));
                 let currentReports = (targetItem && typeof getAppointmentReports === "function") ? getAppointmentReports(targetItem) : [];
-                currentReports.push({ name: reportName, url: publicUrl });
+                
+                const now = new Date();
+                const uploadDateFormatted = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+                
+                currentReports.push({ 
+                    name: reportName, 
+                    url: publicUrl,
+                    report_date: formattedReportDate,
+                    upload_date: uploadDateFormatted,
+                    created_at: now.toISOString()
+                });
 
                 const updatedDoctorReportUrl = currentReports.map(r => `${r.url}|||${r.name}`).join(", ");
 
-                const { error: dbError } = await supabaseClient.from("appointments").update({ doctor_reports: currentReports, doctor_report_url: updatedDoctorReportUrl }).eq("id", parsedId);
+                let { error: dbError } = await supabaseClient.from("appointments").update({ 
+                    doctor_reports: currentReports, 
+                    doctor_report_url: updatedDoctorReportUrl,
+                    report_date: reportDateVal || null
+                }).eq("id", parsedId);
+
+                if (dbError && (dbError.message.includes("report_date") || dbError.code === "PGRST204" || dbError.message.includes("schema cache"))) {
+                    console.warn("report_date column missing in appointments table, falling back to doctor_reports update:", dbError.message);
+                    const fallbackRes = await supabaseClient.from("appointments").update({
+                        doctor_reports: currentReports,
+                        doctor_report_url: updatedDoctorReportUrl
+                    }).eq("id", parsedId);
+                    dbError = fallbackRes.error;
+                }
+
                 if (dbError) throw dbError;
 
                 if (typeof showToast === "function") showToast(`Report "${reportName}" uploaded successfully!`, "success");
