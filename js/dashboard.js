@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentDoctor = null;
 
     // Helper: Lookup Doctor Profile in 'doctors' table by Email
-    async function loadDoctorProfile(email) {
+    async function loadDoctorProfile(email, createIfMissing = false) {
         if (!supabaseClient || !email) return null;
 
         try {
@@ -86,6 +86,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 .limit(1);
 
             if (retryRes.data && retryRes.data.length > 0) return retryRes.data[0];
+
+            // 3. Auto-create doctor profile if authenticated via Supabase Auth and allowed
+            if (createIfMissing) {
+                const rawName = cleanEmail.split("@")[0].replace(/[^a-zA-Z0-9]/g, " ");
+                const formattedName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+                const { data: newDoc, error: insertErr } = await supabaseClient
+                    .from("doctors")
+                    .insert([{
+                        name: "Dr. " + (formattedName || "Doctor"),
+                        email: cleanEmail,
+                        specialization: "General Dentistry"
+                    }])
+                    .select();
+
+                if (newDoc && newDoc.length > 0) return newDoc[0];
+            }
 
             return null;
 
@@ -133,11 +149,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     showDashboardState();
                     fetchAppointments(currentDoctor.id);
                 } else {
-                    // Profile missing -> Logout & show login form
+                    // Profile missing -> Logout silently & show clean login form
                     await supabaseClient.auth.signOut();
                     clearAllStoredData();
                     showLoginState();
-                    showLoginError("Doctor profile not found in clinic records. Please contact the administrator.");
                 }
             } else {
                 // No active session -> Show empty login form
@@ -184,6 +199,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function showLoginState() {
+        hideLoginError();
+
         // Manually clear email and password fields
         const emailInput = document.getElementById("doctorEmail");
         const passInput = document.getElementById("doctorPassword");
@@ -239,8 +256,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     throw new Error("Invalid email or password. Please try again.");
                 }
 
-                // STEP 2: Fetch Doctor Record from 'doctors' table only after Auth succeeds
-                const docProfile = await loadDoctorProfile(data.user.email || email);
+                // STEP 2: Fetch Doctor Record from 'doctors' table (auto-create if missing for valid Auth user)
+                const docProfile = await loadDoctorProfile(data.user.email || email, true);
                 if (!docProfile) {
                     await supabaseClient.auth.signOut();
                     throw new Error("Doctor profile not found in clinic records. Please contact the administrator.");
@@ -400,50 +417,6 @@ document.addEventListener("DOMContentLoaded", function () {
         list.forEach((item, index) => {
             const tr = document.createElement("tr");
 
-            // Doctor Report Upload Column Logic
-            const dropdownId = `doctorReportDropdown-${item.id}`;
-            const existingReports = (typeof getAppointmentReports === "function") 
-                ? getAppointmentReports(item) 
-                : [];
-
-            let reportDropdownHtml = "";
-            if (existingReports.length > 0) {
-                const reportItemsHtml = existingReports.map((r, rIndex) => {
-                    return `
-                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-bottom: 1px solid #f1f5f9; background: white;">
-                            <button type="button" onclick="event.stopPropagation(); if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(r.url)}', '${escapeHtml(item.patient_name)}_${escapeHtml(r.name)}')}else{window.open('${escapeHtml(r.url)}', '_blank')}" style="padding: 4px 8px; font-size: 0.76rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="View ${escapeHtml(r.name)}">
-                                👁️ ${escapeHtml(r.name)}
-                            </button>
-                            <button type="button" onclick="deleteDoctorReport('${item.id}', ${rIndex}, event)" class="btn-delete-doctor-report" style="padding: 4px 6px; font-size: 0.8rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; flex-shrink: 0;" title="Delete this report">
-                                🗑️
-                            </button>
-                        </div>
-                    `;
-                }).join("");
-
-                reportDropdownHtml = `
-                    <div style="position: relative; display: inline-block;">
-                        <button type="button" class="btn-toggle-reports-dropdown" data-target="${dropdownId}" style="padding: 5px 10px; font-size: 0.75rem; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; transition: all 0.15s;">
-                            📄 Reports (${existingReports.length}) <span style="font-size: 0.65rem;">▾</span>
-                        </button>
-                        <div id="${dropdownId}" class="reports-dropdown-menu" style="display: none; position: absolute; right: 0; top: calc(100% + 4px); background: white; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1); width: 220px; z-index: 99; overflow: hidden;">
-                            ${reportItemsHtml}
-                        </div>
-                    </div>
-                `;
-            }
-
-            const uploadBtnLabel = existingReports.length > 0 ? "➕ Add Report" : "📤 Upload Report";
-
-            let doctorReportHtml = `
-                <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
-                    <button type="button" class="btn-open-upload-modal" data-id="${item.id}" data-name="${escapeHtml(item.patient_name)}" style="padding: 5px 10px; font-size: 0.75rem; background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(15, 118, 110, 0.2); white-space: nowrap;">
-                        ${uploadBtnLabel}
-                    </button>
-                    ${reportDropdownHtml}
-                </div>
-            `;
-
             // Date formatting
             const formattedDate = item.appointment_date || "-";
             const formattedTime = (typeof formatTime12Hour === "function") ? formatTime12Hour(item.appointment_time) : (item.appointment_time || "-");
@@ -465,7 +438,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${escapeHtml(genderDisplay)}</td>
                 <td>${escapeHtml(item.mobile || '-')}</td>
                 <td style="max-width:220px; word-wrap:break-word;">${escapeHtml(issueDisplay)}</td>
-                <td>${doctorReportHtml}</td>
                 <td>${formattedDate}</td>
                 <td>${formattedTime}</td>
                 <td>
@@ -503,15 +475,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.addEventListener("click", function () {
             document.querySelectorAll(".reports-dropdown-menu").forEach(menu => {
                 menu.style.display = "none";
-            });
-        });
-
-        // Attach click listener to Open Upload Report Modal buttons
-        document.querySelectorAll(".btn-open-upload-modal").forEach(btn => {
-            btn.addEventListener("click", function () {
-                const appId = this.getAttribute("data-id");
-                const patientName = this.getAttribute("data-name") || "Patient";
-                openUploadReportModal(appId, patientName);
             });
         });
 

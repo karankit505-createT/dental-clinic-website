@@ -98,25 +98,35 @@ ALTER TABLE public.doctors ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.appointments ENABLE ROW LEVEL SECURITY;
 
 -- Allow public read access to doctors list (for booking form dropdown)
+DROP POLICY IF EXISTS "Allow public read access to doctors" ON public.doctors;
 CREATE POLICY "Allow public read access to doctors"
 ON public.doctors FOR SELECT TO public
 USING (true);
 
 -- Allow public users to insert new appointments (booking form submission)
+DROP POLICY IF EXISTS "Allow public insert into appointments" ON public.appointments;
 CREATE POLICY "Allow public insert into appointments"
 ON public.appointments FOR INSERT TO public
 WITH CHECK (true);
 
 -- Allow public users to read appointments (for patient appointment lookup)
+DROP POLICY IF EXISTS "Allow public read access to appointments" ON public.appointments;
 CREATE POLICY "Allow public read access to appointments"
 ON public.appointments FOR SELECT TO public
 USING (true);
 
 -- Allow public / authenticated users to update appointment status (for cancellation & doctor status updates)
+DROP POLICY IF EXISTS "Allow public update access to appointments" ON public.appointments;
 CREATE POLICY "Allow public update access to appointments"
 ON public.appointments FOR UPDATE TO public
 USING (true)
 WITH CHECK (true);
+
+-- Allow public / authenticated users to delete appointments (for Admin Portal deletion)
+DROP POLICY IF EXISTS "Allow public delete access to appointments" ON public.appointments;
+CREATE POLICY "Allow public delete access to appointments"
+ON public.appointments FOR DELETE TO public
+USING (true);
 
 
 -- --------------------------------------------------------------------
@@ -164,8 +174,15 @@ USING (bucket_id = 'patient-documents');
 -- Enables real-time web UI updates when email, doctor details, or appointments change.
 -- Run this in Supabase SQL Editor if Realtime is not enabled by default.
 -- --------------------------------------------------------------------
-ALTER PUBLICATION supabase_realtime ADD TABLE public.doctors;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.appointments;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'doctors') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.doctors;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'appointments') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.appointments;
+    END IF;
+END $$;
 
 
 -- --------------------------------------------------------------------
@@ -207,21 +224,32 @@ ALTER TABLE public.doctor_availability ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.doctor_leaves ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies: Allow public read, insert, update, delete
+DROP POLICY IF EXISTS "Allow public read access to doctor_availability" ON public.doctor_availability;
 CREATE POLICY "Allow public read access to doctor_availability"
 ON public.doctor_availability FOR SELECT TO public USING (true);
 
+DROP POLICY IF EXISTS "Allow public insert/update/delete to doctor_availability" ON public.doctor_availability;
 CREATE POLICY "Allow public insert/update/delete to doctor_availability"
 ON public.doctor_availability FOR ALL TO public USING (true) WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Allow public read access to doctor_leaves" ON public.doctor_leaves;
 CREATE POLICY "Allow public read access to doctor_leaves"
 ON public.doctor_leaves FOR SELECT TO public USING (true);
 
+DROP POLICY IF EXISTS "Allow public insert/update/delete to doctor_leaves" ON public.doctor_leaves;
 CREATE POLICY "Allow public insert/update/delete to doctor_leaves"
 ON public.doctor_leaves FOR ALL TO public USING (true) WITH CHECK (true);
 
--- Enable Realtime for availability and leaves
-ALTER PUBLICATION supabase_realtime ADD TABLE public.doctor_availability;
-ALTER PUBLICATION supabase_realtime ADD TABLE public.doctor_leaves;
+-- Enable Realtime for availability and leaves safely
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'doctor_availability') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.doctor_availability;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'doctor_leaves') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.doctor_leaves;
+    END IF;
+END $$;
 
 
 -- --------------------------------------------------------------------
@@ -248,5 +276,73 @@ BEGIN
         END LOOP;
     END LOOP;
 END $$;
+
+
+-- --------------------------------------------------------------------
+-- 10. STAFF TABLE (Admin / Receptionist Portal Auth)
+-- Stores clinic admin & staff user profiles for medical report uploads.
+-- --------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.staff (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    role TEXT NOT NULL DEFAULT 'Admin',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+COMMENT ON TABLE public.staff IS 'Stores registered clinic admin & staff members';
+COMMENT ON COLUMN public.staff.id IS 'Unique identifier for staff member';
+COMMENT ON COLUMN public.staff.name IS 'Full name of staff member (e.g., Admin User)';
+COMMENT ON COLUMN public.staff.email IS 'Email address used for Admin portal login authentication';
+COMMENT ON COLUMN public.staff.role IS 'Staff role (e.g. Admin, Receptionist)';
+
+-- Index for fast email lookup
+CREATE INDEX IF NOT EXISTS idx_staff_email ON public.staff(email);
+
+-- Enable RLS
+ALTER TABLE public.staff ENABLE ROW LEVEL SECURITY;
+
+-- Allow public read access to staff (for authentication verification)
+DROP POLICY IF EXISTS "Allow public read access to staff" ON public.staff;
+CREATE POLICY "Allow public read access to staff"
+ON public.staff FOR SELECT TO public
+USING (true);
+
+DROP POLICY IF EXISTS "Allow public insert access to staff" ON public.staff;
+CREATE POLICY "Allow public insert access to staff"
+ON public.staff FOR INSERT TO public
+WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public update access to staff" ON public.staff;
+CREATE POLICY "Allow public update access to staff"
+ON public.staff FOR UPDATE TO public
+USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public delete access to staff" ON public.staff;
+CREATE POLICY "Allow public delete access to staff"
+ON public.staff FOR DELETE TO public
+USING (true);
+
+-- Enable Supabase Realtime for staff table (safely using exception block in case already added)
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_publication_tables 
+        WHERE pubname = 'supabase_realtime' 
+        AND schemaname = 'public' 
+        AND tablename = 'staff'
+    ) THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.staff;
+    END IF;
+END $$;
+
+-- Initial Sample Admin & Staff Accounts
+INSERT INTO public.staff (name, email, role) VALUES
+('Clinic Owner', 'owner@smilecare.com', 'Admin'),
+('Front Desk Staff', 'staff@smilecare.com', 'Receptionist'),
+('Clinic Admin', 'admin@smilecare.com', 'Admin')
+ON CONFLICT (email) DO UPDATE SET role = EXCLUDED.role;
+
+
 
 
