@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initStatCounters();
     loadDoctorsFromSupabase();
     initEnquiryModal();
+    initScrollAnimations();
 });
 
 // 1. Stat Counters Animation
@@ -176,4 +177,22 @@ function toggleDoctorBio(id, btnElement) {
         if (btnText) btnText.textContent = "Read Less";
         if (btnArrow) btnArrow.textContent = "⬆";
     }
+}
+
+// 6. Smooth Scroll Fade-In Animations (Intersection Observer)
+function initScrollAnimations() {
+    if (!("IntersectionObserver" in window)) {
+        document.querySelectorAll(".animate-on-scroll").forEach(el => el.classList.add("is-visible"));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll(".animate-on-scroll").forEach(el => observer.observe(el));
 }
