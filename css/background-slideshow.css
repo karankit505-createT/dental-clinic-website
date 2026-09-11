@@ -1,0 +1,113 @@
+/* ============================================================
+   SHARED BACKGROUND SLIDESHOW STYLING (Used across all pages)
+   ============================================================ */
+
+.global-bg-slideshow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.global-bg-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.global-bg-slide.active {
+    opacity: 1;
+}
+
+/* 4 Shared Clinic Background Images - Crisp & Sharp with minimal 0.15-0.25 dark overlay */
+.global-bg-slide-1 {
+    background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.18) 50%, rgba(15, 23, 42, 0.40) 100%), url('../assets/clinic-photo.jpg');
+    background-position: center top;
+}
+
+.global-bg-slide-2 {
+    background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.18) 50%, rgba(15, 23, 42, 0.40) 100%), url('../assets/clinic-photo-2.jpg');
+    background-position: center 25%;
+}
+
+.global-bg-slide-3 {
+    background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.18) 50%, rgba(15, 23, 42, 0.40) 100%), url('../assets/clinic-photo-3.jpg');
+    background-position: center top;
+}
+
+.global-bg-slide-4 {
+    background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.18) 50%, rgba(15, 23, 42, 0.40) 100%), url('../assets/clinic-photo-4.jpg');
+    background-position: center top;
+}
+
+/* Slideshow Manual Navigation Arrow Buttons */
+.slideshow-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.60);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    color: #ffffff;
+    font-size: 1.3rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    user-select: none;
+    outline: none;
+}
+
+.slideshow-arrow:hover {
+    background: #0d9488;
+    border-color: #5eead4;
+    color: #ffffff;
+    transform: translateY(-50%) scale(1.12);
+    box-shadow: 0 8px 24px rgba(13, 148, 136, 0.5);
+}
+
+.slideshow-arrow.arrow-prev {
+    left: 20px;
+}
+
+.slideshow-arrow.arrow-next {
+    right: 20px;
+}
+
+/* Responsive adjustment for mobile */
+@media (max-width: 768px) {
+    .global-bg-slide {
+        background-attachment: scroll;
+    }
+    .slideshow-arrow {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+    .slideshow-arrow.arrow-prev {
+        left: 8px;
+    }
+    .slideshow-arrow.arrow-next {
+        right: 8px;
+    }
+}

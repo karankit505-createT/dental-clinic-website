@@ -580,12 +580,14 @@ document.addEventListener("DOMContentLoaded", function () {
             let reportDropdownHtml = "";
             if (existingReports.length > 0) {
                 const reportItemsHtml = existingReports.map((r, rIndex) => {
-                    const dateDisplay = r.report_date || r.upload_date || "Date not recorded";
-                    const labelWithDate = `${r.name} (${dateDisplay})`;
+                    const dateDisplay = (typeof formatReportDate === 'function') 
+                        ? formatReportDate(r.report_date || r.upload_date) 
+                        : (r.report_date || r.upload_date || "Date not recorded");
                     return `
-                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border-bottom: 1px solid #f1f5f9; background: white;">
-                            <button type="button" onclick="event.stopPropagation(); if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(r.url)}', '${escapeHtml(item.patient_name)}_${escapeHtml(r.name)}')}else{window.open('${escapeHtml(r.url)}', '_blank')}" style="padding: 4px 8px; font-size: 0.76rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="View ${escapeHtml(labelWithDate)}">
-                                👁️ ${escapeHtml(labelWithDate)}
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border-bottom: 1px solid #f1f5f9; background: white;">
+                            <button type="button" onclick="event.stopPropagation(); if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(r.url)}', '${escapeHtml(item.patient_name)}_${escapeHtml(r.name)}')}else{window.open('${escapeHtml(r.url)}', '_blank')}" style="padding: 5px 8px; font-size: 0.76rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; flex: 1; overflow: hidden; text-align: left;" title="View ${escapeHtml(r.name)} (${dateDisplay})">
+                                <span style="font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">📄 ${escapeHtml(r.name)}</span>
+                                <span style="font-size: 0.68rem; color: #0369a1; font-weight: 500; opacity: 0.85;">📅 ${escapeHtml(dateDisplay)}</span>
                             </button>
                             <button type="button" onclick="deleteAdminDoctorReport('${item.id}', ${rIndex}, event)" class="btn-delete-report" style="padding: 4px 6px; font-size: 0.8rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; flex-shrink: 0;" title="Delete report">
                                 🗑️
@@ -599,7 +601,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <button type="button" class="btn-toggle-reports-dropdown" data-target="${dropdownId}" style="padding: 5px 10px; font-size: 0.75rem; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
                             📄 Reports (${existingReports.length}) <span style="font-size: 0.65rem;">▾</span>
                         </button>
-                        <div id="${dropdownId}" class="reports-dropdown-menu" style="display: none; position: absolute; right: 0; top: calc(100% + 4px); background: white; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 230px; z-index: 99; overflow: hidden;">
+                        <div id="${dropdownId}" class="reports-dropdown-menu" style="display: none; position: absolute; right: 0; top: calc(100% + 4px); background: white; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 250px; z-index: 99; overflow: hidden;">
                             ${reportItemsHtml}
                         </div>
                     </div>
@@ -691,16 +693,46 @@ document.addEventListener("DOMContentLoaded", function () {
             tableBody.appendChild(tr);
         });
 
-        // Toggle dropdown listener
+        // Toggle dropdown listener with fixed viewport positioning (prevents overflow clipping)
         document.querySelectorAll(".btn-toggle-reports-dropdown").forEach(btn => {
             btn.addEventListener("click", function (e) {
                 e.stopPropagation();
                 const targetId = this.getAttribute("data-target");
                 const menu = document.getElementById(targetId);
+                
                 document.querySelectorAll(".reports-dropdown-menu").forEach(m => {
-                    if (m.id !== targetId) m.style.display = "none";
+                    if (m !== menu) m.style.display = "none";
                 });
-                if (menu) menu.style.display = menu.style.display === "none" ? "block" : "none";
+                
+                if (menu) {
+                    const isOpening = (menu.style.display === "none" || !menu.style.display);
+                    if (isOpening) {
+                        const rect = this.getBoundingClientRect();
+                        const menuWidth = 250;
+                        menu.style.position = "fixed";
+                        menu.style.width = menuWidth + "px";
+                        menu.style.zIndex = "999999";
+                        menu.style.left = "auto";
+                        menu.style.right = Math.max(10, (window.innerWidth - rect.right)) + "px";
+
+                        menu.style.display = "block";
+                        menu.style.visibility = "hidden";
+                        const menuHeight = menu.offsetHeight || 180;
+                        menu.style.visibility = "visible";
+
+                        const spaceBelow = window.innerHeight - rect.bottom;
+                        
+                        if (spaceBelow < (menuHeight + 10) && rect.top > menuHeight) {
+                            menu.style.top = "auto";
+                            menu.style.bottom = (window.innerHeight - rect.top + 4) + "px";
+                        } else {
+                            menu.style.top = (rect.bottom + 4) + "px";
+                            menu.style.bottom = "auto";
+                        }
+                    } else {
+                        menu.style.display = "none";
+                    }
+                }
             });
         });
 
@@ -730,6 +762,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     document.addEventListener("click", function () {
+        document.querySelectorAll(".reports-dropdown-menu").forEach(menu => menu.style.display = "none");
+    });
+    window.addEventListener("scroll", function () {
+        document.querySelectorAll(".reports-dropdown-menu").forEach(menu => menu.style.display = "none");
+    }, { passive: true });
+    window.addEventListener("resize", function () {
         document.querySelectorAll(".reports-dropdown-menu").forEach(menu => menu.style.display = "none");
     });
 
@@ -1513,7 +1551,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             reports.forEach(r => {
-                const dateStr = r.upload_date || (r.created_at ? new Date(r.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : (app.appointment_date || 'N/A'));
+                const dateStr = (typeof formatReportDate === 'function') 
+                    ? formatReportDate(r.report_date || r.upload_date) 
+                    : (r.report_date || r.upload_date || 'Date not recorded');
                 patientMap[mapKey].reports.push({
                     reportName: r.name || 'Medical Report',
                     reportUrl: r.url,

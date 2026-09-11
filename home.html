@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmileCare Dental Clinic - Professional Dental Care & Wellness</title>
+    <meta name="description" content="Welcome to SmileCare Dental Clinic - Personalized care, modern techniques, and friendly atmosphere. Book your appointment today!">
+
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Config & Custom Stylesheet -->
+    <script src="js/config.js"></script>
+    <link rel="stylesheet" href="css/style.css?v=25">
+    <link rel="stylesheet" href="css/background-slideshow.css">
+
+    <style>
+        /* Modern Design Overrides & Landing Page Specific Styles */
+        :root {
+            --font-heading: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: #0f172a;
+            background-color: #f8fafc;
+            background-image: linear-gradient(rgba(248, 250, 252, 0.88), rgba(240, 253, 250, 0.90)), url('assets/clinic-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll;
+            }
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            color: #0f172a;
+            line-height: 1.25;
+            margin-top: 0;
+        }
+
+        /* Glassmorphism & Navbar */
+        .landing-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .landing-nav-container {
+            max-width: 1340px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .landing-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .landing-logo-icon {
+            width: 42px;
+            height: 42px;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: none;
+        }
+
+        .landing-logo-text {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0f172a;
+            white-space: nowrap;
+        }
+
+        .landing-logo-text span {
+            color: #0d9488;
+        }
+
+        .landing-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            flex-wrap: nowrap;
+        }
+
+        .landing-nav-links a {
+            text-decoration: none;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            transition: color 0.2s;
+        }
+
+        .landing-nav-links a:hover {
+            color: #0d9488;
+        }
+
+        .landing-nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .btn-teal {
+            background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+            color: white !important;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-teal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(15, 118, 110, 0.35);
+        }
+
+        .btn-teal-outline {
+            background: transparent;
+            color: #0f766e !important;
+            border: 1.5px solid #0f766e;
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-teal-outline:hover {
+            background: #ccfbf1;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section & Background Slideshow */
+        /* Hero Section & Background Slideshow */
+        .hero-section {
+            position: relative;
+            min-height: 720px;
+            padding: 100px 24px 80px 24px;
+            background-color: #0f172a;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-slideshow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        /* Slide 1: Real Clinic Photo 1 - Top Center position to frame faces */
+        .hero-slide-1 {
+            background-color: #0f172a;
+            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.18) 50%, rgba(15, 23, 42, 0.40) 100%), url('assets/clinic-photo.jpg');
+            background-repeat: no-repeat;
+            background-position: center top;
+            background-size: cover;
+        }
+
+        /* Slide 2: Real Clinic Photo 2 */
+        .hero-slide-2 {
+            background-color: #0f172a;
+            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.18) 50%, rgba(15, 23, 42, 0.40) 100%), url('assets/clinic-photo-2.jpg');
+            background-repeat: no-repeat;
+            background-position: center 25%;
+            background-size: cover;
+        }
+
+        /* Slide 3: Real Clinic Photo 3 */
+        .hero-slide-3 {
+            background-color: #0f172a;
+            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.18) 50%, rgba(15, 23, 42, 0.40) 100%), url('assets/clinic-photo-3.jpg');
+            background-repeat: no-repeat;
+            background-position: center top;
+            background-size: cover;
+        }
+
+        /* Slide 4: Real Clinic Photo 4 */
+        .hero-slide-4 {
+            background-color: #0f172a;
+            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.18) 50%, rgba(15, 23, 42, 0.40) 100%), url('assets/clinic-photo-4.jpg');
+            background-repeat: no-repeat;
+            background-position: center top;
+            background-size: cover;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: 600px;
+                padding: 70px 16px 50px 16px;
+            }
+            .hero-slide {
+                background-position: center top !important;
+            }
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            .hero-title {
+                font-size: 2.4rem;
+            }
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.45) 0%, rgba(15, 23, 42, 0.20) 60%, rgba(15, 23, 42, 0.50) 100%);
+        }
+
+        .hero-container {
+            position: relative;
+            z-index: 3;
+            max-width: 1240px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #0d9488, #0f766e);
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 4px 16px rgba(13, 148, 136, 0.45);
+            letter-spacing: 0.02em;
+        }
+
+        .hero-title {
+            font-size: 3.6rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: 24px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.80), 0 2px 6px rgba(0, 0, 0, 0.9);
+        }
+
+        .hero-subtitle {
+            font-size: 1.22rem;
+            color: #f1f5f9;
+            margin-bottom: 36px;
+            max-width: 620px;
+            font-weight: 500;
+            line-height: 1.65;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 36px;
+        }
+
+        .btn-hero-solid {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #0f172a;
+            font-weight: 800;
+            font-size: 1.05rem;
+            padding: 16px 32px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            box-shadow: 0 8px 24px rgba(245, 158, 11, 0.45);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .btn-hero-solid:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 28px rgba(245, 158, 11, 0.65);
+            color: #000000;
+        }
+
+        .btn-hero-outline {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 14px 30px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn-hero-outline:hover {
+            background: #ffffff;
+            color: #0f172a;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.4);
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-card-box {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.30);
+            border: 1.5px solid rgba(255, 255, 255, 0.40);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-icon-large {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            color: white;
+            box-shadow: 0 10px 25px rgba(15, 118, 110, 0.35);
+        }
+
+        /* Section Layouts */
+        .section-padding {
+            padding: 80px 24px;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 50px auto;
+        }
+
+        .section-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .section-subtitle {
+            font-size: 1.05rem;
+            color: #64748b;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 20px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-number {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #0f766e;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        /* Doctor Showcase Cards (2-Column Reference Style) */
+        .doctors-container {
+            max-width: 1040px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 36px;
+        }
+
+        .doctor-card-showcase {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 15px 35px rgba(15, 118, 110, 0.06);
+            display: grid;
+            grid-template-columns: 1.25fr 0.75fr;
+            gap: 36px;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .doctor-card-showcase:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 118, 110, 0.12);
+        }
+
+        .doctor-badge-tag {
+            display: inline-block;
+            background: #ccfbf1;
+            color: #0f766e;
+            font-size: 0.8rem;
+            font-weight: 800;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .doctor-full-name {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 6px 0;
+            line-height: 1.25;
+        }
+
+        .doctor-degree {
+            font-size: 1.05rem;
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        .doctor-accent-bar {
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(90deg, #0f766e, #2dd4bf);
+            border-radius: 2px;
+            margin-bottom: 14px;
+        }
+
+        .doctor-spec-pill {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #0f766e;
+            margin-bottom: 14px;
+        }
+
+        .doctor-short-bio {
+            font-size: 0.96rem;
+            color: #475569;
+            line-height: 1.65;
+            margin-bottom: 12px;
+        }
+
+        .doctor-full-bio-container {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out, margin 0.3s ease;
+        }
+
+        .doctor-full-bio-container.expanded {
+            max-height: 400px;
+            opacity: 1;
+            margin-bottom: 16px;
+        }
+
+        .doctor-full-bio-text {
+            font-size: 0.92rem;
+            color: #475569;
+            line-height: 1.7;
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid #0d9488;
+            margin: 0;
+        }
+
+        .btn-read-more {
+            background: transparent;
+            border: 1.5px solid #0f766e;
+            color: #0f766e;
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            margin-top: 6px;
+        }
+
+        .btn-read-more:hover {
+            background: #0f766e;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(15, 118, 110, 0.25);
+        }
+
+        /* Right Side Photo & Amber Decorative Dots */
+        .doctor-right-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dots-pattern-bg {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            width: 130px;
+            height: 130px;
+            background-image: radial-gradient(#f59e0b 2.5px, transparent 2.5px);
+            background-size: 16px 16px;
+            opacity: 0.45;
+            z-index: 1;
+        }
+
+        .doctor-image-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 15px 30px rgba(15, 118, 110, 0.18);
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .doctor-photo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 12%;
+            transform: scale(1.25);
+            display: block;
+        }
+
+        .doctor-avatar-circle {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3.5rem;
+            font-weight: 800;
+            font-family: var(--font-heading);
+        }
+
+        .doctor-exp-badge {
+            position: absolute;
+            bottom: 6px;
+            background: rgba(15, 23, 42, 0.9);
+            color: white;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            white-space: nowrap;
+        }
+
+        @media (max-width: 868px) {
+            .doctor-card-showcase {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 24px;
+                padding: 28px;
+            }
+            .doctor-accent-bar {
+                margin: 0 auto 14px auto;
+            }
+            .btn-read-more {
+                margin: 12px auto 0 auto;
+            }
+        }
+
+        .doctor-bio {
+            font-size: 0.92rem;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        /* 9 Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1240px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: #99f6e4;
+            box-shadow: 0 12px 25px rgba(15, 118, 110, 0.08);
+        }
+
+        .feature-icon-box {
+            width: 48px;
+            height: 48px;
+            background: #ccfbf1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #0f766e;
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        .feature-desc {
+            font-size: 0.88rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* Treatments Grid */
+        .treatments-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            max-width: 1240px;
+            margin: 0 auto;
+        }
+
+        .treatment-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+
+        .treatment-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 35px rgba(15, 118, 110, 0.09);
+        }
+
+        .treatment-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .treatment-list li {
+            padding: 8px 0;
+            font-size: 0.92rem;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px dashed #f1f5f9;
+        }
+
+        .treatment-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 1240px;
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .testimonial-stars {
+            color: #f59e0b;
+            font-size: 1.1rem;
+            margin-bottom: 14px;
+        }
+
+        .testimonial-quote {
+            font-size: 0.95rem;
+            color: #334155;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-author {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 0.92rem;
+        }
+
+        /* Footer */
+        .landing-footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 60px 24px 30px 24px;
+        }
+
+        .footer-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.5fr;
+            gap: 48px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .footer-brand-title {
+            color: white;
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .footer-brand-desc {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            max-width: 380px;
+            margin-bottom: 20px;
+        }
+
+        .footer-heading {
+            color: white;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .footer-links-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-links-list a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links-list a:hover {
+            color: #2dd4bf;
+        }
+
+        .footer-bottom {
+            max-width: 1240px;
+            margin: 30px auto 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.88rem;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 992px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-subtitle {
+                margin: 0 auto 32px auto;
+            }
+            .hero-buttons {
+                justify-content: center;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .features-grid, .treatments-grid, .testimonials-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            .stats-grid, .features-grid, .treatments-grid, .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            .landing-nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="patient-body">
+
+    <!-- Header Navigation -->
+    <header class="landing-header">
+        <div class="landing-nav-container">
+            <a href="home.html" class="landing-logo">
+                <div class="landing-logo-icon">
+                    <img src="assets/hero-tooth-illustration_4.svg" alt="SmileCare Logo" class="brand-logo-img">
+                </div>
+                <div class="landing-logo-text">SmileCare <span>Dental Clinic</span></div>
+            </a>
+
+            <ul class="landing-nav-links">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="#about">About Clinic</a></li>
+                <li><a href="#doctors">Our Doctors</a></li>
+                <li><a href="#why-us">Why Us</a></li>
+                <li><a href="#treatments">Treatments</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+            </ul>
+
+            <div class="landing-nav-actions">
+                <a href="my-appointments.html" class="btn-teal-outline">My Appointments</a>
+                <a href="index.html" class="btn-teal">Book Appointment</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION 1: HERO BANNER -->
+    <section class="hero-section">
+        <!-- Automatic Background Slideshow -->
+        <div class="hero-slideshow" id="heroSlideshow">
+            <div class="hero-slide hero-slide-1 active"></div>
+            <div class="hero-slide hero-slide-2"></div>
+            <div class="hero-slide hero-slide-3"></div>
+            <div class="hero-slide hero-slide-4"></div>
+        </div>
+        <div class="hero-overlay"></div>
+
+        <!-- Manual Slideshow Navigation Arrow Buttons -->
+        <button type="button" class="slideshow-arrow arrow-prev" onclick="prevSlideshowImage()" title="Previous Image">❮</button>
+        <button type="button" class="slideshow-arrow arrow-next" onclick="nextSlideshowImage()" title="Next Image">❯</button>
+
+        <div class="hero-container">
+            <div>
+                <!-- Solid Highlight Badge Box -->
+                <div class="hero-badge">
+                    <span>✨ SmileCare Dental Clinic</span>
+                </div>
+                <h1 class="hero-title">Painless & Modern Dental Care For Your Family</h1>
+                <p class="hero-subtitle">
+                    SmileCare Dental Clinic mein aapka swagat hai - personalized care, advanced root canal, cosmetic dentistry, aur friendly atmosphere ke saath. Experience healthier, brighter smiles today!
+                </p>
+                <div class="hero-buttons">
+                    <a href="index.html" class="btn-hero-solid">
+                        📅 Book Appointment
+                    </a>
+                    <a href="tel:+919876543210" class="btn-hero-outline">
+                        📞 Call Now (+91 98765 43210)
+                    </a>
+                </div>
+
+                <div style="display: flex; gap: 24px; flex-wrap: wrap; font-size: 0.95rem; font-weight: 700; color: #ffffff; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);">
+                    <span>✓ 100% Sterilized & Hygienic</span>
+                    <span>✓ Expert Dentists</span>
+                    <span>✓ Instant Online Booking</span>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="hero-card-box" style="background: rgba(255, 255, 255, 0.18); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1.5px solid rgba(255, 255, 255, 0.4); box-shadow: 0 20px 40px rgba(0,0,0,0.30);">
+                    <img src="assets/hero-tooth-illustration_4.svg" alt="SmileCare Tooth Illustration" style="width: 210px; height: auto; max-height: 230px; margin: 0 auto 16px auto; display: block; filter: drop-shadow(0 10px 20px rgba(255, 255, 255, 0.35));">
+                    <h3 style="font-size: 1.4rem; font-weight: 800; color: #ffffff; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7); margin-bottom: 8px;">SmileCare Dental Clinic</h3>
+                    <p style="font-size: 0.95rem; color: #f1f5f9; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6); margin-bottom: 20px;">Your Trusted Destination for Family & Cosmetic Dentistry</p>
+                    <div style="background: rgba(13, 148, 136, 0.45); border: 1px solid rgba(255, 255, 255, 0.35); padding: 12px; border-radius: 12px; color: #ffffff; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6); font-weight: 700; font-size: 0.9rem;">
+                        🕒 Mon - Sat: 9:00 AM - 8:00 PM
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: ABOUT CLINIC & STATS -->
+    <section id="about" class="section-padding" style="background: white;">
+        <div style="max-width: 1240px; margin: 0 auto;">
+            <!-- About Showcase 2-Column Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-bottom: 50px;">
+                <div>
+                    <span style="background: #ccfbf1; color: #0f766e; padding: 6px 16px; border-radius: 30px; font-size: 0.88rem; font-weight: 700; border: 1px solid #99f6e4; display: inline-block; margin-bottom: 16px;">
+                        🏥 Welcome to SmileCare Dental Clinic
+                    </span>
+                    <h2 class="section-title" style="text-align: left; margin-bottom: 18px;">World-Class Oral Healthcare & Gentle Dentistry</h2>
+                    <p style="font-size: 1.05rem; color: #475569; margin-bottom: 24px; line-height: 1.7;">
+                        SmileCare Dental Clinic ek premier dental center hai jahan hum aapki oral health aur sundar muskaan ka poora dhyan rakhte hain. Humari clinic state-of-the-art equipment, compassionate doctors, aur strict international hygiene standards se equipped hai.
+                    </p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px;">
+                        <div style="display: flex; align-items: center; gap: 12px; font-weight: 600; color: #0f172a; font-size: 0.95rem;">
+                            <span style="background: #ccfbf1; color: #0f766e; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800;">✓</span>
+                            100% Sterilized & International Hygiene Standards
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; font-weight: 600; color: #0f172a; font-size: 0.95rem;">
+                            <span style="background: #ccfbf1; color: #0f766e; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800;">✓</span>
+                            Advanced Digital RVG X-Rays & Painless Rotary Setup
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; font-weight: 600; color: #0f172a; font-size: 0.95rem;">
+                            <span style="background: #ccfbf1; color: #0f766e; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800;">✓</span>
+                            Patient-Centered Care & Transparent Pricing
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                        <button type="button" id="openEnquireBtn" class="btn-teal" style="padding: 12px 28px; font-size: 0.95rem;">
+                            📩 Enquire Now
+                        </button>
+                        <a href="index.html" class="btn-teal-outline" style="padding: 12px 26px; font-size: 0.95rem;">
+                            📅 Book Appointment
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Clinic Photo Showcase Card -->
+                <div style="position: relative;">
+                    <div style="border-radius: 24px; overflow: hidden; box-shadow: 0 20px 45px rgba(15, 118, 110, 0.15); border: 4px solid white; position: relative;">
+                        <img src="assets/clinic-photo.jpg" alt="SmileCare Modern Dental Clinic Interior" style="width: 100%; height: 380px; object-fit: cover; display: block;">
+                        
+                        <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(8px); padding: 16px 20px; border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8); display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <h4 style="margin: 0 0 2px 0; font-size: 1rem; font-weight: 800; color: #0f172a;">Modern & Hygienic Facility</h4>
+                                <p style="margin: 0; font-size: 0.85rem; color: #64748b;">Designed for maximum patient comfort & safety</p>
+                            </div>
+                            <span style="background: #0f766e; color: white; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem;">
+                                🌟 5.0 Rated Clinic
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stat Boxes -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" data-target="5">0</div>
+                    <div class="stat-label">Years of Experience</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="500">0</div>
+                    <div class="stat-label">Successful Treatments</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="1000">0</div>
+                    <div class="stat-label">Satisfied Patients</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="2">0</div>
+                    <div class="stat-label">Expert Doctors</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: ABOUT DOCTOR -->
+    <section id="doctors" class="section-padding" style="background: #f0fdfa;">
+        <div style="max-width: 1240px; margin: 0 auto;">
+            <div class="section-header">
+                <h2 class="section-title">Meet Our Expert Dentists</h2>
+                <p class="section-subtitle">
+                    Our team of experienced specialists is dedicated to providing gentle, high-quality, and personalized care for every patient.
+                </p>
+            </div>
+
+            <div id="doctorsGrid" class="doctors-container">
+                <!-- Dynamically populated via js/home.js from Supabase 'doctors' table -->
+                <!-- Fallback content rendered if database is empty -->
+                
+                <!-- Doctor 1: Dr. Rajesh Sharma -->
+                <div class="doctor-card-showcase">
+                    <div class="doctor-left-content">
+                        <span class="doctor-badge-tag">👨‍⚕️ ABOUT DOCTOR</span>
+                        <h3 class="doctor-full-name">Dr. Rajesh Sharma <span class="doctor-degree">BDS, MDS</span></h3>
+                        <div class="doctor-accent-bar"></div>
+                        <div class="doctor-spec-pill">Senior Dentist & Implantologist</div>
+
+                        <p class="doctor-short-bio">
+                            Dr. Rajesh Sharma is a dedicated dental professional specializing in Restorative Dentistry & Dental Implants, committed to providing quality, patient-focused care with a gentle touch.
+                        </p>
+
+                        <div id="fullBio-1" class="doctor-full-bio-container">
+                            <p class="doctor-full-bio-text">
+                                Dr. Rajesh Sharma brings over 10 years of extensive clinical experience in restorative dentistry, complex surgical extractions, and dental implants. With a strong academic background and commitment to continuous learning, he focuses on delivering personalized dental care using modern techniques. He believes in building long-term relationships with patients based on trust and comfort, ensuring every visit is a positive and painless experience.
+                            </p>
+                        </div>
+
+                        <button type="button" class="btn-read-more" onclick="toggleDoctorBio(1, this)">
+                            <span class="btn-text">Read More</span>
+                            <span class="btn-arrow">➔</span>
+                        </button>
+                    </div>
+
+                    <div class="doctor-right-visual">
+                        <div class="dots-pattern-bg"></div>
+                        <div class="doctor-image-wrapper">
+                            <img src="assets/doctor-1.jpg" alt="Dr. Rajesh Sharma" class="doctor-photo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="doctor-avatar-circle" style="display: none;">DR</div>
+                            <div class="doctor-exp-badge">
+                                ⭐ 10+ Yrs Exp
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctor 2: Dr. Priya Verma -->
+                <div class="doctor-card-showcase">
+                    <div class="doctor-left-content">
+                        <span class="doctor-badge-tag">👩‍⚕️ ABOUT DOCTOR</span>
+                        <h3 class="doctor-full-name">Dr. Priya Verma <span class="doctor-degree">BDS, MDS</span></h3>
+                        <div class="doctor-accent-bar"></div>
+                        <div class="doctor-spec-pill">Cosmetic Dentist & Orthodontist Specialist</div>
+
+                        <p class="doctor-short-bio">
+                            Dr. Priya Verma is a passionate dental specialist dedicated to smile designing, clear aligners, and aesthetic fillings, committed to giving patients a confident, healthy smile.
+                        </p>
+
+                        <div id="fullBio-2" class="doctor-full-bio-container">
+                            <p class="doctor-full-bio-text">
+                                Dr. Priya Verma brings specialized expertise in modern orthodontics, invisible clear aligners, porcelain veneers, and laser teeth whitening. She focuses on delivering gentle, aesthetic-driven dental care using painless digital procedures. Dr. Priya believes in patient empowerment and detailed consultations, ensuring customized smile transformations for every individual.
+                            </p>
+                        </div>
+
+                        <button type="button" class="btn-read-more" onclick="toggleDoctorBio(2, this)">
+                            <span class="btn-text">Read More</span>
+                            <span class="btn-arrow">➔</span>
+                        </button>
+                    </div>
+
+                    <div class="doctor-right-visual">
+                        <div class="dots-pattern-bg"></div>
+                        <div class="doctor-image-wrapper">
+                            <img src="assets/doctor-2.jpg" alt="Dr. Priya Verma" class="doctor-photo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="doctor-avatar-circle" style="display: none;">DP</div>
+                            <div class="doctor-exp-badge">
+                                ⭐ Cosmetic Specialist
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: WHY CHOOSE US (9 Features Grid) -->
+    <section id="why-us" class="section-padding" style="background: #f8fafc;">
+        <div style="max-width: 1240px; margin: 0 auto;">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose SmileCare Dental Clinic</h2>
+                <p class="section-subtitle">We combine medical excellence with a warm, patient-first approach to give you the best dental experience.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon-box">🦷</div>
+                    <h3 class="feature-title">1. Exceptional Dental Care</h3>
+                    <p class="feature-desc">High-quality, gentle treatments tailored to your individual dental health needs.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-box">👥</div>
+                    <h3 class="feature-title">2. Skilled & Knowledgeable Team</h3>
+                    <p class="feature-desc">Experienced doctors and friendly staff trained in modern clinical techniques.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-box">🧼</div>
+                    <h3 class="feature-title">3. Rigorous Hygiene & Sterilization</h3>
+                    <p class="feature-desc">100% sterilized instruments adhering strictly to international clinical standards.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-box">💰</div>
+                    <h3 class="feature-title">4. Affordable Treatment</h3>
+                    <p class="feature-desc">Transparent pricing with no hidden costs, offering value for your healthcare investment.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-box">🩺</div>
+                    <h3 class="feature-title">5. Comprehensive Dental Services</h3>
+                    <p class="feature-desc">From routine check-ups to advanced surgeries, everything under one roof.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-box">✨</div>
+                    <h3 class="feature-title">6. Aesthetic Smile Designing</h3>
+                    <p class="feature-desc">Enhance your natural smile with modern veneers, whitening, and alignment solutions.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-box">🔬</div>
+                    <h3 class="feature-title">7. Cutting-Edge Equipment</h3>
+                    <p class="feature-desc">State-of-the-art digital X-rays, intraoral cameras, and painless rotary tools.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-box">📌</div>
+                    <h3 class="feature-title">8. Expert Implant Dentistry</h3>
+                    <p class="feature-desc">Durable, permanent, and natural-looking tooth replacements with high success rates.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-box">❤️</div>
+                    <h3 class="feature-title">9. Patient-Focused Results</h3>
+                    <p class="feature-desc">Dedicated to your comfort, clear guidance, and long-term oral health wellness.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: TREATMENTS OFFERED -->
+    <section id="treatments" class="section-padding" style="background: white;">
+        <div style="max-width: 1240px; margin: 0 auto;">
+            <div class="section-header">
+                <h2 class="section-title">Treatments & Services Offered</h2>
+                <p class="section-subtitle">Explore our wide range of professional dental procedures designed for all age groups.</p>
+            </div>
+
+            <div class="treatments-grid">
+                <div class="treatment-card">
+                    <div>
+                        <div style="font-size: 2.2rem; margin-bottom: 12px;">🩺</div>
+                        <h3 style="font-size: 1.3rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">General Dental Treatment</h3>
+                        <p style="font-size: 0.88rem; color: #64748b;">Routine care to keep your teeth and gums healthy for life.</p>
+                        <ul class="treatment-list">
+                            <li>✔️ Preventive Dental Check-ups</li>
+                            <li>✔️ Tooth Fillings & Cavity Repair</li>
+                            <li>✔️ Painless Extractions</li>
+                            <li>✔️ Professional Teeth Cleaning</li>
+                            <li>✔️ Digital RVG X-Rays</li>
+                        </ul>
+                    </div>
+                    <a href="index.html" class="btn-teal-outline" style="text-align: center; justify-content: center;">Book Consultation</a>
+                </div>
+
+                <div class="treatment-card">
+                    <div>
+                        <div style="font-size: 2.2rem; margin-bottom: 12px;">✨</div>
+                        <h3 style="font-size: 1.3rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Aesthetic Dentistry</h3>
+                        <p style="font-size: 0.88rem; color: #64748b;">Cosmetic solutions to transform your smile with confidence.</p>
+                        <ul class="treatment-list">
+                            <li>✔️ Laser Teeth Whitening</li>
+                            <li>✔️ Porcelain Veneers</li>
+                            <li>✔️ Digital Smile Designing</li>
+                            <li>✔️ Tooth-Colored Composite Filling</li>
+                            <li>✔️ Dental Bonding & Polishing</li>
+                        </ul>
+                    </div>
+                    <a href="index.html" class="btn-teal-outline" style="text-align: center; justify-content: center;">Book Consultation</a>
+                </div>
+
+                <div class="treatment-card">
+                    <div>
+                        <div style="font-size: 2.2rem; margin-bottom: 12px;">😬</div>
+                        <h3 style="font-size: 1.3rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Orthodontics</h3>
+                        <p style="font-size: 0.88rem; color: #64748b;">Straighten crooked teeth and improve your bite alignment.</p>
+                        <ul class="treatment-list">
+                            <li>✔️ Metal & Ceramic Braces</li>
+                            <li>✔️ Invisible Clear Aligners</li>
+                            <li>✔️ Retainers & Space Maintainers</li>
+                            <li>✔️ Malocclusion Correction</li>
+                            <li>✔️ Pediatric Orthodontics</li>
+                        </ul>
+                    </div>
+                    <a href="index.html" class="btn-teal-outline" style="text-align: center; justify-content: center;">Book Consultation</a>
+                </div>
+            </div>
+
+            <!-- Post-Treatments Call-to-Action Bar -->
+            <div style="text-align: center; margin-top: 45px; background: #f0fdfa; padding: 24px; border-radius: 16px; border: 1px solid #ccfbf1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+                <div style="text-align: left;">
+                    <h4 style="font-size: 1.15rem; font-weight: 800; color: #0f766e; margin: 0 0 4px 0;">Ready to Transform Your Smile?</h4>
+                    <p style="font-size: 0.9rem; color: #475569; margin: 0;">Book your consultation slot online today in just 1 minute.</p>
+                </div>
+                <a href="index.html" class="btn-teal" style="padding: 12px 28px; font-size: 0.95rem;">
+                    📅 Book Appointment Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: TESTIMONIALS -->
+    <section id="testimonials" class="section-padding" style="background: #f0fdfa;">
+        <div style="max-width: 1240px; margin: 0 auto;">
+            <div class="section-header">
+                <h2 class="section-title">What Our Patients Say</h2>
+                <p class="section-subtitle">Real experiences from patients who trust SmileCare for their dental health.</p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-quote">
+                            "One of the best dental clinics! The clinic is super clean and Dr. Rajesh explained the entire root canal treatment process very calmly. Totally painless!"
+                        </p>
+                    </div>
+                    <div class="testimonial-author"> Rahul S.</div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-quote">
+                            "Dr. Priya explained everything patiently, smooth experience. Staff is polite and online appointment booking on website is very easy."
+                        </p>
+                    </div>
+                    <div class="testimonial-author"> Priya M.</div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-quote">
+                            "Excellent clinic, professional team, highly recommend! Got my teeth cleaning and whitening done here - results are amazing!"
+                        </p>
+                    </div>
+                    <div class="testimonial-author"> Amit K.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRE-FOOTER HIGH-IMPACT CTA BANNER -->
+    <section class="section-padding" style="background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; text-align: center;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <span style="background: rgba(255, 255, 255, 0.2); color: white; padding: 6px 16px; border-radius: 30px; font-size: 0.88rem; font-weight: 700; display: inline-block; margin-bottom: 16px;">
+                ✨ Start Your Journey Today
+            </span>
+            <h2 style="color: white; font-size: 2.4rem; font-weight: 800; margin-bottom: 14px;">Experience Healthy, Painless Dental Care</h2>
+            <p style="font-size: 1.1rem; opacity: 0.95; margin-bottom: 32px; line-height: 1.6;">
+                Don't wait for dental discomfort to worsen. Schedule a consultation with our experienced dentists now for personalized care.
+            </p>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="index.html" class="btn-teal" style="background: white; color: #0f766e !important; padding: 14px 32px; font-size: 1rem; font-weight: 800; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);">
+                    📅 Book Appointment Now
+                </a>
+                <a href="tel:+919876543210" class="btn-teal-outline" style="border-color: white; color: white !important; padding: 14px 30px; font-size: 1rem;">
+                    📞 Call Us: +91 98765 43210
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: FOOTER -->
+    <footer class="landing-footer" style="background: #0f172a; color: #94a3b8; padding: 60px 24px 30px 24px; text-align: left;">
+        <div class="footer-container" style="max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 48px; padding-bottom: 40px; border-bottom: 1px solid #334155; text-align: left;">
+            
+            <!-- Column 1: Brand & Bio -->
+            <div style="text-align: left;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; justify-content: flex-start;">
+                    <img src="assets/hero-tooth-illustration_4.svg" alt="SmileCare Logo" style="width: 38px; height: 38px; object-fit: contain; flex-shrink: 0;">
+                    <div style="font-family: var(--font-heading); font-size: 1.35rem; font-weight: 800; color: white; line-height: 1.2;">
+                        SmileCare <span style="color: #2dd4bf;">Dental Clinic</span>
+                    </div>
+                </div>
+                <p style="font-size: 0.9rem; color: #94a3b8; max-width: 380px; margin-bottom: 20px; text-align: left; line-height: 1.6;">
+                    Your trusted dental clinic offering personalized care, advanced treatments, and gentle dentistry for you and your family.
+                </p>
+                <div style="display: flex; gap: 12px; justify-content: flex-start; align-items: center; flex-wrap: wrap;">
+                    <!-- Facebook -->
+                    <a href="https://facebook.com" target="_blank" rel="noopener" title="Facebook" style="color: white; background: #1e293b; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s ease;" onmouseover="this.style.background='#1877F2'; this.style.transform='translateY(-3px) scale(1.05)';" onmouseout="this.style.background='#1e293b'; this.style.transform='translateY(0) scale(1)';">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <!-- Instagram -->
+                    <a href="https://instagram.com" target="_blank" rel="noopener" title="Instagram" style="color: white; background: #1e293b; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s ease;" onmouseover="this.style.background='#E4405F'; this.style.transform='translateY(-3px) scale(1.05)';" onmouseout="this.style.background='#1e293b'; this.style.transform='translateY(0) scale(1)';">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                    <!-- YouTube -->
+                    <a href="https://youtube.com" target="_blank" rel="noopener" title="YouTube" style="color: white; background: #1e293b; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s ease;" onmouseover="this.style.background='#FF0000'; this.style.transform='translateY(-3px) scale(1.05)';" onmouseout="this.style.background='#1e293b'; this.style.transform='translateY(0) scale(1)';">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    </a>
+                    <!-- LinkedIn -->
+                    <a href="https://linkedin.com" target="_blank" rel="noopener" title="LinkedIn" style="color: white; background: #1e293b; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s ease;" onmouseover="this.style.background='#0A66C2'; this.style.transform='translateY(-3px) scale(1.05)';" onmouseout="this.style.background='#1e293b'; this.style.transform='translateY(0) scale(1)';">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                    </a>
+                    <!-- WhatsApp -->
+                    <a href="https://wa.me/919876543210" target="_blank" rel="noopener" title="WhatsApp" style="color: white; background: #1e293b; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.2s ease;" onmouseover="this.style.background='#25D366'; this.style.transform='translateY(-3px) scale(1.05)';" onmouseout="this.style.background='#1e293b'; this.style.transform='translateY(0) scale(1)';">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Column 2: Quick Links -->
+            <div style="text-align: left;">
+                <div style="color: white; font-size: 1.1rem; font-weight: 800; margin-bottom: 20px; text-align: left;">Quick Links</div>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; text-align: left;">
+                    <li><a href="home.html" style="color: #94a3b8; text-decoration: none; font-size: 0.92rem; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#94a3b8'">Home</a></li>
+                    <li><a href="#about" style="color: #94a3b8; text-decoration: none; font-size: 0.92rem; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#94a3b8'">About Clinic</a></li>
+                    <li><a href="#doctors" style="color: #94a3b8; text-decoration: none; font-size: 0.92rem; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#94a3b8'">Our Doctors</a></li>
+                    <li><a href="#treatments" style="color: #94a3b8; text-decoration: none; font-size: 0.92rem; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#94a3b8'">Treatments</a></li>
+                    <li><a href="index.html" style="color: #94a3b8; text-decoration: none; font-size: 0.92rem; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#94a3b8'">Book Appointment</a></li>
+                    <li><a href="my-appointments.html" style="color: #94a3b8; text-decoration: none; font-size: 0.92rem; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#94a3b8'">My Appointments</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 3: Contact Information -->
+            <div style="text-align: left;">
+                <div style="color: white; font-size: 1.1rem; font-weight: 800; margin-bottom: 20px; text-align: left;">Contact Information</div>
+                <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.92rem; text-align: left;">
+                    <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8;">
+                        <span style="font-size: 1.1rem;">📞</span> <span><strong>Phone:</strong> +91 98765 43210</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8;">
+                        <span style="font-size: 1.1rem;">📧</span> <span><strong>Email:</strong> info@smilecaredental.com</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8;">
+                        <span style="font-size: 1.1rem;">📍</span> <span><strong>Address:</strong> Main Street, Medical Hub, City</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8;">
+                        <span style="font-size: 1.1rem;">🕒</span> <span><strong>Timing:</strong> Mon - Sat (9:00 AM - 8:00 PM)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom" style="max-width: 1240px; margin: 30px auto 0 auto; display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; flex-wrap: wrap; gap: 16px;">
+            <div>
+                <div>© 2026 SmileCare Dental Clinic. All Rights Reserved.</div>
+                <div style="margin-top: 6px; font-size: 11px; color: #64748b;">
+                    For Staff Use: 
+                    <a href="dashboard.html" style="color: #64748b; text-decoration: none;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#64748b'">Doctor Login</a> | 
+                    <a href="staff.html" style="color: #64748b; text-decoration: none;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#64748b'">Staff Login</a> | 
+                    <a href="admin.html" style="color: #64748b; text-decoration: none;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#64748b'">Admin Login</a>
+                </div>
+            </div>
+            <div style="display: flex; gap: 20px;">
+                <a href="home.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#94a3b8'">Home</a>
+                <a href="index.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#94a3b8'">Book Appointment</a>
+                <a href="my-appointments.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#2dd4bf'" onmouseout="this.style.color='#94a3b8'">My Appointments</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Quick Enquiry Modal -->
+    <div id="enquiryModal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 99999; align-items: center; justify-content: center; padding: 16px;">
+        <div style="background: white; border-radius: 16px; max-width: 480px; width: 100%; padding: 28px; box-shadow: 0 20px 30px rgba(0,0,0,0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0; color: #0f172a;">📩 Quick Clinic Enquiry</h3>
+                <button type="button" id="closeEnquiryModal" style="background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">&times;</button>
+            </div>
+            <form id="enquiryForm" style="display: flex; flex-direction: column; gap: 14px;">
+                <div>
+                    <label style="font-weight: 600; font-size: 0.88rem; display: block; margin-bottom: 4px;">Your Name *</label>
+                    <input type="text" id="enquiryName" required placeholder="Enter full name" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                </div>
+                <div>
+                    <label style="font-weight: 600; font-size: 0.88rem; display: block; margin-bottom: 4px;">Mobile Number *</label>
+                    <input type="tel" id="enquiryMobile" required placeholder="10-digit mobile number" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                </div>
+                <div>
+                    <label style="font-weight: 600; font-size: 0.88rem; display: block; margin-bottom: 4px;">Enquiry / Treatment Question</label>
+                    <textarea id="enquiryMessage" rows="3" placeholder="Tell us what treatment you need information about..." style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px;"></textarea>
+                </div>
+                <button type="submit" class="btn-teal" style="justify-content: center; padding: 12px; margin-top: 6px;">Submit Enquiry</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Shared Background Slideshow JS -->
+    <script src="js/background-slideshow.js"></script>
+    <!-- Home Page Logic JS -->
+    <script src="js/home.js?v=1"></script>
+</body>
+</html>

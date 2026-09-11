@@ -51,13 +51,111 @@
 }
 
 body {
-    background-color: var(--bg-main);
+    background-color: transparent;
     color: var(--text-dark);
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
+
+/* Patient Pages & Global Transparent Body for Background Slideshow */
+body.patient-body {
+    background-color: transparent;
+    background-image: none;
+}
+
+/* ==========================================
+   DAY / NIGHT MODE (DARK THEME) OVERRIDES
+   ========================================== */
+body.dark-mode {
+    --bg-main: #0f172a;
+    --card-bg: #1e293b;
+    --text-dark: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+}
+
+body.dark-mode.patient-body,
+body.dark-mode {
+    background-image: linear-gradient(rgba(15, 23, 42, 0.93), rgba(15, 23, 42, 0.94)), url('../assets/clinic-bg.jpg') !important;
+}
+
+body.dark-mode header,
+body.dark-mode .landing-header,
+body.dark-mode .dashboard-full-width-header {
+    background: rgba(15, 23, 42, 0.95) !important;
+    border-bottom: 1px solid #334155 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode .landing-logo-text,
+body.dark-mode .brand-title,
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5,
+body.dark-mode .hero-title, body.dark-mode .section-title, body.dark-mode .doctor-full-name,
+body.dark-mode .feature-title, body.dark-mode label, body.dark-mode .landing-nav-links a,
+body.dark-mode .nav-btn-outline {
+    color: #f8fafc !important;
+}
+
+body.dark-mode .nav-btn-outline {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+body.dark-mode .nav-btn-outline:hover {
+    background-color: #0d9488 !important;
+    color: white !important;
+    border-color: #0d9488 !important;
+}
+
+body.dark-mode .card,
+body.dark-mode .doctor-card-showcase,
+body.dark-mode .feature-card,
+body.dark-mode .treatment-card,
+body.dark-mode .testimonial-card,
+body.dark-mode .stat-card,
+body.dark-mode .hero-card-box,
+body.dark-mode .patient-card,
+body.dark-mode .table-container,
+body.dark-mode .appointment-table-card {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="number"],
+body.dark-mode input[type="email"],
+body.dark-mode input[type="tel"],
+body.dark-mode input[type="date"],
+body.dark-mode input[type="time"],
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: #334155 !important;
+}
+
+body.dark-mode .hero-subtitle,
+body.dark-mode .section-subtitle,
+body.dark-mode .doctor-short-bio,
+body.dark-mode .feature-desc,
+body.dark-mode .stat-label,
+body.dark-mode .testimonial-quote {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .doctor-full-bio-text {
+    background: #0f172a !important;
+    color: #cbd5e1 !important;
+    border-left-color: #2dd4bf !important;
+}
+
+
 
 /* Config Banner Notice */
 .config-alert {
@@ -109,21 +207,29 @@ header {
 }
 
 .logo-icon {
-    width: 38px;
-    height: 38px;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    border-radius: 10px;
+    width: 44px;
+    height: 44px;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    box-shadow: 0 4px 10px rgba(13, 148, 136, 0.25);
+    box-shadow: none;
+    flex-shrink: 0;
+    overflow: visible;
 }
 
 .logo-icon svg {
-    width: 22px;
-    height: 22px;
+    width: 26px;
+    height: 26px;
     fill: currentColor;
+}
+
+.brand-logo-img, .logo-icon img, .landing-logo-icon img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    transform: scale(1.22);
+    filter: drop-shadow(0 4px 10px rgba(13, 148, 136, 0.25));
 }
 
 .brand-title {
@@ -669,13 +775,23 @@ input[type="file"] {
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
-    overflow: hidden;
+    overflow: visible;
     width: 100%;
 }
 
 .table-responsive {
     width: 100%;
     overflow-x: auto;
+    overflow-y: visible;
+}
+
+table tr, table td {
+    position: relative;
+}
+
+.reports-dropdown-menu {
+    box-shadow: 0 12px 28px -4px rgba(0,0,0,0.2), 0 8px 10px -6px rgba(0,0,0,0.1) !important;
+    z-index: 99999 !important;
 }
 
 table {

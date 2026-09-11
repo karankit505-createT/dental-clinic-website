@@ -100,7 +100,30 @@ function escapeHtml(str) {
         .replace(/'/g, "&#039;");
 }
 
-// Global Helper to retrieve normalized array of doctor reports [{ name, url, upload_date, created_at }]
+// Global Helper to format report date nicely (e.g. "15 June 2026")
+function formatReportDate(dateVal) {
+    if (!dateVal || dateVal === "Date not recorded" || dateVal === "null" || dateVal === "undefined") {
+        return "Date not recorded";
+    }
+
+    let str = String(dateVal).trim();
+    if (!str) return "Date not recorded";
+
+    let d = null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+        d = new Date(str + "T00:00:00");
+    } else {
+        d = new Date(str);
+    }
+
+    if (d && !isNaN(d.getTime())) {
+        return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+    }
+
+    return str || "Date not recorded";
+}
+
+// Global Helper to retrieve normalized array of doctor reports [{ name, url, report_date, upload_date, created_at }]
 function getAppointmentReports(item) {
     if (!item) return [];
     let reports = [];
@@ -114,32 +137,21 @@ function getAppointmentReports(item) {
             if (Array.isArray(parsed) && parsed.length > 0) {
                 reports = parsed.map((r, i) => {
                     if (r && typeof r === 'object') {
-                        let dateVal = r.report_date || r.upload_date;
-                        if (!dateVal && r.created_at) {
-                            dateVal = new Date(r.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-                        }
-                        if (!dateVal && item.appointment_date) {
-                            const d = new Date(item.appointment_date.includes('T') ? item.appointment_date : item.appointment_date + 'T00:00:00');
-                            dateVal = !isNaN(d.getTime()) ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : item.appointment_date;
-                        }
+                        let rawDate = r.report_date || r.upload_date || r.created_at || null;
+                        let dateVal = formatReportDate(rawDate);
                         return {
                             name: (r.name && String(r.name).trim()) ? String(r.name).trim() : `Report ${i + 1}`,
                             url: r.url ? String(r.url).trim() : '',
-                            report_date: dateVal || '',
+                            report_date: dateVal,
                             upload_date: r.upload_date || dateVal || '',
                             created_at: r.created_at || ''
                         };
                     } else if (typeof r === 'string' && r.trim()) {
-                        let fallbackDate = '';
-                        if (item.appointment_date) {
-                            const d = new Date(item.appointment_date.includes('T') ? item.appointment_date : item.appointment_date + 'T00:00:00');
-                            fallbackDate = !isNaN(d.getTime()) ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : item.appointment_date;
-                        }
                         return {
                             name: `Report ${i + 1}`,
                             url: r.trim(),
-                            report_date: fallbackDate,
-                            upload_date: fallbackDate,
+                            report_date: 'Date not recorded',
+                            upload_date: 'Date not recorded',
                             created_at: ''
                         };
                     }
@@ -160,19 +172,27 @@ function getAppointmentReports(item) {
                 return {
                     name: (name && name.trim()) ? name.trim() : `Report ${i + 1}`,
                     url: (url && url.trim()) ? url.trim() : '',
-                    upload_date: '',
+                    report_date: 'Date not recorded',
+                    upload_date: 'Date not recorded',
                     created_at: ''
                 };
             }
             return {
                 name: `Report ${i + 1}`,
                 url: part,
-                upload_date: '',
+                report_date: 'Date not recorded',
+                upload_date: 'Date not recorded',
                 created_at: ''
             };
         }).filter(r => r.url);
     }
 
     return reports;
+}
+
+// Ensure dark-mode is permanently removed
+localStorage.removeItem("app_theme");
+if (document.body) {
+    document.body.classList.remove("dark-mode");
 }
 

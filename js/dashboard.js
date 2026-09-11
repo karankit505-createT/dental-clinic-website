@@ -453,26 +453,61 @@ document.addEventListener("DOMContentLoaded", function () {
             tableBody.appendChild(tr);
         });
 
-        // Attach click listeners to toggle Reports Dropdowns
+        // Attach click listeners to toggle Reports Dropdowns with fixed viewport positioning
         document.querySelectorAll(".btn-toggle-reports-dropdown").forEach(btn => {
             btn.addEventListener("click", function (e) {
                 e.stopPropagation();
                 const targetId = this.getAttribute("data-target");
                 const targetMenu = document.getElementById(targetId);
                 
-                // Hide all other open dropdown menus first
                 document.querySelectorAll(".reports-dropdown-menu").forEach(menu => {
                     if (menu !== targetMenu) menu.style.display = "none";
                 });
 
                 if (targetMenu) {
-                    targetMenu.style.display = (targetMenu.style.display === "none" || !targetMenu.style.display) ? "block" : "none";
+                    const isOpening = (targetMenu.style.display === "none" || !targetMenu.style.display);
+                    if (isOpening) {
+                        const rect = this.getBoundingClientRect();
+                        const menuWidth = 250;
+                        targetMenu.style.position = "fixed";
+                        targetMenu.style.width = menuWidth + "px";
+                        targetMenu.style.zIndex = "999999";
+                        targetMenu.style.left = "auto";
+                        targetMenu.style.right = Math.max(10, (window.innerWidth - rect.right)) + "px";
+
+                        targetMenu.style.display = "block";
+                        targetMenu.style.visibility = "hidden";
+                        const menuHeight = targetMenu.offsetHeight || 180;
+                        targetMenu.style.visibility = "visible";
+
+                        const spaceBelow = window.innerHeight - rect.bottom;
+                        
+                        if (spaceBelow < (menuHeight + 10) && rect.top > menuHeight) {
+                            targetMenu.style.top = "auto";
+                            targetMenu.style.bottom = (window.innerHeight - rect.top + 4) + "px";
+                        } else {
+                            targetMenu.style.top = (rect.bottom + 4) + "px";
+                            targetMenu.style.bottom = "auto";
+                        }
+                    } else {
+                        targetMenu.style.display = "none";
+                    }
                 }
             });
         });
 
-        // Close all dropdowns when clicking anywhere outside
+        // Close all dropdowns when clicking anywhere outside or scrolling
         document.addEventListener("click", function () {
+            document.querySelectorAll(".reports-dropdown-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+        });
+        window.addEventListener("scroll", function () {
+            document.querySelectorAll(".reports-dropdown-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+        }, { passive: true });
+        window.addEventListener("resize", function () {
             document.querySelectorAll(".reports-dropdown-menu").forEach(menu => {
                 menu.style.display = "none";
             });
@@ -737,7 +772,28 @@ document.addEventListener("DOMContentLoaded", function () {
                     ? getAppointmentReports(targetItem) 
                     : [];
 
-                currentReports.push({ name: reportName, url: publicUrl });
+                const reportDateInput = document.getElementById("reportDateInput");
+                const reportDateVal = reportDateInput ? reportDateInput.value : "";
+                let formattedReportDate = "Date not recorded";
+                if (reportDateVal) {
+                    formattedReportDate = (typeof formatReportDate === 'function') 
+                        ? formatReportDate(reportDateVal) 
+                        : reportDateVal;
+                } else {
+                    const now = new Date();
+                    formattedReportDate = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+                }
+
+                const now = new Date();
+                const uploadDateFormatted = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                currentReports.push({ 
+                    name: reportName, 
+                    url: publicUrl,
+                    report_date: formattedReportDate,
+                    upload_date: uploadDateFormatted,
+                    created_at: now.toISOString()
+                });
 
                 const updatedDoctorReportUrl = currentReports.map(r => `${r.url}|||${r.name}`).join(", ");
 
