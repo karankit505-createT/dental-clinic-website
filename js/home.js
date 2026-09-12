@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadDoctorsFromSupabase();
     initEnquiryModal();
     initScrollAnimations();
+    initMobileMenu();
 });
 
 // 1. Stat Counters Animation
@@ -83,7 +84,7 @@ async function loadDoctorsFromSupabase() {
                 const photoUrl = (idx === 0) ? 'assets/doctor-1.jpg' : (idx === 1 ? 'assets/doctor-2.jpg' : '');
 
                 return `
-                    <div class="doctor-card-showcase">
+                    <div class="doctor-card-showcase animate-on-scroll is-visible">
                         <div class="doctor-left-content">
                             <span class="doctor-badge-tag">👨‍⚕️ ABOUT DOCTOR</span>
                             <h3 class="doctor-full-name">${escapeHtml(displayName)} <span class="doctor-degree">BDS, MDS</span></h3>
@@ -195,4 +196,46 @@ function initScrollAnimations() {
     }, { threshold: 0.1 });
 
     document.querySelectorAll(".animate-on-scroll").forEach(el => observer.observe(el));
+}
+
+// 7. Mobile Navigation Menu Toggle Logic
+function initMobileMenu() {
+    const mobileBtn = document.getElementById("mobileMenuBtn");
+    const mobileNav = document.getElementById("mobileNavDrawer");
+    
+    if (!mobileBtn || !mobileNav) return;
+
+    mobileBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        const isOpen = mobileNav.classList.contains("active");
+        if (isOpen) {
+            mobileNav.classList.remove("active");
+            mobileBtn.setAttribute("aria-expanded", "false");
+            mobileBtn.innerHTML = "☰";
+        } else {
+            mobileNav.classList.add("active");
+            mobileBtn.setAttribute("aria-expanded", "true");
+            mobileBtn.innerHTML = "✕";
+        }
+    });
+
+    mobileNav.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", function () {
+            mobileNav.classList.remove("active");
+            if (mobileBtn) {
+                mobileBtn.setAttribute("aria-expanded", "false");
+                mobileBtn.innerHTML = "☰";
+            }
+        });
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!mobileNav.contains(e.target) && e.target !== mobileBtn) {
+            mobileNav.classList.remove("active");
+            if (mobileBtn) {
+                mobileBtn.setAttribute("aria-expanded", "false");
+                mobileBtn.innerHTML = "☰";
+            }
+        }
+    });
 }

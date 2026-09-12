@@ -24,7 +24,8 @@
     background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    will-change: opacity;
+    transform: translateZ(0);
 }
 
 .global-bg-slide.active {

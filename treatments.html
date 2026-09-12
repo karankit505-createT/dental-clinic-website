@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmileCare Dental Clinic - Professional Dental Care & Wellness</title>
-    <meta name="description" content="Welcome to SmileCare Dental Clinic - Personalized care, modern techniques, and friendly atmosphere. Book your appointment today!">
+    <title>Treatments & Services Offered - SmileCare Dental Clinic</title>
+    <meta name="description" content="Explore comprehensive dental treatments offered at SmileCare Dental Clinic including Root Canal, Dental Implants, Braces, Teeth Whitening, and Cosmetic Dentistry.">
 
     <!-- Supabase JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="css/background-slideshow.css">
 
     <style>
-        /* Modern Design Overrides & Landing Page Specific Styles */
+        /* Modern Design Overrides & Page Specific Styles */
         html {
             scroll-behavior: smooth;
             -webkit-font-smoothing: antialiased;
@@ -209,186 +209,6 @@
             transform: translateY(-2px);
         }
 
-        /* Hero Section & Background Slideshow */
-        .hero-section {
-            position: relative;
-            min-height: 720px;
-            padding: 100px 24px 80px 24px;
-            background-color: #0f172a;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-        }
-
-        .hero-slideshow {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .hero-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1.2s ease-in-out;
-            background-size: cover;
-            background-position: center top;
-            background-repeat: no-repeat;
-        }
-
-        .hero-slide.active {
-            opacity: 1;
-        }
-
-        .hero-slide-1 {
-            background-color: #0f172a;
-            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.18) 50%, rgba(15, 23, 42, 0.40) 100%), url('assets/clinic-photo.jpg');
-            background-repeat: no-repeat;
-            background-position: center top;
-            background-size: cover;
-        }
-
-        .hero-slide-2 {
-            background-color: #0f172a;
-            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.18) 50%, rgba(15, 23, 42, 0.40) 100%), url('assets/clinic-photo-2.jpg');
-            background-repeat: no-repeat;
-            background-position: center 25%;
-            background-size: cover;
-        }
-
-        .hero-slide-3 {
-            background-color: #0f172a;
-            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.18) 50%, rgba(15, 23, 42, 0.40) 100%), url('assets/clinic-photo-3.jpg');
-            background-repeat: no-repeat;
-            background-position: center top;
-            background-size: cover;
-        }
-
-        .hero-slide-4 {
-            background-color: #0f172a;
-            background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, rgba(15, 23, 42, 0.18) 50%, rgba(15, 23, 42, 0.40) 100%), url('assets/clinic-photo-4.jpg');
-            background-repeat: no-repeat;
-            background-position: center top;
-            background-size: cover;
-        }
-
-        .hero-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-            pointer-events: none;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.45) 0%, rgba(15, 23, 42, 0.20) 60%, rgba(15, 23, 42, 0.50) 100%);
-        }
-
-        .hero-container {
-            position: relative;
-            z-index: 3;
-            max-width: 1240px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 48px;
-            align-items: center;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: linear-gradient(135deg, #0d9488, #0f766e);
-            color: #ffffff;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 0.95rem;
-            font-weight: 800;
-            margin-bottom: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            box-shadow: 0 4px 16px rgba(13, 148, 136, 0.45);
-            letter-spacing: 0.02em;
-        }
-
-        .hero-title {
-            font-size: 3.6rem;
-            font-weight: 800;
-            color: #ffffff;
-            letter-spacing: -0.02em;
-            line-height: 1.15;
-            margin-bottom: 24px;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.80), 0 2px 6px rgba(0, 0, 0, 0.9);
-        }
-
-        .hero-subtitle {
-            font-size: 1.22rem;
-            color: #f1f5f9;
-            margin-bottom: 36px;
-            max-width: 620px;
-            font-weight: 500;
-            line-height: 1.65;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
-        }
-
-        .hero-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-bottom: 36px;
-        }
-
-        .btn-hero-solid {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #0f172a;
-            font-weight: 800;
-            font-size: 1.05rem;
-            padding: 16px 32px;
-            border-radius: 12px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.45);
-            transition: all 0.25s ease;
-        }
-
-        .btn-hero-solid:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.6);
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-        }
-
-        .btn-hero-outline {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #ffffff;
-            font-weight: 700;
-            font-size: 1.05rem;
-            padding: 16px 30px;
-            border-radius: 12px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border: 1.5px solid rgba(255, 255, 255, 0.45);
-            transition: all 0.25s ease;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-        }
-
-        .btn-hero-outline:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
-            border-color: #ffffff;
-        }
-
         /* Page Hero Banner for inner pages */
         .page-hero-banner {
             background: linear-gradient(135deg, #0f172a 0%, #0f3a3a 100%);
@@ -449,18 +269,92 @@
             color: #475569;
         }
 
-        /* Smooth Scroll Fade-In Animations (GPU Accelerated) */
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translate3d(0, 24px, 0);
-            will-change: opacity, transform;
-            backface-visibility: hidden;
-            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Treatments Offered Grid */
+        .treatments-grid {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 28px;
         }
 
-        .animate-on-scroll.is-visible {
-            opacity: 1;
-            transform: translate3d(0, 0, 0);
+        .treatment-card {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .treatment-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 35px rgba(13, 148, 136, 0.12);
+            border-color: rgba(45, 212, 191, 0.5);
+        }
+
+        .treatment-img-wrapper {
+            height: 190px;
+            overflow: hidden;
+            position: relative;
+            background: #f1f5f9;
+        }
+
+        .treatment-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .treatment-card:hover .treatment-img {
+            transform: scale(1.06);
+        }
+
+        .treatment-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            color: #5eead4;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .treatment-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .treatment-name {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .treatment-desc {
+            font-size: 0.94rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .treatment-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 14px;
+            border-top: 1px solid #f1f5f9;
         }
 
         /* Footer */
@@ -570,8 +464,8 @@
             color: #0d9488;
         }
 
-        /* Responsive Breakpoints for Mobile & Tablet */
-        @media (max-width: 1120px) {
+        /* Responsive Breakpoints */
+        @media (max-width: 992px) {
             .landing-nav-container {
                 padding: 12px 20px;
             }
@@ -580,20 +474,6 @@
             }
             .mobile-menu-btn {
                 display: flex;
-            }
-            .hero-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-                gap: 36px;
-            }
-            .hero-title {
-                font-size: 2.7rem;
-            }
-            .hero-subtitle {
-                margin: 0 auto 28px auto;
-            }
-            .hero-buttons {
-                justify-content: center;
             }
             .footer-container {
                 grid-template-columns: 1fr;
@@ -628,37 +508,6 @@
             .section-subtitle {
                 font-size: 0.98rem;
             }
-            .hero-section {
-                padding: 60px 16px 40px 16px;
-                min-height: auto;
-            }
-            .hero-title {
-                font-size: 2.1rem;
-            }
-            .hero-subtitle {
-                font-size: 1.02rem;
-            }
-            .hero-buttons {
-                flex-direction: column;
-                gap: 12px;
-            }
-            .btn-hero-solid, .btn-hero-outline {
-                width: 100%;
-                justify-content: center;
-                text-align: center;
-                box-sizing: border-box;
-            }
-            .slideshow-arrow {
-                width: 36px;
-                height: 36px;
-                font-size: 1rem;
-            }
-            .slideshow-arrow.arrow-prev {
-                left: 8px;
-            }
-            .slideshow-arrow.arrow-next {
-                right: 8px;
-            }
         }
     </style>
 </head>
@@ -675,11 +524,11 @@
             </a>
 
             <ul class="landing-nav-links">
-                <li><a href="home.html" class="active">Home</a></li>
+                <li><a href="home.html">Home</a></li>
                 <li><a href="about-clinic.html">About Clinic</a></li>
                 <li><a href="our-doctors.html">Our Doctors</a></li>
                 <li><a href="why-us.html">Why Us</a></li>
-                <li><a href="treatments.html">Treatments</a></li>
+                <li><a href="treatments.html" class="active">Treatments</a></li>
                 <li><a href="testimonials.html">Testimonials</a></li>
             </ul>
 
@@ -693,11 +542,11 @@
         <!-- Mobile Navigation Dropdown Drawer -->
         <div class="mobile-nav-drawer" id="mobileNavDrawer">
             <ul class="mobile-nav-list">
-                <li><a href="home.html" class="active">🏠 Home</a></li>
+                <li><a href="home.html">🏠 Home</a></li>
                 <li><a href="about-clinic.html">🏥 About Clinic</a></li>
                 <li><a href="our-doctors.html">👨‍⚕️ Our Doctors</a></li>
                 <li><a href="why-us.html">✨ Why Us</a></li>
-                <li><a href="treatments.html">🩺 Treatments</a></li>
+                <li><a href="treatments.html" class="active">🩺 Treatments</a></li>
                 <li><a href="testimonials.html">⭐ Testimonials</a></li>
                 <li style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; flex-direction: column; gap: 10px;">
                     <a href="index.html" class="btn-teal" style="justify-content: center;">📅 Book Appointment</a>
@@ -707,61 +556,131 @@
         </div>
     </header>
 
-    <!-- SECTION 1: HERO BANNER -->
-    <section class="hero-section">
-        <!-- Automatic Background Slideshow -->
-        <div class="hero-slideshow" id="heroSlideshow">
-            <div class="hero-slide hero-slide-1 active"></div>
-            <div class="hero-slide hero-slide-2"></div>
-            <div class="hero-slide hero-slide-3"></div>
-            <div class="hero-slide hero-slide-4"></div>
+    <!-- PAGE HERO BANNER -->
+    <section class="page-hero-banner">
+        <h1 class="page-hero-title">Treatments & Dental Services</h1>
+        <div class="page-hero-breadcrumb">
+            <a href="home.html">Home</a> <span>/</span> <span>Treatments</span>
         </div>
-        <div class="hero-overlay"></div>
+    </section>
 
-        <!-- Manual Slideshow Navigation Arrow Buttons -->
-        <button type="button" class="slideshow-arrow arrow-prev" onclick="prevSlideshowImage()" title="Previous Image">❮</button>
-        <button type="button" class="slideshow-arrow arrow-next" onclick="nextSlideshowImage()" title="Next Image">❯</button>
+    <!-- SECTION 5: TREATMENTS OFFERED -->
+    <section class="section-padding" style="background: rgba(255, 255, 255, 0.85);">
+        <div class="section-header">
+            <span style="background: #e6fffa; color: #0d9488; padding: 6px 16px; border-radius: 30px; font-size: 0.88rem; font-weight: 700; display: inline-block; margin-bottom: 12px; border: 1px solid #b2f5ea;">
+                🩺 Comprehensive Dental Services
+            </span>
+            <h2 class="section-title">Treatments Offered</h2>
+            <p class="section-subtitle">
+                Advanced technology aur pain-free techniques ke saath sabhi zaroori dental treatments.
+            </p>
+        </div>
 
-        <div class="hero-container">
-            <div>
-                <!-- Solid Highlight Badge Box -->
-                <div class="hero-badge">
-                    <span>✨ SmileCare Dental Clinic</span>
+        <div class="treatments-grid">
+            <!-- Treatment 1 -->
+            <div class="treatment-card">
+                <div class="treatment-img-wrapper">
+                    <img src="assets/clinic-interior.jpg" alt="Root Canal Treatment" class="treatment-img">
+                    <span class="treatment-badge">Single Sitting RCT</span>
                 </div>
-                <h1 class="hero-title">Painless & Modern Dental Care For Your Family</h1>
-                <p class="hero-subtitle">
-                    SmileCare Dental Clinic mein aapka swagat hai - personalized care, advanced root canal, cosmetic dentistry, aur friendly atmosphere ke saath. Experience healthier, brighter smiles today!
-                </p>
-                <div class="hero-buttons">
-                    <a href="index.html" class="btn-hero-solid">
-                        📅 Book Appointment
-                    </a>
-                    <a href="tel:+919876543210" class="btn-hero-outline">
-                        📞 Call Now (+91 98765 43210)
-                    </a>
-                </div>
-
-                <!-- Rating Indicator & Trust Badges -->
-                <div style="display: inline-flex; align-items: center; gap: 10px; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid rgba(255, 255, 255, 0.25); padding: 8px 18px; border-radius: 30px; margin-bottom: 16px; box-shadow: 0 6px 18px rgba(0,0,0,0.3); color: #ffffff;">
-                    <span style="color: #f59e0b; font-weight: 800; font-size: 0.95rem;">⭐ 4.9 Rating</span>
-                    <span style="color: rgba(255,255,255,0.4);">|</span>
-                    <span style="color: #5eead4; font-weight: 700; font-size: 0.9rem;">👥 500+ Happy Patients</span>
-                </div>
-
-                <div style="display: flex; gap: 24px; flex-wrap: wrap; font-size: 0.95rem; font-weight: 700; color: #ffffff; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);">
-                    <span>✓ 100% Sterilized & Hygienic</span>
-                    <span>✓ Expert Dentists</span>
-                    <span>✓ Instant Online Booking</span>
+                <div class="treatment-body">
+                    <h3 class="treatment-name">Root Canal Treatment (RCT)</h3>
+                    <p class="treatment-desc">
+                        Painful toothache aur infection ko permanent khatam karne ke liye modern rotary painless RCT technology.
+                    </p>
+                    <div class="treatment-footer">
+                        <span style="font-weight: 700; color: #0d9488; font-size: 0.95rem;">Starting ₹2,500</span>
+                        <a href="index.html" class="btn-teal" style="padding: 6px 14px; font-size: 0.85rem;">Book Now</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="hero-visual">
-                <div class="hero-card-box" style="background: rgba(255, 255, 255, 0.18); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1.5px solid rgba(255, 255, 255, 0.4); box-shadow: 0 20px 40px rgba(0,0,0,0.30);">
-                    <img src="assets/hero-tooth-illustration_4.svg" alt="SmileCare Tooth Illustration" style="width: 210px; height: auto; max-height: 230px; margin: 0 auto 16px auto; display: block; filter: drop-shadow(0 10px 20px rgba(255, 255, 255, 0.35));">
-                    <h3 style="font-size: 1.4rem; font-weight: 800; color: #ffffff; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7); margin-bottom: 8px;">SmileCare Dental Clinic</h3>
-                    <p style="font-size: 0.95rem; color: #f1f5f9; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6); margin-bottom: 20px;">Your Trusted Destination for Family & Cosmetic Dentistry</p>
-                    <div style="background: rgba(13, 148, 136, 0.45); border: 1px solid rgba(255, 255, 255, 0.35); padding: 12px; border-radius: 12px; color: #ffffff; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6); font-weight: 700; font-size: 0.9rem;">
-                        🕒 Mon - Sat: 9:00 AM - 8:00 PM
+            <!-- Treatment 2 -->
+            <div class="treatment-card">
+                <div class="treatment-img-wrapper">
+                    <img src="assets/doctor-smiling.jpg" alt="Dental Implants" class="treatment-img">
+                    <span class="treatment-badge">Permanent Solution</span>
+                </div>
+                <div class="treatment-body">
+                    <h3 class="treatment-name">Dental Implants</h3>
+                    <p class="treatment-desc">
+                        Missing teeth ke liye natural look aur strong chewing power dene waale high-grade titanium implants.
+                    </p>
+                    <div class="treatment-footer">
+                        <span style="font-weight: 700; color: #0d9488; font-size: 0.95rem;">Starting ₹18,000</span>
+                        <a href="index.html" class="btn-teal" style="padding: 6px 14px; font-size: 0.85rem;">Book Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Treatment 3 -->
+            <div class="treatment-card">
+                <div class="treatment-img-wrapper">
+                    <img src="assets/hero-bg-dark.jpg" alt="Teeth Whitening & Cleaning" class="treatment-img">
+                    <span class="treatment-badge">Instant Smile Brightening</span>
+                </div>
+                <div class="treatment-body">
+                    <h3 class="treatment-name">Teeth Whitening & Cleaning</h3>
+                    <p class="treatment-desc">
+                        Plaque, tartar scaling aur professional laser bleaching se paaye 3-4 shade brighter white smile.
+                    </p>
+                    <div class="treatment-footer">
+                        <span style="font-weight: 700; color: #0d9488; font-size: 0.95rem;">Starting ₹1,200</span>
+                        <a href="index.html" class="btn-teal" style="padding: 6px 14px; font-size: 0.85rem;">Book Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Treatment 4 -->
+            <div class="treatment-card">
+                <div class="treatment-img-wrapper">
+                    <img src="assets/clinic-hero-1.jpg" alt="Braces & Invisible Aligners" class="treatment-img">
+                    <span class="treatment-badge">Smile Correction</span>
+                </div>
+                <div class="treatment-body">
+                    <h3 class="treatment-name">Braces & Invisible Aligners</h3>
+                    <p class="treatment-desc">
+                        Teedhe-medhe daanton ko straight karne ke liye ceramic braces aur transparent clear aligners.
+                    </p>
+                    <div class="treatment-footer">
+                        <span style="font-weight: 700; color: #0d9488; font-size: 0.95rem;">Starting ₹25,000</span>
+                        <a href="index.html" class="btn-teal" style="padding: 6px 14px; font-size: 0.85rem;">Book Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Treatment 5 -->
+            <div class="treatment-card">
+                <div class="treatment-img-wrapper">
+                    <img src="assets/clinic-hero-2.jpg" alt="Crowns & Bridges" class="treatment-img">
+                    <span class="treatment-badge">Zirconia & Ceramic</span>
+                </div>
+                <div class="treatment-body">
+                    <h3 class="treatment-name">Crowns & Dental Bridges</h3>
+                    <p class="treatment-desc">
+                        Damaged ya weak teeth par strong protection caps aur gap filling ke liye 15-year warranty caps.
+                    </p>
+                    <div class="treatment-footer">
+                        <span style="font-weight: 700; color: #0d9488; font-size: 0.95rem;">Starting ₹3,500</span>
+                        <a href="index.html" class="btn-teal" style="padding: 6px 14px; font-size: 0.85rem;">Book Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Treatment 6 -->
+            <div class="treatment-card">
+                <div class="treatment-img-wrapper">
+                    <img src="assets/clinic-hero-3.jpg" alt="Pediatric Dental Care" class="treatment-img">
+                    <span class="treatment-badge">Kids Friendly</span>
+                </div>
+                <div class="treatment-body">
+                    <h3 class="treatment-name">Pediatric Dentistry (Kids Care)</h3>
+                    <p class="treatment-desc">
+                        Bacho ke daanton ki cavity, fluoride coating aur gentle painless fillings child-friendly environment mein.
+                    </p>
+                    <div class="treatment-footer">
+                        <span style="font-weight: 700; color: #0d9488; font-size: 0.95rem;">Starting ₹800</span>
+                        <a href="index.html" class="btn-teal" style="padding: 6px 14px; font-size: 0.85rem;">Book Now</a>
                     </div>
                 </div>
             </div>
@@ -770,7 +689,7 @@
 
     <!-- PRE-FOOTER HIGH-IMPACT CTA BANNER -->
     <section class="section-padding" style="background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; text-align: center;">
-        <div style="max-width: 800px; margin: 0 auto;" class="animate-on-scroll">
+        <div style="max-width: 800px; margin: 0 auto;">
             <span style="background: rgba(255, 255, 255, 0.2); color: white; padding: 6px 16px; border-radius: 30px; font-size: 0.88rem; font-weight: 700; display: inline-block; margin-bottom: 16px;">
                 ✨ Start Your Journey Today
             </span>
