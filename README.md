@@ -17,7 +17,7 @@ A modern, responsive, real-time Dental Clinic Booking and Management Web Applica
    - Search booking history by patient mobile number.
    - Real-time updates when appointment status changes (Pending, Confirmed, Cancelled, Completed).
    - Instant Cancel Appointment & Reschedule Date/Time Slot modal dialogs.
-3. **Doctor Portal & Dashboard (`dashboard.html`)**
+3. **Doctor Portal & Dashboard (`doctors.html`)**
 
    - Secure Doctor authentication powered by Supabase Auth (`signInWithPassword`).
    - Doctor profile lookup showing doctor avatar, name, and specialization.
@@ -36,7 +36,7 @@ A modern, responsive, real-time Dental Clinic Booking and Management Web Applica
 ```
 dental-clinic-deploy/
 ├── index.html                 # Main Patient Booking Page
-├── dashboard.html             # Doctor Portal & Management Dashboard
+├── doctors.html               # Doctor Portal & Management Dashboard
 ├── my-appointments.html       # Patient Appointment Search & Actions
 ├── css/
 │   └── style.css              # Universal UI/UX Design System Stylesheet
