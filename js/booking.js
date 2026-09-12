@@ -27,6 +27,57 @@ document.addEventListener("DOMContentLoaded", function () {
             .replace(/'/g, "&#039;");
     }
 
+    // 0. Parse URL Parameters for Treatment Pre-fill & Estimated Cost
+    (function handleUrlParameters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const rawIssue = urlParams.get("issue") || urlParams.get("service") || urlParams.get("treatment");
+        const rawPrice = urlParams.get("price");
+
+        const issueTextarea = document.getElementById("issue");
+        if (issueTextarea && rawIssue) {
+            const cleanIssueText = decodeURIComponent(rawIssue).trim();
+            issueTextarea.value = cleanIssueText;
+            issueTextarea.style.borderColor = "#0d9488";
+            issueTextarea.style.backgroundColor = "#f0fdfa";
+        }
+
+        if (rawPrice || rawIssue) {
+            const bookingCard = document.querySelector(".card");
+            const bookingForm = document.getElementById("bookingForm");
+            if (bookingCard && bookingForm) {
+                let noticeBox = document.getElementById("selectedTreatmentBanner");
+                if (!noticeBox) {
+                    noticeBox = document.createElement("div");
+                    noticeBox.id = "selectedTreatmentBanner";
+                    noticeBox.style.cssText = "margin-bottom: 20px; background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%); border: 1.5px solid #0d9488; border-radius: 12px; padding: 14px 18px; color: #0f766e; font-weight: 600; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; box-shadow: 0 4px 12px rgba(13, 148, 136, 0.12);";
+                    bookingCard.insertBefore(noticeBox, bookingForm);
+                }
+
+                let cleanTitle = "Selected Treatment";
+                if (rawIssue) {
+                    cleanTitle = decodeURIComponent(rawIssue).split("-")[0].trim();
+                }
+
+                let priceHtml = "";
+                if (rawPrice) {
+                    const numPrice = parseInt(rawPrice, 10);
+                    if (!isNaN(numPrice)) {
+                        const formattedPrice = numPrice.toLocaleString("en-IN");
+                        priceHtml = `<span style="background: #0d9488; color: white; padding: 5px 14px; border-radius: 20px; font-size: 0.88rem; font-weight: 700; white-space: nowrap;">💰 Estimated Starting Cost: ₹${formattedPrice}</span>`;
+                    }
+                }
+
+                noticeBox.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.25rem;">🩺</span>
+                        <span>Pre-filled Service: <strong>${escapeHtml(cleanTitle)}</strong></span>
+                    </div>
+                    ${priceHtml}
+                `;
+            }
+        }
+    })();
+
     // 1b. Fetch & Populate Doctors Dropdown from Supabase
     async function loadDoctorsList() {
         if (!doctorSelect) return;

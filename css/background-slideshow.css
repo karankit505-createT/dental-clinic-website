@@ -13,6 +13,23 @@
     overflow: hidden;
 }
 
+/* Decorative Teal Tooth Background Overlay Across All Pages */
+.global-bg-slideshow::after {
+    content: '';
+    position: absolute;
+    bottom: 4%;
+    right: 3%;
+    width: 440px;
+    height: 500px;
+    background-image: url('../assets/hero-tooth-illustration-tealll.svg');
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-size: contain;
+    opacity: 0.08;
+    pointer-events: none;
+    z-index: 10;
+}
+
 .global-bg-slide {
     position: absolute;
     top: 0;
