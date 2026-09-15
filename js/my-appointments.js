@@ -3,6 +3,34 @@
 // ==========================================
 
 document.addEventListener("DOMContentLoaded", function () {
+    // Mobile Navigation Drawer Handler
+    const mobileBtn = document.getElementById("mobileMenuBtn");
+    const mobileNav = document.getElementById("mobileNavDrawer");
+    if (mobileBtn && mobileNav) {
+        mobileBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            const isOpen = mobileNav.classList.contains("active");
+            if (isOpen) {
+                mobileNav.classList.remove("active");
+                mobileBtn.setAttribute("aria-expanded", "false");
+                mobileBtn.innerHTML = "☰";
+            } else {
+                mobileNav.classList.add("active");
+                mobileBtn.setAttribute("aria-expanded", "true");
+                mobileBtn.innerHTML = "✕";
+            }
+        });
+        mobileNav.querySelectorAll("a").forEach(link => {
+            link.addEventListener("click", function () {
+                mobileNav.classList.remove("active");
+                if (mobileBtn) {
+                    mobileBtn.setAttribute("aria-expanded", "false");
+                    mobileBtn.innerHTML = "☰";
+                }
+            });
+        });
+    }
+
     const configAlert = document.getElementById("configAlert");
     const lookupForm = document.getElementById("lookupForm");
     const mobileInput = document.getElementById("mobileNumber");

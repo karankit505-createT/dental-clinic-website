@@ -2277,6 +2277,178 @@ header.dashboard-full-width-header .nav-container {
     border-color: #0d9488;
 }
 
+/* ====================================================================
+   SMARTPHONE & MOBILE ULTRA-SMOOTH LAYOUT & TOUCH OPTIMIZATION (60 FPS)
+   ==================================================================== */
+
+/* Global Smooth Touch Scrolling & GPU Hardware Acceleration */
+html, body {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+.testimonial-card-slide,
+.testimonial-marquee-track,
+.card,
+.landing-header,
+.mobile-nav-drawer,
+.btn-submit,
+.btn-teal,
+.btn-teal-outline,
+.time-slot-btn {
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+}
+
+/* Tablet & Mobile Screens (max-width: 768px) */
+@media (max-width: 768px) {
+    /* Prevent iOS browser auto-zoom on form inputs & ensure touch target heights */
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="time"],
+    input[type="password"],
+    select,
+    textarea {
+        font-size: 16px !important;
+        min-height: 48px;
+        padding: 12px 14px;
+        border-radius: 10px;
+    }
+
+    button, .btn-submit, .btn-teal, .btn-teal-outline, .time-slot-btn, .mobile-menu-btn {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .landing-nav-container, .nav-container {
+        padding: 10px 16px !important;
+    }
+
+    .landing-logo-text, .brand-title {
+        font-size: 1.2rem !important;
+    }
+
+    .brand-logo-img, .logo-icon img, .landing-logo-icon img {
+        width: 38px !important;
+        height: 38px !important;
+    }
+
+    .landing-nav-actions .btn-teal-outline,
+    .landing-nav-actions .btn-teal {
+        padding: 8px 12px !important;
+        font-size: 0.82rem !important;
+    }
+
+    .booking-card-wrapper {
+        width: 100%;
+        padding: 0 2px;
+    }
+
+    .card {
+        padding: 22px 18px !important;
+        border-radius: 16px !important;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    .slots-grid {
+        grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)) !important;
+        gap: 8px !important;
+    }
+
+    .time-slot-btn {
+        min-height: 46px !important;
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        padding: 8px 4px !important;
+    }
+
+    .btn-submit {
+        min-height: 52px !important;
+        font-size: 1.05rem !important;
+        width: 100% !important;
+        border-radius: 12px !important;
+    }
+
+    /* Testimonial marquee items on mobile */
+    .testimonial-card-slide {
+        width: 300px !important;
+        padding: 20px 18px !important;
+        border-radius: 16px !important;
+    }
+
+    .testimonial-marquee-wrapper::before,
+    .testimonial-marquee-wrapper::after {
+        width: 40px !important;
+    }
+
+    .page-hero-banner {
+        padding: 28px 16px 22px !important;
+    }
+
+    .page-hero-title {
+        font-size: 1.85rem !important;
+    }
+}
+
+/* Smartphone Screens (max-width: 480px) */
+@media (max-width: 480px) {
+    main {
+        padding: 14px 12px 40px !important;
+    }
+
+    .hero-header {
+        margin-bottom: 24px !important;
+    }
+
+    .hero-title {
+        font-size: 1.6rem !important;
+        line-height: 1.25 !important;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem !important;
+    }
+
+    .hero-badge {
+        font-size: 0.8rem !important;
+        padding: 6px 14px !important;
+    }
+
+    .card {
+        padding: 18px 14px !important;
+    }
+
+    .landing-nav-actions .btn-teal-outline {
+        display: none !important;
+    }
+
+    .slots-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 6px !important;
+    }
+
+    .time-slot-btn {
+        font-size: 0.78rem !important;
+        padding: 6px 2px !important;
+        min-height: 44px !important;
+    }
+
+    .testimonial-card-slide {
+        width: 275px !important;
+        padding: 16px 14px !important;
+    }
+}
+
+
 
 
 
