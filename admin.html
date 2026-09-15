@@ -27,7 +27,6 @@
     </div>
 
     <!-- Header Navigation -->
-    <!-- Header Navigation -->
     <header class="landing-header">
         <div class="landing-nav-container">
             <a href="home.html" class="landing-logo">
@@ -49,6 +48,7 @@
             <div class="landing-nav-actions">
                 <a href="my-appointments.html" class="btn-teal-outline">My Appointments</a>
                 <a href="index.html" class="btn-teal">Book Appointment</a>
+                <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Mobile Navigation">☰</button>
                 <!-- Logout Button (Shown when logged in) -->
                 <button id="logoutBtn" class="nav-btn nav-btn-danger" style="display: none;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -57,6 +57,22 @@
                     Logout
                 </button>
             </div>
+        </div>
+
+        <!-- Mobile Navigation Dropdown Drawer -->
+        <div class="mobile-nav-drawer" id="mobileNavDrawer">
+            <ul class="mobile-nav-list">
+                <li><a href="home.html">🏠 Home</a></li>
+                <li><a href="about-clinic.html">🏥 About Clinic</a></li>
+                <li><a href="our-doctors.html">👨‍⚕️ Our Doctors</a></li>
+                <li><a href="why-us.html">✨ Why Us</a></li>
+                <li><a href="treatments.html">🩺 Treatments</a></li>
+                <li><a href="testimonials.html">⭐ Testimonials</a></li>
+                <li style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+                    <a href="index.html" class="btn-teal" style="justify-content: center;">📅 Book Appointment</a>
+                    <a href="my-appointments.html" class="btn-teal-outline" style="justify-content: center;">📋 My Appointments</a>
+                </li>
+            </ul>
         </div>
     </header>
 

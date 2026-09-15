@@ -196,3 +196,56 @@ if (document.body) {
     document.body.classList.remove("dark-mode");
 }
 
+// Global Mobile Menu Toggle Initializer
+function initGlobalMobileMenu() {
+    const mobileBtn = document.getElementById("mobileMenuBtn");
+    const mobileNav = document.getElementById("mobileNavDrawer");
+    if (!mobileBtn || !mobileNav) return;
+
+    if (mobileBtn.dataset.mobileMenuInitialized) return;
+    mobileBtn.dataset.mobileMenuInitialized = "true";
+
+    mobileBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        const isOpen = mobileNav.classList.contains("active");
+        if (isOpen) {
+            mobileNav.classList.remove("active");
+            mobileBtn.setAttribute("aria-expanded", "false");
+            mobileBtn.innerHTML = "☰";
+        } else {
+            mobileNav.classList.add("active");
+            mobileBtn.setAttribute("aria-expanded", "true");
+            mobileBtn.innerHTML = "✕";
+        }
+    });
+
+    mobileNav.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", function () {
+            mobileNav.classList.remove("active");
+            if (mobileBtn) {
+                mobileBtn.setAttribute("aria-expanded", "false");
+                mobileBtn.innerHTML = "☰";
+            }
+        });
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!mobileNav.contains(e.target) && !mobileBtn.contains(e.target)) {
+            if (mobileNav.classList.contains("active")) {
+                mobileNav.classList.remove("active");
+                if (mobileBtn) {
+                    mobileBtn.setAttribute("aria-expanded", "false");
+                    mobileBtn.innerHTML = "☰";
+                }
+            }
+        }
+    });
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initGlobalMobileMenu);
+} else {
+    initGlobalMobileMenu();
+}
+
+

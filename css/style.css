@@ -2346,8 +2346,135 @@ html, body {
     backface-visibility: hidden;
 }
 
+/* Base Mobile Menu Button & Drawer Styles */
+.mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: 1px solid #cbd5e1;
+    font-size: 1.5rem;
+    color: #0f172a;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.mobile-menu-btn:hover {
+    background: #f1f5f9;
+    color: #0d9488;
+    border-color: #0d9488;
+}
+
+.mobile-nav-drawer {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+    border-bottom: 3px solid #0d9488;
+    padding: 16px 20px;
+    z-index: 9999;
+}
+
+.mobile-nav-drawer.active {
+    display: block !important;
+    animation: fadeInDown 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mobile-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mobile-nav-list a {
+    text-decoration: none;
+    color: #334155;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 10px 14px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.mobile-nav-list a:hover, 
+.mobile-nav-list a.active {
+    background: #f0fdfa;
+    color: #0d9488;
+}
+
+/* Horizontal Scroll Wrapper for Tables */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1.25rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.table-responsive table {
+    min-width: 650px;
+    width: 100%;
+}
+
 /* Tablet & Mobile Screens (max-width: 768px) */
 @media (max-width: 768px) {
+    /* Background Attachment Scroll Fix for Mobile Devices */
+    body, .hero-section, .page-hero-banner, .cta-section, section {
+        background-attachment: scroll !important;
+    }
+
+    /* Navigation Bar Mobile Layout */
+    .mobile-menu-btn {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .landing-nav-links {
+        display: none !important;
+    }
+
+    .landing-nav-container, .nav-container {
+        padding: 10px 16px !important;
+    }
+
+    .landing-logo-text, .brand-title {
+        font-size: 1.2rem !important;
+    }
+
+    .brand-logo-img, .logo-icon img, .landing-logo-icon img {
+        width: 36px !important;
+        height: 36px !important;
+    }
+
+    .landing-nav-actions .btn-teal-outline,
+    .landing-nav-actions .btn-teal {
+        padding: 8px 12px !important;
+        font-size: 0.85rem !important;
+    }
+
     /* Prevent iOS browser auto-zoom on form inputs & ensure touch target heights */
     input[type="text"],
     input[type="number"],
@@ -2369,23 +2496,79 @@ html, body {
         -webkit-tap-highlight-color: transparent;
     }
 
-    .landing-nav-container, .nav-container {
-        padding: 10px 16px !important;
+    /* Hero Section Mobile Adaptations */
+    .hero-section {
+        min-height: auto !important;
+        padding: 48px 16px 40px 16px !important;
     }
 
-    .landing-logo-text, .brand-title {
-        font-size: 1.2rem !important;
+    .hero-container {
+        grid-template-columns: 1fr !important;
+        gap: 32px !important;
     }
 
-    .brand-logo-img, .logo-icon img, .landing-logo-icon img {
-        width: 38px !important;
-        height: 38px !important;
+    .hero-title {
+        font-size: 2.1rem !important;
+        line-height: 1.22 !important;
+        margin-bottom: 16px !important;
     }
 
-    .landing-nav-actions .btn-teal-outline,
-    .landing-nav-actions .btn-teal {
-        padding: 8px 12px !important;
-        font-size: 0.82rem !important;
+    .hero-subtitle {
+        font-size: 1rem !important;
+        margin-bottom: 24px !important;
+        line-height: 1.55 !important;
+    }
+
+    .hero-buttons {
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 12px !important;
+    }
+
+    .hero-buttons a, .hero-buttons button {
+        width: 100% !important;
+        justify-content: center !important;
+        text-align: center;
+    }
+
+    .trust-badges, .hero-trust-badges, .trust-badge-group {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 10px !important;
+    }
+
+    /* Grid Layouts to 1-Column on Mobile */
+    .why-grid, 
+    .treatments-grid, 
+    .doctors-grid, 
+    .stats-grid, 
+    .cards-grid, 
+    .features-grid,
+    .testimonials-grid,
+    .dashboard-stats-grid,
+    .quick-actions-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    /* Form Grids to 1-Column */
+    .form-grid, .form-row {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    /* Filter Controls Stack Vertically */
+    .filter-bar, .controls-row, .search-filter-container, .dashboard-filters {
+        flex-direction: column !important;
+        width: 100% !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    .filter-bar select, .filter-bar input, .filter-bar button,
+    .search-filter-container select, .search-filter-container input, .search-filter-container button {
+        width: 100% !important;
     }
 
     .booking-card-wrapper {
@@ -2394,17 +2577,12 @@ html, body {
     }
 
     .card {
-        padding: 22px 18px !important;
+        padding: 20px 16px !important;
         border-radius: 16px !important;
     }
 
-    .form-grid {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-    }
-
     .slots-grid {
-        grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)) !important;
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)) !important;
         gap: 8px !important;
     }
 
@@ -2417,13 +2595,12 @@ html, body {
     }
 
     .btn-submit {
-        min-height: 52px !important;
+        min-height: 50px !important;
         font-size: 1.05rem !important;
         width: 100% !important;
         border-radius: 12px !important;
     }
 
-    /* Testimonial marquee items on mobile */
     .testimonial-card-slide {
         width: 300px !important;
         padding: 20px 18px !important;
@@ -2436,7 +2613,7 @@ html, body {
     }
 
     .page-hero-banner {
-        padding: 28px 16px 22px !important;
+        padding: 32px 16px 24px !important;
     }
 
     .page-hero-title {
@@ -2444,7 +2621,18 @@ html, body {
     }
 }
 
-/* Smartphone Screens (max-width: 480px) */
+/* Tablet Screens (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .why-grid, 
+    .treatments-grid, 
+    .doctors-grid, 
+    .cards-grid, 
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* Small Smartphone Screens (max-width: 480px) */
 @media (max-width: 480px) {
     main {
         padding: 14px 12px 40px !important;
@@ -2455,7 +2643,7 @@ html, body {
     }
 
     .hero-title {
-        font-size: 1.6rem !important;
+        font-size: 1.75rem !important; /* ~28-32px */
         line-height: 1.25 !important;
     }
 
@@ -2469,7 +2657,7 @@ html, body {
     }
 
     .card {
-        padding: 18px 14px !important;
+        padding: 16px 14px !important;
     }
 
     .landing-nav-actions .btn-teal-outline {
@@ -2492,6 +2680,7 @@ html, body {
         padding: 16px 14px !important;
     }
 }
+
 
 
 
