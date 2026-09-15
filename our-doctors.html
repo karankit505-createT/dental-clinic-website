@@ -16,7 +16,7 @@
 
     <!-- Config & Custom Stylesheet -->
     <script src="js/config.js"></script>
-    <link rel="stylesheet" href="css/style.css?v=25">
+    <link rel="stylesheet" href="css/style.css?v=100">
     <link rel="stylesheet" href="css/background-slideshow.css">
 
     <style>
@@ -53,220 +53,30 @@
             margin-top: 0;
         }
 
-        /* Glassmorphism & Navbar */
-        .landing-header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            transform: translateZ(0);
-            will-change: transform;
-        }
-
-        .landing-nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 14px 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .landing-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
-
-        .landing-logo-icon {
-            width: 48px;
-            height: 48px;
-            background: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: none;
-        }
-
-        .brand-logo-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .landing-logo-text {
-            font-family: var(--font-heading);
-            font-size: 1.55rem;
-            font-weight: 800;
-            color: #0f172a;
-            letter-spacing: -0.5px;
-        }
-
-        .landing-logo-text span {
-            color: #0d9488;
-        }
-
-        .landing-nav-links {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            flex-wrap: nowrap;
-        }
-
-        .landing-nav-links li {
-            flex-shrink: 0;
-        }
-
-        .landing-nav-links a {
-            text-decoration: none;
-            color: #475569;
-            font-weight: 600;
-            font-size: 0.96rem;
-            transition: all 0.2s ease;
-            position: relative;
-            padding: 6px 0;
-            white-space: nowrap;
-            display: inline-block;
-        }
-
-        .landing-nav-links a:hover,
-        .landing-nav-links a.active {
-            color: #0d9488;
-        }
-
-        .landing-nav-links a.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: #0d9488;
-            border-radius: 2px;
-        }
-
-        .landing-nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-
-        .btn-teal {
-            background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
-            color: white !important;
-            padding: 10px 22px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.98rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            box-shadow: 0 4px 14px rgba(15, 118, 110, 0.28);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-teal:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(15, 118, 110, 0.40);
-        }
-
-        .btn-teal-outline {
-            background: transparent;
-            color: #0f766e !important;
-            border: 1.8px solid #0f766e;
-            padding: 9px 20px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.98rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-
-        .btn-teal-outline:hover {
-            background: #ccfbf1;
-            transform: translateY(-2px);
-        }
-
-        /* Page Hero Banner for inner pages */
-        .page-hero-banner {
-            background: linear-gradient(135deg, #0f172a 0%, #0f3a3a 100%);
-            padding: 64px 24px 48px 24px;
-            text-align: center;
-            color: white;
-            position: relative;
-            border-bottom: 3px solid #0d9488;
-        }
-
-        .page-hero-title {
-            font-family: var(--font-heading);
-            font-size: 2.6rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 12px;
-        }
-
-        .page-hero-breadcrumb {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #5eead4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .page-hero-breadcrumb a {
-            color: #99f6e4;
-            text-decoration: none;
-        }
-
-        .page-hero-breadcrumb a:hover {
-            color: white;
-        }
+        /* Styles defer to centralized css/style.css */
 
         /* Section Layouts */
         .section-padding {
-            padding: 80px 24px;
+            padding: 96px 32px;
         }
 
         .section-header {
             text-align: center;
-            max-width: 700px;
-            margin: 0 auto 50px auto;
+            max-width: 820px;
+            margin: 0 auto 56px auto;
         }
 
         .section-title {
-            font-size: 2.45rem;
+            font-size: 2.8rem;
             font-weight: 800;
             color: #0f172a;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .section-subtitle {
-            font-size: 1.12rem;
+            font-size: 1.2rem;
             color: #475569;
+            line-height: 1.6;
         }
 
         /* Smooth Scroll Fade-In Animations (GPU Accelerated) */
@@ -285,22 +95,22 @@
 
         /* Doctor Showcase Cards */
         .doctors-container {
-            max-width: 1040px;
+            max-width: 1320px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 36px;
+            gap: 42px;
         }
 
         .doctor-card-showcase {
             background: white;
             border-radius: 24px;
-            padding: 40px;
+            padding: 48px;
             border: 1.5px solid #e2e8f0;
             box-shadow: 0 15px 35px rgba(15, 118, 110, 0.06);
             display: grid;
-            grid-template-columns: 1.25fr 0.75fr;
-            gap: 36px;
+            grid-template-columns: 1.3fr 0.7fr;
+            gap: 44px;
             align-items: center;
             position: relative;
             overflow: hidden;
@@ -317,19 +127,19 @@
             display: inline-block;
             background: #ccfbf1;
             color: #0f766e;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: 800;
-            padding: 5px 14px;
+            padding: 6px 16px;
             border-radius: 20px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             letter-spacing: 0.5px;
         }
 
         .doctor-full-name {
-            font-size: 2.05rem;
+            font-size: 2.3rem;
             font-weight: 800;
             color: #0f172a;
-            margin: 0 0 6px 0;
+            margin: 0 0 8px 0;
             line-height: 1.25;
         }
 
@@ -561,7 +371,7 @@
             max-height: 0;
             overflow: hidden;
             background: #ffffff;
-            border-bottom: 3px solid #0d9488;
+            border-bottom: 1px solid #e2e8f0;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
             transition: max-height 0.4s ease-in-out;
         }
@@ -712,9 +522,10 @@
 
     <!-- Page Hero Banner -->
     <div class="page-hero-banner">
+        <div class="hero-badge-pill">👨‍⚕️ WORLD-CLASS SPECIALISTS</div>
         <h1 class="page-hero-title">Meet Our Expert Dentists</h1>
         <div class="page-hero-breadcrumb">
-            <a href="home.html">Home</a> <span>/</span> <span>Our Doctors</span>
+            <a href="home.html">Home</a> <span class="bc-sep">›</span> <span class="bc-current">Our Doctors</span>
         </div>
     </div>
 

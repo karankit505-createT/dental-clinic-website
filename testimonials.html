@@ -16,7 +16,7 @@
 
     <!-- Config & Custom Stylesheet -->
     <script src="js/config.js"></script>
-    <link rel="stylesheet" href="css/style.css?v=25">
+    <link rel="stylesheet" href="css/style.css?v=130">
     <link rel="stylesheet" href="css/background-slideshow.css">
 
     <style>
@@ -53,234 +53,46 @@
             margin-top: 0;
         }
 
-        /* Glassmorphism & Navbar */
-        .landing-header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            transform: translateZ(0);
-            will-change: transform;
-        }
-
-        .landing-nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 14px 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .landing-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
-
-        .landing-logo-icon {
-            width: 48px;
-            height: 48px;
-            background: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: none;
-        }
-
-        .brand-logo-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .landing-logo-text {
-            font-family: var(--font-heading);
-            font-size: 1.55rem;
-            font-weight: 800;
-            color: #0f172a;
-            letter-spacing: -0.5px;
-        }
-
-        .landing-logo-text span {
-            color: #0d9488;
-        }
-
-        .landing-nav-links {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            flex-wrap: nowrap;
-        }
-
-        .landing-nav-links li {
-            flex-shrink: 0;
-        }
-
-        .landing-nav-links a {
-            text-decoration: none;
-            color: #475569;
-            font-weight: 600;
-            font-size: 0.96rem;
-            transition: all 0.2s ease;
-            position: relative;
-            padding: 6px 0;
-            white-space: nowrap;
-            display: inline-block;
-        }
-
-        .landing-nav-links a:hover,
-        .landing-nav-links a.active {
-            color: #0d9488;
-        }
-
-        .landing-nav-links a.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: #0d9488;
-            border-radius: 2px;
-        }
-
-        .landing-nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-
-        .btn-teal {
-            background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
-            color: white !important;
-            padding: 10px 22px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.98rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            box-shadow: 0 4px 14px rgba(15, 118, 110, 0.28);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-teal:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(15, 118, 110, 0.40);
-        }
-
-        .btn-teal-outline {
-            background: transparent;
-            color: #0f766e !important;
-            border: 1.8px solid #0f766e;
-            padding: 9px 20px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.98rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-
-        .btn-teal-outline:hover {
-            background: #ccfbf1;
-            transform: translateY(-2px);
-        }
-
-        /* Page Hero Banner for inner pages */
-        .page-hero-banner {
-            background: linear-gradient(135deg, #0f172a 0%, #0f3a3a 100%);
-            padding: 64px 24px 48px 24px;
-            text-align: center;
-            color: white;
-            position: relative;
-            border-bottom: 3px solid #0d9488;
-        }
-
-        .page-hero-title {
-            font-family: var(--font-heading);
-            font-size: 2.6rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 12px;
-        }
-
-        .page-hero-breadcrumb {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #5eead4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .page-hero-breadcrumb a {
-            color: #99f6e4;
-            text-decoration: none;
-        }
-
-        .page-hero-breadcrumb a:hover {
-            color: white;
-        }
+        /* Styles defer to centralized css/style.css */
 
         /* Section Layouts */
         .section-padding {
-            padding: 80px 24px;
+            padding: 96px 32px;
         }
 
         .section-header {
             text-align: center;
-            max-width: 700px;
-            margin: 0 auto 50px auto;
+            max-width: 820px;
+            margin: 0 auto 56px auto;
         }
 
         .section-title {
-            font-size: 2.45rem;
+            font-size: 2.8rem;
             font-weight: 800;
             color: #0f172a;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .section-subtitle {
-            font-size: 1.12rem;
+            font-size: 1.2rem;
             color: #475569;
+            line-height: 1.6;
         }
 
         /* Testimonials Grid */
         .testimonials-grid {
-            max-width: 1240px;
+            max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 32px;
         }
 
         .testimonial-card {
+            width: 380px;
+            flex-shrink: 0;
             background: white;
-            border-radius: 18px;
+            border-radius: 20px;
             padding: 32px 28px;
             border: 1px solid rgba(226, 232, 240, 0.9);
             box-shadow: 0 10px 25px rgba(0,0,0,0.03);
@@ -417,7 +229,7 @@
             max-height: 0;
             overflow: hidden;
             background: #ffffff;
-            border-bottom: 3px solid #0d9488;
+            border-bottom: 1px solid #e2e8f0;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
             transition: max-height 0.4s ease-in-out;
         }
@@ -547,123 +359,290 @@
 
     <!-- PAGE HERO BANNER -->
     <section class="page-hero-banner">
+        <div class="hero-badge-pill">⭐ PATIENT REVIEWS</div>
         <h1 class="page-hero-title">What Our Patients Say</h1>
         <div class="page-hero-breadcrumb">
-            <a href="home.html">Home</a> <span>/</span> <span>Testimonials</span>
+            <a href="home.html">Home</a> <span class="bc-sep">›</span> <span class="bc-current">Testimonials</span>
         </div>
     </section>
 
-    <!-- SECTION 6: TESTIMONIALS -->
-    <section class="section-padding" style="background: rgba(248, 250, 252, 0.85);">
+    <!-- SECTION 6: CONTINUOUS AUTO-SCROLLING TESTIMONIALS -->
+    <section class="section-padding" style="background: rgba(248, 250, 252, 0.85); overflow: hidden; padding-bottom: 60px;">
         <div class="section-header">
             <span style="background: #fef3c7; color: #d97706; padding: 6px 16px; border-radius: 30px; font-size: 0.88rem; font-weight: 700; display: inline-block; margin-bottom: 12px; border: 1px solid #fde68a;">
-                ⭐ Patient Reviews
+                ⭐ Live Patient Stories
             </span>
-            <h2 class="section-title">Happy Patient Stories</h2>
+            <h2 class="section-title">What Our Patients Say</h2>
             <p class="section-subtitle">
-                SmileCare Dental Clinic par patient satisfaction aur painless experience humari sabse badi priority hai.
+                Real feedback from real patients. Hover over any review card to pause auto-scroll.
             </p>
         </div>
 
-        <div class="testimonials-grid">
-            <!-- Review 1 -->
-            <div class="testimonial-card">
-                <div>
-                    <div class="testimonial-stars">★★★★★</div>
-                    <p class="testimonial-text">
-                        "Mera root canal bilkul painless raha! Dr. Sharma aur unki team ne mujhe shuru se flexible timing aur full support diya. Best dental experience in town."
-                    </p>
-                </div>
-                <div class="patient-info">
-                    <div class="patient-avatar">R</div>
+        <div class="testimonial-marquee-wrapper">
+            <!-- Single Continuous Horizontal Track -->
+            <div class="testimonial-marquee-track track-left">
+                <!-- Card 1 -->
+                <div class="testimonial-card">
                     <div>
-                        <div class="patient-name">Rahul Verma</div>
-                        <div class="patient-tag">✓ Verified RCT Patient</div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "My root canal was completely painless! Dr. Sharma and his team provided flexible scheduling and full support from start to finish. Best dental experience in town."
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">R</div>
+                        <div>
+                            <div class="patient-name">Rahul Verma</div>
+                            <div class="patient-tag">✓ Verified RCT Patient</div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Review 2 -->
-            <div class="testimonial-card">
-                <div>
-                    <div class="testimonial-stars">★★★★★</div>
-                    <p class="testimonial-text">
-                        "Teeth whitening result unbelievable tha! Clinic ki hygiene standards Class-1 hain, sab instruments autocalved hain. Highly recommended for family care."
-                    </p>
-                </div>
-                <div class="patient-info">
-                    <div class="patient-avatar">P</div>
+                <!-- Card 2 -->
+                <div class="testimonial-card">
                     <div>
-                        <div class="patient-name">Priya Patel</div>
-                        <div class="patient-tag">✓ Verified Whitening Patient</div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "The teeth whitening results were unbelievable! Clinic hygiene standards are top-tier and all instruments are autoclaved. Highly recommended for family care."
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">P</div>
+                        <div>
+                            <div class="patient-name">Priya Patel</div>
+                            <div class="patient-tag">✓ Verified Whitening Patient</div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Review 3 -->
-            <div class="testimonial-card">
-                <div>
-                    <div class="testimonial-stars">★★★★★</div>
-                    <p class="testimonial-text">
-                        "Doctor Gupta ne mera dental implant itne smooth tarike se lagaya ki mujhe bilkul dard mahsoos nahi hua. Super gentle aur supportive team."
-                    </p>
-                </div>
-                <div class="patient-info">
-                    <div class="patient-avatar">A</div>
+                <!-- Card 3 -->
+                <div class="testimonial-card">
                     <div>
-                        <div class="patient-name">Amitabh Roy</div>
-                        <div class="patient-tag">✓ Verified Implant Patient</div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Dr. Sharma placed my dental implant so smoothly that I felt no pain at all. A super gentle and supportive team."
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">A</div>
+                        <div>
+                            <div class="patient-name">Amitabh Roy</div>
+                            <div class="patient-tag">✓ Verified Implant Patient</div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Review 4 -->
-            <div class="testimonial-card">
-                <div>
-                    <div class="testimonial-stars">★★★★★</div>
-                    <p class="testimonial-text">
-                        "Mere 8 saal ke bete ko teeth filling ki zaroorat thi. Staff ne use itna friendly treat kiya ki bina dar ke treatment poora ho gaya. Thank you SmileCare!"
-                    </p>
-                </div>
-                <div class="patient-info">
-                    <div class="patient-avatar">S</div>
+                <!-- Card 4 -->
+                <div class="testimonial-card">
                     <div>
-                        <div class="patient-name">Sunita Joshi</div>
-                        <div class="patient-tag">✓ Verified Kids Care Parent</div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "My 8-year-old son needed a tooth filling. The staff treated him so gently that the treatment was completed without any fear. Thank you SmileCare!"
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">S</div>
+                        <div>
+                            <div class="patient-name">Sunita Joshi</div>
+                            <div class="patient-tag">✓ Verified Kids Care Parent</div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Review 5 -->
-            <div class="testimonial-card">
-                <div>
-                    <div class="testimonial-stars">★★★★★</div>
-                    <p class="testimonial-text">
-                        "Clear aligners se mera alignment change bohot jaldi ho gaya. Transparent pricing aur easy online appointment booking feature ne sab effortless bana diya."
-                    </p>
-                </div>
-                <div class="patient-info">
-                    <div class="patient-avatar">V</div>
+                <!-- Card 5 -->
+                <div class="testimonial-card">
                     <div>
-                        <div class="patient-name">Vikram Singh</div>
-                        <div class="patient-tag">✓ Verified Aligner Patient</div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Clear aligners straightened my teeth so quickly. Transparent pricing and easy online appointment booking made everything effortless."
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">V</div>
+                        <div>
+                            <div class="patient-name">Vikram Singh</div>
+                            <div class="patient-tag">✓ Verified Aligner Patient</div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Review 6 -->
-            <div class="testimonial-card">
-                <div>
-                    <div class="testimonial-stars">★★★★★</div>
-                    <p class="testimonial-text">
-                        "Cleanliness aur modern digital scanning machine ne mujhe impress kar diya. Doctor ne proper explain kiya pehle. Truly professional dental clinic."
-                    </p>
-                </div>
-                <div class="patient-info">
-                    <div class="patient-avatar">M</div>
+                <!-- Card 6 -->
+                <div class="testimonial-card">
                     <div>
-                        <div class="patient-name">Megha Kapoor</div>
-                        <div class="patient-tag">✓ Verified Consultation Patient</div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "I was really impressed by the cleanliness and modern digital scanning technology. The doctor explained everything clearly first. A truly professional clinic."
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">M</div>
+                        <div>
+                            <div class="patient-name">Megha Kapoor</div>
+                            <div class="patient-tag">✓ Verified Consultation Patient</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 7 -->
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Wisdom tooth extraction was completely painless. Dr. Sharma's gentle technique & post-surgery care instructions made recovery super fast!"
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">A</div>
+                        <div>
+                            <div class="patient-name">Ananya Deshmukh</div>
+                            <div class="patient-tag">✓ Verified Surgery Patient</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 8 -->
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Top-notch dental clinic with prompt service, zero waiting times, and friendly support staff. Will recommend to all my friends!"
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">K</div>
+                        <div>
+                            <div class="patient-name">Karan Malhotra</div>
+                            <div class="patient-tag">✓ Verified Checkup Patient</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEAMLESS DUPLICATES FOR SINGLE-LINE LOOP -->
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "My root canal was completely painless! Dr. Sharma and his team provided flexible scheduling and full support from start to finish. Best dental experience in town."
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">R</div>
+                        <div>
+                            <div class="patient-name">Rahul Verma</div>
+                            <div class="patient-tag">✓ Verified RCT Patient</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "The teeth whitening results were unbelievable! Clinic hygiene standards are top-tier and all instruments are autoclaved. Highly recommended for family care."
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">P</div>
+                        <div>
+                            <div class="patient-name">Priya Patel</div>
+                            <div class="patient-tag">✓ Verified Whitening Patient</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Dr. Sharma placed my dental implant so smoothly that I felt no pain at all. A super gentle and supportive team."
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">A</div>
+                        <div>
+                            <div class="patient-name">Amitabh Roy</div>
+                            <div class="patient-tag">✓ Verified Implant Patient</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "My 8-year-old son needed a tooth filling. The staff treated him so gently that the treatment was completed without any fear. Thank you SmileCare!"
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">S</div>
+                        <div>
+                            <div class="patient-name">Sunita Joshi</div>
+                            <div class="patient-tag">✓ Verified Kids Care Parent</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Clear aligners straightened my teeth so quickly. Transparent pricing and easy online appointment booking made everything effortless."
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">V</div>
+                        <div>
+                            <div class="patient-name">Vikram Singh</div>
+                            <div class="patient-tag">✓ Verified Aligner Patient</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "I was really impressed by the cleanliness and modern digital scanning technology. The doctor explained everything clearly first. A truly professional clinic."
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">M</div>
+                        <div>
+                            <div class="patient-name">Megha Kapoor</div>
+                            <div class="patient-tag">✓ Verified Consultation Patient</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Wisdom tooth extraction was completely painless. Dr. Sharma's gentle technique & post-surgery care instructions made recovery super fast!"
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">A</div>
+                        <div>
+                            <div class="patient-name">Ananya Deshmukh</div>
+                            <div class="patient-tag">✓ Verified Surgery Patient</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div>
+                        <div class="testimonial-stars">★★★★★</div>
+                        <p class="testimonial-text">
+                            "Top-notch dental clinic with prompt service, zero waiting times, and friendly support staff. Will recommend to all my friends!"
+                        </p>
+                    </div>
+                    <div class="patient-info">
+                        <div class="patient-avatar">K</div>
+                        <div>
+                            <div class="patient-name">Karan Malhotra</div>
+                            <div class="patient-tag">✓ Verified Checkup Patient</div>
+                        </div>
                     </div>
                 </div>
             </div>

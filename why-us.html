@@ -16,7 +16,7 @@
 
     <!-- Config & Custom Stylesheet -->
     <script src="js/config.js"></script>
-    <link rel="stylesheet" href="css/style.css?v=25">
+    <link rel="stylesheet" href="css/style.css?v=100">
     <link rel="stylesheet" href="css/background-slideshow.css">
 
     <style>
@@ -53,235 +53,45 @@
             margin-top: 0;
         }
 
-        /* Glassmorphism & Navbar */
-        .landing-header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            transform: translateZ(0);
-            will-change: transform;
-        }
-
-        .landing-nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 14px 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-        }
-
-        .landing-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
-
-        .landing-logo-icon {
-            width: 48px;
-            height: 48px;
-            background: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: none;
-        }
-
-        .brand-logo-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .landing-logo-text {
-            font-family: var(--font-heading);
-            font-size: 1.55rem;
-            font-weight: 800;
-            color: #0f172a;
-            letter-spacing: -0.5px;
-        }
-
-        .landing-logo-text span {
-            color: #0d9488;
-        }
-
-        .landing-nav-links {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            flex-wrap: nowrap;
-        }
-
-        .landing-nav-links li {
-            flex-shrink: 0;
-        }
-
-        .landing-nav-links a {
-            text-decoration: none;
-            color: #475569;
-            font-weight: 600;
-            font-size: 0.96rem;
-            transition: all 0.2s ease;
-            position: relative;
-            padding: 6px 0;
-            white-space: nowrap;
-            display: inline-block;
-        }
-
-        .landing-nav-links a:hover,
-        .landing-nav-links a.active {
-            color: #0d9488;
-        }
-
-        .landing-nav-links a.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: #0d9488;
-            border-radius: 2px;
-        }
-
-        .landing-nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-
-        .btn-teal {
-            background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
-            color: white !important;
-            padding: 10px 22px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.98rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            box-shadow: 0 4px 14px rgba(15, 118, 110, 0.28);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-teal:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(15, 118, 110, 0.40);
-        }
-
-        .btn-teal-outline {
-            background: transparent;
-            color: #0f766e !important;
-            border: 1.8px solid #0f766e;
-            padding: 9px 20px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 0.98rem;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-
-        .btn-teal-outline:hover {
-            background: #ccfbf1;
-            transform: translateY(-2px);
-        }
-
-        /* Page Hero Banner for inner pages */
-        .page-hero-banner {
-            background: linear-gradient(135deg, #0f172a 0%, #0f3a3a 100%);
-            padding: 64px 24px 48px 24px;
-            text-align: center;
-            color: white;
-            position: relative;
-            border-bottom: 3px solid #0d9488;
-        }
-
-        .page-hero-title {
-            font-family: var(--font-heading);
-            font-size: 2.6rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 12px;
-        }
-
-        .page-hero-breadcrumb {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #5eead4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .page-hero-breadcrumb a {
-            color: #99f6e4;
-            text-decoration: none;
-        }
-
-        .page-hero-breadcrumb a:hover {
-            color: white;
-        }
+        /* Styles defer to centralized css/style.css */
 
         /* Section Layouts */
         .section-padding {
-            padding: 80px 24px;
+            padding: 96px 32px;
         }
 
         .section-header {
             text-align: center;
-            max-width: 700px;
-            margin: 0 auto 50px auto;
+            max-width: 820px;
+            margin: 0 auto 56px auto;
         }
 
         .section-title {
-            font-size: 2.45rem;
+            font-size: 2.8rem;
             font-weight: 800;
             color: #0f172a;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .section-subtitle {
-            font-size: 1.12rem;
+            font-size: 1.2rem;
             color: #475569;
+            line-height: 1.6;
         }
 
         /* Feature Card Grid (Why Choose Us) */
         .why-us-grid {
-            max-width: 1240px;
+            max-width: 1400px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 32px;
         }
 
         .why-card {
             background: #ffffff;
-            border-radius: 18px;
-            padding: 32px 28px;
+            border-radius: 20px;
+            padding: 38px 32px;
             border: 1px solid rgba(226, 232, 240, 0.9);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -419,7 +229,7 @@
             max-height: 0;
             overflow: hidden;
             background: #ffffff;
-            border-bottom: 3px solid #0d9488;
+            border-bottom: 1px solid #e2e8f0;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
             transition: max-height 0.4s ease-in-out;
         }
@@ -549,9 +359,10 @@
 
     <!-- PAGE HERO BANNER -->
     <section class="page-hero-banner">
+        <div class="hero-badge-pill">✨ WHY CHOOSE US</div>
         <h1 class="page-hero-title">Why Choose SmileCare Dental Clinic</h1>
         <div class="page-hero-breadcrumb">
-            <a href="home.html">Home</a> <span>/</span> <span>Why Us</span>
+            <a href="home.html">Home</a> <span class="bc-sep">›</span> <span class="bc-current">Why Us</span>
         </div>
     </section>
 
@@ -563,7 +374,7 @@
             </span>
             <h2 class="section-title">Why Patients Trust SmileCare</h2>
             <p class="section-subtitle">
-                Humara maqsad hai har patient ko painless treatment, modern infrastructure, aur maximum comfort pradan karna.
+                Our mission is to provide every patient with painless treatment, modern infrastructure, and maximum comfort.
             </p>
         </div>
 
@@ -573,7 +384,7 @@
                 <div class="why-icon-box">🩺</div>
                 <h3 class="why-card-title">Experienced & Skilled Doctors</h3>
                 <p class="why-card-desc">
-                    Humare yahan 15+ years se zyada experience waale senior dental surgeons aur specialists hain jo har dental issue ko precision se handle karte hain.
+                    We feature senior dental surgeons and specialists with over 15+ years of clinical experience who handle every dental condition with precision.
                 </p>
             </div>
 
@@ -582,7 +393,7 @@
                 <div class="why-icon-box">✨</div>
                 <h3 class="why-card-title">Painless Dentistry Techniques</h3>
                 <p class="why-card-desc">
-                    Advanced local anesthesia aur computerized micro-technique dwara root canals aur extractions ko bilkul painful-free banaya jata hai.
+                    Root canals and extractions are rendered completely pain-free using advanced local anesthesia and computerized micro-techniques.
                 </p>
             </div>
 
@@ -591,7 +402,7 @@
                 <div class="why-icon-box">🔬</div>
                 <h3 class="why-card-title">100% Sterilization Protocol</h3>
                 <p class="why-card-desc">
-                    Hospital-grade Class-B autoclaves aur international hygiene standards adopt kiye jaate hain safety aur cross-contamination prevention ke liye.
+                    Hospital-grade Class-B autoclaves and international hygiene standards are strictly followed for maximum safety and infection control.
                 </p>
             </div>
 
@@ -600,7 +411,7 @@
                 <div class="why-icon-box">⚡</div>
                 <h3 class="why-card-title">Digital X-Rays & Intraoral Scanner</h3>
                 <p class="why-card-desc">
-                    Low-radiation digital RVG X-Rays aur 3D scanners se instant, accurate diagnosis aur transparent treatment planning milti hai.
+                    Low-radiation digital RVG X-Rays and 3D scanners ensure instant, accurate diagnosis and transparent treatment planning.
                 </p>
             </div>
 
@@ -609,7 +420,7 @@
                 <div class="why-icon-box">💳</div>
                 <h3 class="why-card-title">Transparent & Affordable Pricing</h3>
                 <p class="why-card-desc">
-                    Koi hidden charges nahi! Sabhi treatments ki pricing clear hai aur easy EMI options bhi available hain major dental procedures ke liye.
+                    No hidden charges! Clear, transparent pricing with easy EMI options available for all major dental procedures.
                 </p>
             </div>
 
@@ -618,7 +429,7 @@
                 <div class="why-icon-box">🌟</div>
                 <h3 class="why-card-title">Comfortable & Friendly Ambience</h3>
                 <p class="why-card-desc">
-                    Clean, air-conditioned waiting room, relaxing music, aur supportive staff jo patient ke fear aur anxiety ko door karta hai.
+                    Clean, air-conditioned waiting lounge, soothing music, and a supportive staff to relieve patient fear and anxiety.
                 </p>
             </div>
 
@@ -627,7 +438,7 @@
                 <div class="why-icon-box">⏱️</div>
                 <h3 class="why-card-title">Zero Wait Time Appointments</h3>
                 <p class="why-card-desc">
-                    Online scheduling system se aapka exact slot confirm hota hai taaki clinic aate hi turant treatment shuru ho sake.
+                    Our online scheduling system confirms your exact slot so treatment begins right when you arrive at the clinic.
                 </p>
             </div>
 
@@ -636,7 +447,7 @@
                 <div class="why-icon-box">🦷</div>
                 <h3 class="why-card-title">Complete Dental Care Under One Roof</h3>
                 <p class="why-card-desc">
-                    Braces, Aligners, Implants, Root Canal, Cosmetic Smile Design, Scaling, aur Pediatric Dentistry — sabhi ek jagah available hain.
+                    Braces, Aligners, Implants, Root Canals, Cosmetic Smile Design, Scaling, and Pediatric Care — all available under one roof.
                 </p>
             </div>
 
@@ -645,7 +456,7 @@
                 <div class="why-icon-box">❤️</div>
                 <h3 class="why-card-title">500+ Verified 5-Star Reviews</h3>
                 <p class="why-card-desc">
-                    Humare satisfied patients ka bharosa humari sabse badi strength hai. Read real patient stories aur experience the difference.
+                    The trust of our satisfied patients is our greatest strength. Read real patient stories and experience the difference.
                 </p>
             </div>
         </div>
