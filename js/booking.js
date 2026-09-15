@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Mobile Navigation Drawer Handler
     const mobileBtn = document.getElementById("mobileMenuBtn");
     const mobileNav = document.getElementById("mobileNavDrawer");
-    if (mobileBtn && mobileNav) {
+    if (mobileBtn && mobileNav && !mobileBtn.dataset.mobileMenuInitialized) {
+        mobileBtn.dataset.mobileMenuInitialized = "true";
         mobileBtn.addEventListener("click", function (e) {
             e.stopPropagation();
             const isOpen = mobileNav.classList.contains("active");

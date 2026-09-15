@@ -204,6 +204,8 @@ function initMobileMenu() {
     const mobileNav = document.getElementById("mobileNavDrawer");
     
     if (!mobileBtn || !mobileNav) return;
+    if (mobileBtn.dataset.mobileMenuInitialized) return;
+    mobileBtn.dataset.mobileMenuInitialized = "true";
 
     mobileBtn.addEventListener("click", function (e) {
         e.stopPropagation();
