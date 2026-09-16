@@ -26,35 +26,19 @@
         ⚠️ <strong>Supabase Setup Required:</strong> Please open <code>js/config.js</code> and paste your actual <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code>.
     </div>
 
-    <!-- Header Navigation -->
-    <header class="landing-header">
-        <div class="landing-nav-container">
-            <a href="home.html" class="landing-logo">
+    <!-- Header Navigation (Unified 2-Row Block) -->
+    <header class="landing-header portal-unified-header">
+        <!-- TOP ROW: Logo + Role Badge (Left) | Logout Button (Right) -->
+        <div class="header-top-row">
+            <a href="admin.html" class="landing-logo" style="display: flex; align-items: center; gap: 6px; text-decoration: none;">
                 <div class="landing-logo-icon">
                     <img src="assets/hero-tooth-illustration_4.svg" alt="SmileCare Logo" class="brand-logo-img">
                 </div>
                 <div class="landing-logo-text">SmileCare <span>Dental Clinic</span></div>
+                <span class="portal-badge badge-admin">🛡️ Admin Portal</span>
             </a>
 
-            <ul class="landing-nav-links">
-                <li><a href="home.html">Home</a></li>
-                <li><a href="about-clinic.html">About Clinic</a></li>
-                <li><a href="our-doctors.html">Our Doctors</a></li>
-                <li><a href="why-us.html">Why Us</a></li>
-                <li><a href="treatments.html">Treatments</a></li>
-                <li><a href="testimonials.html">Testimonials</a></li>
-            </ul>
-
             <div class="landing-nav-actions">
-                <a href="my-appointments.html" class="btn-teal-outline" title="My Appointments">
-                    <span class="nav-btn-text">My Appointments</span>
-                    <span class="nav-btn-text-short">Appointments</span>
-                </a>
-                <a href="index.html" class="btn-teal" title="Book Appointment">
-                    <span class="nav-btn-text">Book Appointment</span>
-                    <span class="nav-btn-text-short">Book</span>
-                </a>
-                <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Mobile Navigation">☰</button>
                 <!-- Logout Button (Shown when logged in) -->
                 <button id="logoutBtn" class="nav-btn nav-btn-danger" style="display: none;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -63,22 +47,6 @@
                     Logout
                 </button>
             </div>
-        </div>
-
-        <!-- Mobile Navigation Dropdown Drawer -->
-        <div class="mobile-nav-drawer" id="mobileNavDrawer">
-            <ul class="mobile-nav-list">
-                <li><a href="home.html">🏠 Home</a></li>
-                <li><a href="about-clinic.html">🏥 About Clinic</a></li>
-                <li><a href="our-doctors.html">👨‍⚕️ Our Doctors</a></li>
-                <li><a href="why-us.html">✨ Why Us</a></li>
-                <li><a href="treatments.html">🩺 Treatments</a></li>
-                <li><a href="testimonials.html">⭐ Testimonials</a></li>
-                <li style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; flex-direction: column; gap: 10px;">
-                    <a href="index.html" class="btn-teal" style="justify-content: center;">📅 Book Appointment</a>
-                    <a href="my-appointments.html" class="btn-teal-outline" style="justify-content: center;">📋 My Appointments</a>
-                </li>
-            </ul>
         </div>
     </header>
 
@@ -134,22 +102,22 @@
                         🛡️ Administrator
                     </span>
                 </div>
-            </div>
 
-            <!-- Navigation Tabs -->
-            <div class="dashboard-tabs" style="display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; flex-wrap: wrap;">
-                <button type="button" id="tabBtnAppointments" class="dashboard-tab-btn active" style="padding: 10px 18px; font-weight: 700; font-size: 0.95rem; border: none; background: none; cursor: pointer; color: var(--primary); border-bottom: 3px solid var(--primary); margin-bottom: -6px; display: inline-flex; align-items: center; gap: 6px;">
-                    📋 All Appointments List
-                </button>
-                <button type="button" id="tabBtnManageTeam" class="dashboard-tab-btn" style="padding: 10px 18px; font-weight: 700; font-size: 0.95rem; border: none; background: none; cursor: pointer; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;">
-                    👥 Manage Team (Doctors & Staff)
-                </button>
-                <button type="button" id="tabBtnPatientHistory" class="dashboard-tab-btn" style="padding: 10px 18px; font-weight: 700; font-size: 0.95rem; border: none; background: none; cursor: pointer; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;">
-                    📜 Patient History
-                </button>
-                <button type="button" id="tabBtnAnalytics" class="dashboard-tab-btn" style="padding: 10px 18px; font-weight: 700; font-size: 0.95rem; border: none; background: none; cursor: pointer; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;">
-                    📊 Business Analytics
-                </button>
+                <!-- Admin Function Navigation Tabs Bar -->
+                <div style="display: flex; gap: 10px; margin-top: 20px; padding-top: 16px; border-top: 1px solid #f1f5f9; flex-wrap: wrap;">
+                    <button type="button" id="tabBtnAppointments" class="tab-btn active" style="padding: 10px 18px; font-size: 0.88rem; font-weight: 700; border-radius: 8px;">
+                        📋 All Appointments
+                    </button>
+                    <button type="button" id="tabBtnManageTeam" class="tab-btn" style="padding: 10px 18px; font-size: 0.88rem; font-weight: 700; border-radius: 8px;">
+                        👥 Manage Team (Doctors & Staff)
+                    </button>
+                    <button type="button" id="tabBtnPatientHistory" class="tab-btn" style="padding: 10px 18px; font-size: 0.88rem; font-weight: 700; border-radius: 8px;">
+                        📜 Patient Medical History
+                    </button>
+                    <button type="button" id="tabBtnAnalytics" class="tab-btn" style="padding: 10px 18px; font-size: 0.88rem; font-weight: 700; border-radius: 8px;">
+                        📊 Business Analytics
+                    </button>
+                </div>
             </div>
 
             <!-- TAB 1: APPOINTMENTS SECTION -->
@@ -158,7 +126,7 @@
                 <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;">
                     <!-- Row 1: Status Breakdown (Total, Pending, Confirmed, Completed) -->
                     <div class="stats-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                        <div class="stat-card filter-card-btn" id="cardTotal" data-status="All" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                        <div class="stat-card filter-card-btn" id="cardTotal" data-status="All" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); border-left: 4px solid #0d9488 !important; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
                             <div style="background: #f1f5f9; color: #475569; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
                                 📊
                             </div>
@@ -168,7 +136,7 @@
                             </div>
                         </div>
 
-                        <div class="stat-card filter-card-btn" id="cardPending" data-status="Pending" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                        <div class="stat-card filter-card-btn" id="cardPending" data-status="Pending" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); border-left: 4px solid #f59e0b !important; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
                             <div style="background: #fef3c7; color: #d97706; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
                                 ⏳
                             </div>
@@ -178,7 +146,7 @@
                             </div>
                         </div>
 
-                        <div class="stat-card filter-card-btn" id="cardConfirmed" data-status="Confirmed" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                        <div class="stat-card filter-card-btn" id="cardConfirmed" data-status="Confirmed" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); border-left: 4px solid #3b82f6 !important; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
                             <div style="background: #e0f2fe; color: #0284c7; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
                                 📅
                             </div>
@@ -188,7 +156,7 @@
                             </div>
                         </div>
 
-                        <div class="stat-card filter-card-btn" id="cardCompleted" data-status="Completed" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                        <div class="stat-card filter-card-btn" id="cardCompleted" data-status="Completed" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); border-left: 4px solid #10b981 !important; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
                             <div style="background: #dcfce7; color: #15803d; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
                                 ✅
                             </div>
@@ -201,7 +169,7 @@
 
                     <!-- Row 2: Cancelled & Report Stats (Cancelled, Reports Uploaded, Pending Reports) -->
                     <div class="stats-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                        <div class="stat-card filter-card-btn" id="cardCancelled" data-status="Cancelled" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                        <div class="stat-card filter-card-btn" id="cardCancelled" data-status="Cancelled" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); border-left: 4px solid #ef4444 !important; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm); cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;">
                             <div style="background: #ffe4e6; color: #e11d48; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
                                 ❌
                             </div>
@@ -211,7 +179,7 @@
                             </div>
                         </div>
 
-                        <div class="stat-card" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm);">
+                        <div class="stat-card" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); border-left: 4px solid #3b82f6 !important; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm);">
                             <div style="background: #ccfbf1; color: #0f766e; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
                                 📄
                             </div>
@@ -221,7 +189,7 @@
                             </div>
                         </div>
 
-                        <div class="stat-card" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm);">
+                        <div class="stat-card" style="background: white; padding: 18px 20px; border-radius: 14px; border: 1px solid var(--border-color); border-left: 4px solid #f59e0b !important; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow-sm);">
                             <div style="background: #ffedd5; color: #c2410c; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
                                 📤
                             </div>
@@ -336,6 +304,7 @@
                                     <th>Specialization</th>
                                     <th>Email Address</th>
                                     <th>Registered Date</th>
+                                    <th style="text-align: center;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="doctorsTableBody">
@@ -366,6 +335,7 @@
                                     <th>Email Address</th>
                                     <th>Assigned Role</th>
                                     <th>Created Date</th>
+                                    <th style="text-align: center;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="staffTableBody">
@@ -373,6 +343,10 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+
+                <div style="margin-top: 14px; padding: 12px 16px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; font-size: 0.82rem; color: #64748b;">
+                    💡 <strong>Note:</strong> Removing a doctor or staff member deletes their record from the clinic database. Please also remove their login email from the Supabase Authentication dashboard separately if you wish to revoke login access completely.
                 </div>
             </div>
 
@@ -450,27 +424,7 @@
                     </div>
                 </div>
 
-                <!-- 1. Total Revenue / Earnings Section -->
-                <div class="card" style="margin-bottom: 24px; padding: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
-                        <div>
-                            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-dark); margin: 0;">💰 Revenue & Earnings Tracking</h3>
-                            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 2px 0 0 0;">Financial breakdown of completed clinic appointments</p>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <label for="revenueTimeFilter" style="font-size: 0.85rem; font-weight: 700; color: #475569;">Time Period:</label>
-                            <select id="revenueTimeFilter" style="padding: 7px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.88rem; background: white; color: #1e293b; font-weight: 600;">
-                                <option value="all">All Time</option>
-                                <option value="month">This Month</option>
-                                <option value="week">This Week</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div id="revenueContentArea">
-                        <!-- Loaded dynamically via JS -->
-                    </div>
-                </div>
 
                 <!-- 2. Doctor-Wise Performance Section -->
                 <div class="card" style="margin-bottom: 24px; padding: 24px;">
@@ -733,6 +687,36 @@
                     <button type="submit" style="padding: 9px 20px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">👥 Add Staff Member</button>
                 </div>
             </form>
+        </div>
+    <!-- Confirm Delete Team Member Modal -->
+    <div id="confirmDeleteTeamModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 99999; align-items: center; justify-content: center; padding: 16px;">
+        <div style="background: #ffffff; width: 100%; max-width: 460px; border-radius: 16px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border: 1px solid #fecdd3; animation: fadeIn 0.2s ease-out;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: #ffe4e6; color: #e11d48; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0;">
+                    🗑️
+                </div>
+                <div>
+                    <h3 id="deleteModalTitle" style="margin: 0; font-size: 1.15rem; color: #9f1239; font-weight: 800;">Remove Team Member</h3>
+                    <div style="font-size: 0.8rem; color: #64748b; margin-top: 2px;">Action cannot be undone</div>
+                </div>
+            </div>
+
+            <p id="deleteModalText" style="font-size: 0.92rem; color: #334155; line-height: 1.5; margin: 0 0 16px 0;">
+                Are you sure you want to remove this member?
+            </p>
+
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; font-size: 0.8rem; color: #64748b; margin-bottom: 20px;">
+                ℹ️ <strong>Note:</strong> Please also remove this user's login email from Supabase Authentication dashboard separately if needed.
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" id="cancelDeleteTeamBtn" style="padding: 10px 18px; font-size: 0.88rem; font-weight: 600; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer;">
+                    Cancel
+                </button>
+                <button type="button" id="confirmDeleteTeamBtn" style="padding: 10px 20px; font-size: 0.88rem; font-weight: 700; background: #e11d48; color: #ffffff; border: none; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                    🗑️ Yes, Delete
+                </button>
+            </div>
         </div>
     </div>
 

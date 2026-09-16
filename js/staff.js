@@ -112,10 +112,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function updateStaffHeader(staff) {
         if (!staff) {
-            if (staffWelcomeName) staffWelcomeName.textContent = "Staff Member";
+            if (staffWelcomeName) staffWelcomeName.textContent = "Clinic Staff";
             return;
         }
-        const cleanName = String(staff.name || "Staff").trim();
+        let cleanName = String(staff.name || "Clinic Staff").trim();
+        if (cleanName === "Clinic Admin" || cleanName === "Admin") {
+            cleanName = "Clinic Staff";
+        }
         if (staffWelcomeName) staffWelcomeName.textContent = cleanName;
     }
 
@@ -195,12 +198,16 @@ document.addEventListener("DOMContentLoaded", function () {
         if (loginState) loginState.style.display = "block";
         if (dashboardState) dashboardState.style.display = "none";
         if (logoutBtn) logoutBtn.style.display = "none";
+        const portalHeaderTabsRow = document.getElementById("portalHeaderTabsRow");
+        if (portalHeaderTabsRow) portalHeaderTabsRow.style.display = "none";
     }
 
     function showDashboardState() {
         if (loginState) loginState.style.display = "none";
         if (dashboardState) dashboardState.style.display = "block";
         if (logoutBtn) logoutBtn.style.display = "inline-flex";
+        const portalHeaderTabsRow = document.getElementById("portalHeaderTabsRow");
+        if (portalHeaderTabsRow) portalHeaderTabsRow.style.display = "block";
     }
 
     // Login Form Submit Handler
@@ -459,7 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 reportDropdownHtml = `
                     <div style="position: relative; display: inline-block;">
-                        <button type="button" class="btn-toggle-reports-dropdown" data-target="${dropdownId}" style="padding: 5px 10px; font-size: 0.75rem; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+                        <button type="button" class="btn-toggle-reports-dropdown" data-target="${dropdownId}" style="padding: 5px 10px; font-size: 0.75rem; background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
                             📄 Reports (${existingReports.length}) <span style="font-size: 0.65rem;">▾</span>
                         </button>
                         <div id="${dropdownId}" class="reports-dropdown-menu" style="display: none; position: absolute; right: 0; top: calc(100% + 4px); background: white; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 250px; z-index: 99; overflow: hidden;">
@@ -469,10 +476,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 `;
             }
 
-            const uploadBtnLabel = existingReports.length > 0 ? "➕ Add Report" : "📤 Upload Report";
+            const hasReports = existingReports.length > 0;
+            const uploadBtnLabel = hasReports ? "➕ Add Report" : "📤 Upload Report";
+            const uploadBtnBg = hasReports 
+                ? "linear-gradient(135deg, #10b981 0%, #059669 100%)" 
+                : "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)";
             const staffReportActionHtml = `
                 <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
-                    <button type="button" class="btn-open-upload-modal" data-id="${item.id}" data-name="${escapeHtml(item.patient_name)}" style="padding: 6px 12px; font-size: 0.78rem; background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+                    <button type="button" class="btn-open-upload-modal" data-id="${item.id}" data-name="${escapeHtml(item.patient_name)}" style="padding: 6px 12px; font-size: 0.78rem; background: ${uploadBtnBg}; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.12);">
                         ${uploadBtnLabel}
                     </button>
                     ${reportDropdownHtml}
@@ -510,8 +521,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div style="font-weight: 600; color: #1e293b;">📅 ${formattedDate}</div>
                     <div style="font-size: 0.8rem; color: #0284c7; font-weight: 700;">⏰ ${formattedTime}</div>
                 </td>
-                <td>
-                    <div style="max-width: 200px; font-size: 0.85rem; color: #334155; line-height: 1.4; word-break: break-word;">
+                <td class="col-issue" style="max-width:220px; min-width:160px; white-space:normal; word-break:break-word;">
+                    <div style="font-size: 0.85rem; color: #334155; line-height: 1.4;">
                         ${escapeHtml(issueDisplay)}
                     </div>
                 </td>

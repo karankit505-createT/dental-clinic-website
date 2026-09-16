@@ -866,6 +866,221 @@ th {
     width: 100%;
 }
 
+/* Header Portal Role Badges */
+.portal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-left: 10px;
+    letter-spacing: 0.3px;
+    vertical-align: middle;
+}
+.portal-badge.badge-doctor {
+    background: #e0f2fe;
+    color: #0284c7;
+    border: 1px solid #bae6fd;
+}
+.portal-badge.badge-admin {
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fde68a;
+}
+.portal-badge.badge-staff {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+/* Seamless Unified 2-Row Header for Portals */
+header.portal-unified-header {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    padding: 0 !important;
+}
+
+header.portal-unified-header .header-top-row {
+    padding: 14px 32px;
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+header.portal-unified-header .header-bottom-row {
+    background-color: #ffffff !important;
+    border-top: 1px solid #f1f5f9;
+    padding: 0 32px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+header.portal-unified-header .header-tabs-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+header.portal-unified-header .header-tabs-container::-webkit-scrollbar {
+    display: none;
+}
+
+header.portal-unified-header .dashboard-tab-btn {
+    padding: 12px 20px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #64748b;
+    border-bottom: 3px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    margin-bottom: -1px;
+}
+
+header.portal-unified-header .dashboard-tab-btn:hover {
+    color: var(--primary, #0d9488);
+    background-color: #f8fafc;
+}
+
+header.portal-unified-header .dashboard-tab-btn.active {
+    color: var(--primary, #0d9488) !important;
+    border-bottom: 3px solid var(--primary, #0d9488) !important;
+    background-color: #ffffff;
+}
+
+/* Header Portal Navigation Tabs Styling (Inside Top Header Bar) */
+.landing-header .portal-header-tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.landing-header .portal-header-tabs li {
+    display: flex;
+    align-items: center;
+}
+
+.landing-header .portal-header-tabs .dashboard-tab-btn {
+    padding: 10px 18px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #64748b;
+    border-bottom: 3px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+}
+
+.landing-header .portal-header-tabs .dashboard-tab-btn:hover {
+    color: var(--primary, #0d9488);
+    background-color: #f1f5f9;
+}
+
+.landing-header .portal-header-tabs .dashboard-tab-btn.active {
+    color: var(--primary, #0d9488) !important;
+    border-bottom: 3px solid var(--primary, #0d9488) !important;
+    background-color: #f0fdfa;
+}
+
+/* Solid White Portal Tabs Navigation Strip Bar across portals */
+.portal-tabs-strip {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+    position: relative;
+    z-index: 95;
+    width: calc(100% + 64px);
+    margin-left: -32px;
+    margin-right: -32px;
+    margin-top: -24px;
+    margin-bottom: 24px;
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+@media (max-width: 768px) {
+    .portal-tabs-strip {
+        width: calc(100% + 32px);
+        margin-left: -16px;
+        margin-right: -16px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+.portal-tabs-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.portal-tabs-container::-webkit-scrollbar {
+    display: none;
+}
+
+.portal-tabs-strip .dashboard-tab-btn {
+    padding: 14px 22px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #64748b;
+    border-bottom: 3px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    border-radius: 8px 8px 0 0;
+}
+
+.portal-tabs-strip .dashboard-tab-btn:hover {
+    color: var(--primary, #0d9488);
+    background-color: #f8fafc;
+}
+
+.portal-tabs-strip .dashboard-tab-btn.active {
+    color: var(--primary, #0d9488) !important;
+    border-bottom: 3px solid var(--primary, #0d9488) !important;
+    background-color: #ffffff;
+}
+
 #appointmentsTable th {
     padding: 14px 16px;
     font-size: 0.76rem;
@@ -876,6 +1091,16 @@ th {
     padding: 14px 16px;
     font-size: 0.86rem;
     white-space: nowrap;
+    vertical-align: middle;
+}
+
+#appointmentsTable td.col-issue,
+#appointmentsTable td .col-issue-box {
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 240px;
+    min-width: 160px;
 }
 
 tbody tr:nth-child(even) {
@@ -2705,6 +2930,159 @@ html, body {
         width: 275px !important;
         padding: 16px 14px !important;
     }
+}
+
+/* ==========================================
+   UNIFIED PORTAL 2-ROW HEADER STYLES
+   ========================================== */
+header.portal-unified-header {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    border: none !important;
+    border-bottom: none !important;
+    position: relative;
+    z-index: 100;
+    padding: 0 !important;
+}
+
+.header-top-row {
+    border-bottom: none !important;
+}
+
+.header-bottom-row {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    border: none !important;
+}
+
+.header-tabs-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar styling for header tabs row */
+.header-tabs-container::-webkit-scrollbar {
+    height: 3px;
+}
+.header-tabs-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.tab-btn,
+.dashboard-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #64748b;
+    font-size: 0.925rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.tab-btn:hover,
+.dashboard-tab-btn:hover {
+    color: var(--primary, #0d9488);
+    background-color: rgba(13, 148, 136, 0.04);
+}
+
+.tab-btn.active,
+.dashboard-tab-btn.active {
+    color: var(--primary, #0d9488);
+    border-bottom-color: var(--primary, #0d9488);
+    font-weight: 700;
+    background-color: rgba(13, 148, 136, 0.06);
+}
+
+.tab-btn svg,
+.dashboard-tab-btn svg {
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .header-tabs-container {
+        padding: 0 12px;
+        gap: 4px;
+    }
+    .tab-btn,
+    .dashboard-tab-btn {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* ==========================================
+   DASHBOARD PROFESSIONAL COLOR SCHEME & ACCENTS
+   ========================================== */
+body {
+    background: linear-gradient(135deg, #f0fdfa 0%, #e6fffb 50%, #f0fdfa 100%) !important;
+    min-height: 100vh;
+}
+
+/* Stat Cards Base & Hover Animation */
+.stat-card {
+    background: #ffffff !important;
+    border-radius: 14px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.09) !important;
+}
+
+/* Floating Table Container Cards */
+.card, 
+.dashboard-welcome-card, 
+.table-card {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Refined Alternating Table Rows */
+table tbody tr:nth-child(odd) {
+    background-color: #ffffff !important;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f0fdfa !important;
+}
+
+table tbody tr:hover {
+    background-color: #ccfbf1 !important;
+    transition: background-color 0.15s ease !important;
+}
+
+/* Reports Dropdown Button Color Accent */
+.btn-toggle-reports-dropdown {
+    background: #f3e8ff !important;
+    color: #7e22ce !important;
+    border: 1px solid #d8b4fe !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-toggle-reports-dropdown:hover {
+    background: #e9d5ff !important;
+    color: #6b21a8 !important;
+    border-color: #c084fc !important;
 }
 
 

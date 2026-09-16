@@ -26,35 +26,19 @@
         ⚠️ <strong>Supabase Setup Required:</strong> Please open <code>js/config.js</code> and paste your actual <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code>.
     </div>
 
-    <!-- Header Navigation -->
-    <header class="landing-header">
-        <div class="landing-nav-container">
-            <a href="home.html" class="landing-logo">
+    <!-- Header Navigation (Unified 2-Row Block) -->
+    <header class="landing-header portal-unified-header">
+        <!-- TOP ROW: Logo + Role Badge (Left) | Logout Button (Right) -->
+        <div class="header-top-row">
+            <a href="doctors.html" class="landing-logo" style="display: flex; align-items: center; gap: 6px; text-decoration: none;">
                 <div class="landing-logo-icon">
                     <img src="assets/hero-tooth-illustration_4.svg" alt="SmileCare Logo" class="brand-logo-img">
                 </div>
                 <div class="landing-logo-text">SmileCare <span>Dental Clinic</span></div>
+                <span class="portal-badge badge-doctor">👨‍⚕️ Doctor Portal</span>
             </a>
 
-            <ul class="landing-nav-links">
-                <li><a href="home.html">Home</a></li>
-                <li><a href="about-clinic.html">About Clinic</a></li>
-                <li><a href="our-doctors.html">Our Doctors</a></li>
-                <li><a href="why-us.html">Why Us</a></li>
-                <li><a href="treatments.html">Treatments</a></li>
-                <li><a href="testimonials.html">Testimonials</a></li>
-            </ul>
-
             <div class="landing-nav-actions">
-                <a href="my-appointments.html" class="btn-teal-outline" title="My Appointments">
-                    <span class="nav-btn-text">My Appointments</span>
-                    <span class="nav-btn-text-short">Appointments</span>
-                </a>
-                <a href="index.html" class="btn-teal" title="Book Appointment">
-                    <span class="nav-btn-text">Book Appointment</span>
-                    <span class="nav-btn-text-short">Book</span>
-                </a>
-                <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Mobile Navigation">☰</button>
                 <!-- Logout Button (Shown when logged in) -->
                 <button id="logoutBtn" class="nav-btn nav-btn-danger" style="display: none;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -63,22 +47,6 @@
                     Logout
                 </button>
             </div>
-        </div>
-
-        <!-- Mobile Navigation Dropdown Drawer -->
-        <div class="mobile-nav-drawer" id="mobileNavDrawer">
-            <ul class="mobile-nav-list">
-                <li><a href="home.html">🏠 Home</a></li>
-                <li><a href="about-clinic.html">🏥 About Clinic</a></li>
-                <li><a href="our-doctors.html">👨‍⚕️ Our Doctors</a></li>
-                <li><a href="why-us.html">✨ Why Us</a></li>
-                <li><a href="treatments.html">🩺 Treatments</a></li>
-                <li><a href="testimonials.html">⭐ Testimonials</a></li>
-                <li style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; flex-direction: column; gap: 10px;">
-                    <a href="index.html" class="btn-teal" style="justify-content: center;">📅 Book Appointment</a>
-                    <a href="my-appointments.html" class="btn-teal-outline" style="justify-content: center;">📋 My Appointments</a>
-                </li>
-            </ul>
         </div>
     </header>
 
@@ -120,28 +88,27 @@
         <!-- STATE B: Dashboard View (Shown after authentication) -->
         <div id="dashboardState" style="display: none;">
             
-            <div class="dashboard-header">
+            <div class="dashboard-header" style="background: white; padding: 20px 24px; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 24px;">
                 <div class="dashboard-title-group">
-                    <h2 id="doctorWelcomeTitle">Welcome, <span class="doctor-name-teal">Doctor</span></h2>
-                    <p id="doctorWelcomeSubtitle">Manage and update patient appointments in real-time.</p>
+                    <h2 id="doctorWelcomeTitle" style="margin: 0; font-size: 1.5rem; font-weight: 800;">Welcome, <span class="doctor-name-teal">Doctor</span></h2>
+                    <p id="doctorWelcomeSubtitle" style="margin: 4px 0 0 0; color: var(--text-muted); font-size: 0.9rem;">Manage and update patient appointments in real-time.</p>
                 </div>
-            </div>
 
-            <!-- Navigation Tabs -->
-            <div class="dashboard-tabs" style="display: flex; gap: 12px; margin-bottom: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 4px;">
-                <button type="button" id="tabBtnAppointments" class="dashboard-tab-btn active" style="padding: 10px 18px; font-weight: 700; font-size: 0.95rem; border: none; background: none; cursor: pointer; color: var(--primary); border-bottom: 3px solid var(--primary); margin-bottom: -6px; display: inline-flex; align-items: center; gap: 6px;">
-                    📋 Appointments List
-                </button>
-                <button type="button" id="tabBtnAvailability" class="dashboard-tab-btn" style="padding: 10px 18px; font-weight: 700; font-size: 0.95rem; border: none; background: none; cursor: pointer; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;">
-                    📅 My Availability & Leaves
-                </button>
+                <div style="display: flex; gap: 10px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #f1f5f9; flex-wrap: wrap;">
+                    <button type="button" id="tabBtnAppointments" class="tab-btn active" style="padding: 9px 16px; font-size: 0.88rem; font-weight: 700; border-radius: 8px;">
+                        📋 Appointments List
+                    </button>
+                    <button type="button" id="tabBtnAvailability" class="tab-btn" style="padding: 9px 16px; font-size: 0.88rem; font-weight: 700; border-radius: 8px;">
+                        📅 My Availability & Leaves
+                    </button>
+                </div>
             </div>
 
             <!-- TAB 1: Appointments Schedule Section -->
             <div id="appointmentsTabSection">
                 <!-- Stats Bar -->
                 <div class="stats-grid">
-                    <div class="stat-card">
+                    <div class="stat-card" style="border-left: 4px solid #0d9488 !important;">
                         <div class="stat-label">Total Appointments</div>
                         <div id="statTotal" class="stat-number">0</div>
                     </div>

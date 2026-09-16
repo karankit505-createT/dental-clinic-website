@@ -216,12 +216,16 @@ document.addEventListener("DOMContentLoaded", function () {
         if (loginState) loginState.style.display = "block";
         if (dashboardState) dashboardState.style.display = "none";
         if (logoutBtn) logoutBtn.style.display = "none";
+        const portalHeaderTabsRow = document.getElementById("portalHeaderTabsRow");
+        if (portalHeaderTabsRow) portalHeaderTabsRow.style.display = "none";
     }
 
     function showDashboardState() {
         if (loginState) loginState.style.display = "none";
         if (dashboardState) dashboardState.style.display = "block";
         if (logoutBtn) logoutBtn.style.display = "inline-flex";
+        const portalHeaderTabsRow = document.getElementById("portalHeaderTabsRow");
+        if (portalHeaderTabsRow) portalHeaderTabsRow.style.display = "block";
     }
 
     // Login Form Submit Handler
@@ -312,8 +316,8 @@ document.addEventListener("DOMContentLoaded", function () {
         [tabBtnAppointments, tabBtnManageTeam, tabBtnPatientHistory, tabBtnAnalytics].forEach(btn => {
             if (btn) {
                 btn.classList.remove("active");
-                btn.style.color = "var(--text-muted)";
-                btn.style.borderBottom = "none";
+                btn.style.color = "";
+                btn.style.borderBottom = "";
             }
         });
         if (appointmentsTabSection) appointmentsTabSection.style.display = "none";
@@ -326,8 +330,8 @@ document.addEventListener("DOMContentLoaded", function () {
         tabBtnAppointments.addEventListener("click", function () {
             resetTabStyles();
             tabBtnAppointments.classList.add("active");
-            tabBtnAppointments.style.color = "var(--primary)";
-            tabBtnAppointments.style.borderBottom = "3px solid var(--primary)";
+            tabBtnAppointments.style.color = "";
+            tabBtnAppointments.style.borderBottom = "";
             if (appointmentsTabSection) appointmentsTabSection.style.display = "block";
         });
     }
@@ -336,8 +340,8 @@ document.addEventListener("DOMContentLoaded", function () {
         tabBtnManageTeam.addEventListener("click", function () {
             resetTabStyles();
             tabBtnManageTeam.classList.add("active");
-            tabBtnManageTeam.style.color = "var(--primary)";
-            tabBtnManageTeam.style.borderBottom = "3px solid var(--primary)";
+            tabBtnManageTeam.style.color = "";
+            tabBtnManageTeam.style.borderBottom = "";
             if (manageTeamTabSection) manageTeamTabSection.style.display = "block";
             fetchTeamLists();
         });
@@ -347,8 +351,8 @@ document.addEventListener("DOMContentLoaded", function () {
         tabBtnPatientHistory.addEventListener("click", function () {
             resetTabStyles();
             tabBtnPatientHistory.classList.add("active");
-            tabBtnPatientHistory.style.color = "var(--primary)";
-            tabBtnPatientHistory.style.borderBottom = "3px solid var(--primary)";
+            tabBtnPatientHistory.style.color = "";
+            tabBtnPatientHistory.style.borderBottom = "";
             if (patientHistoryTabSection) patientHistoryTabSection.style.display = "block";
             const searchVal = document.getElementById("patientHistorySearchInput") ? document.getElementById("patientHistorySearchInput").value : "";
             renderPatientReportHistory(searchVal);
@@ -359,8 +363,8 @@ document.addEventListener("DOMContentLoaded", function () {
         tabBtnAnalytics.addEventListener("click", function () {
             resetTabStyles();
             tabBtnAnalytics.classList.add("active");
-            tabBtnAnalytics.style.color = "var(--primary)";
-            tabBtnAnalytics.style.borderBottom = "3px solid var(--primary)";
+            tabBtnAnalytics.style.color = "";
+            tabBtnAnalytics.style.borderBottom = "";
             if (analyticsTabSection) analyticsTabSection.style.display = "block";
             renderBusinessAnalytics();
         });
@@ -598,7 +602,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 reportDropdownHtml = `
                     <div style="position: relative; display: inline-block;">
-                        <button type="button" class="btn-toggle-reports-dropdown" data-target="${dropdownId}" style="padding: 5px 10px; font-size: 0.75rem; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+                        <button type="button" class="btn-toggle-reports-dropdown" data-target="${dropdownId}" style="padding: 5px 10px; font-size: 0.75rem; background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
                             📄 Reports (${existingReports.length}) <span style="font-size: 0.65rem;">▾</span>
                         </button>
                         <div id="${dropdownId}" class="reports-dropdown-menu" style="display: none; position: absolute; right: 0; top: calc(100% + 4px); background: white; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 250px; z-index: 99; overflow: hidden;">
@@ -611,10 +615,14 @@ document.addEventListener("DOMContentLoaded", function () {
             let adminReportActionHtml = "";
 
             if (item.status === "Completed") {
-                const uploadBtnLabel = existingReports.length > 0 ? "➕ Add Report" : "📤 Upload Report";
+                const hasReports = existingReports.length > 0;
+                const uploadBtnLabel = hasReports ? "➕ Add Report" : "📤 Upload Report";
+                const uploadBtnBg = hasReports 
+                    ? "linear-gradient(135deg, #10b981 0%, #059669 100%)" 
+                    : "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)";
                 adminReportActionHtml = `
                     <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
-                        <button type="button" class="btn-open-upload-modal" data-id="${item.id}" data-name="${escapeHtml(item.patient_name)}" style="padding: 6px 12px; font-size: 0.78rem; background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+                        <button type="button" class="btn-open-upload-modal" data-id="${item.id}" data-name="${escapeHtml(item.patient_name)}" style="padding: 6px 12px; font-size: 0.78rem; background: ${uploadBtnBg}; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.12);">
                             ${uploadBtnLabel}
                         </button>
                         ${reportDropdownHtml}
@@ -680,8 +688,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div style="font-weight: 600; color: #1e293b;">📅 ${formattedDate}</div>
                     <div style="font-size: 0.8rem; color: #0284c7; font-weight: 700;">⏰ ${formattedTime}</div>
                 </td>
-                <td>
-                    <div style="max-width: 170px; font-size: 0.85rem; color: #334155; line-height: 1.4; word-break: break-word;">
+                <td class="col-issue" style="max-width:220px; min-width:160px; white-space:normal; word-break:break-word;">
+                    <div style="font-size: 0.85rem; color: #334155; line-height: 1.4;">
                         ${escapeHtml(issueDisplay)}
                     </div>
                 </td>
@@ -908,15 +916,28 @@ document.addEventListener("DOMContentLoaded", function () {
             if (error || !data) return;
 
             tbody.innerHTML = "";
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="padding: 16px; text-align: center; color: #94a3b8;">No registered doctor records available</td></tr>`;
+                return;
+            }
+
             data.forEach((doc, idx) => {
                 const tr = document.createElement("tr");
                 const regDate = doc.created_at ? doc.created_at.split('T')[0] : '-';
+                let cleanName = (doc.name || "Doctor").trim();
+                if (!/^dr\.?\s+/i.test(cleanName)) cleanName = "Dr. " + cleanName;
+
                 tr.innerHTML = `
                     <td><strong>#${idx + 1}</strong></td>
-                    <td><strong style="color: #0d9488;">${escapeHtml(doc.name)}</strong></td>
+                    <td><strong style="color: #0d9488;">👨‍⚕️ ${escapeHtml(cleanName)}</strong></td>
                     <td><span style="background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">${escapeHtml(doc.specialization || 'General')}</span></td>
                     <td>${escapeHtml(doc.email || '-')}</td>
                     <td>${regDate}</td>
+                    <td style="text-align: center;">
+                        <button type="button" onclick="promptDeleteDoctor('${doc.id}', '${escapeHtml(cleanName)}')" style="padding: 5px 12px; font-size: 0.78rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;" title="Delete Doctor">
+                            🗑️ Delete
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -933,6 +954,11 @@ document.addEventListener("DOMContentLoaded", function () {
             if (error || !data) return;
 
             tbody.innerHTML = "";
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="padding: 16px; text-align: center; color: #94a3b8;">No registered staff records available</td></tr>`;
+                return;
+            }
+
             data.forEach((st, idx) => {
                 const tr = document.createElement("tr");
                 const regDate = st.created_at ? st.created_at.split('T')[0] : '-';
@@ -942,16 +968,132 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 tr.innerHTML = `
                     <td><strong>#${idx + 1}</strong></td>
-                    <td><strong>${escapeHtml(st.name)}</strong></td>
+                    <td><strong>👤 ${escapeHtml(st.name)}</strong></td>
                     <td>${escapeHtml(st.email)}</td>
                     <td>${roleBadge}</td>
                     <td>${regDate}</td>
+                    <td style="text-align: center;">
+                        <button type="button" onclick="promptDeleteStaff('${st.id}', '${escapeHtml(st.name)}')" style="padding: 5px 12px; font-size: 0.78rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;" title="Delete Staff Member">
+                            🗑️ Delete
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
         } catch (e) {
             console.error("Error fetching staff team:", e);
         }
+    }
+
+    // TEAM MEMBER DELETE CONFIRMATION & LOGIC
+    let pendingDeleteTeamType = null;
+    let pendingDeleteTeamId = null;
+    let pendingDeleteTeamName = "";
+
+    window.promptDeleteDoctor = async function (doctorId, doctorName) {
+        if (!supabaseClient) return;
+
+        // REQUIREMENT 5: Check Active Appointments
+        try {
+            const { data: activeApps, error } = await supabaseClient
+                .from("appointments")
+                .select("id")
+                .eq("doctor_id", doctorId)
+                .in("status", ["Pending", "Confirmed"]);
+
+            if (!error && activeApps && activeApps.length > 0) {
+                const count = activeApps.length;
+                const warnMsg = `⚠️ Is doctor ki ${count} active appointments (Pending/Confirmed) hain. Delete karne se pehle unhe kisi aur doctor ko reassign karein ya cancel karein.`;
+                if (typeof showToast === "function") {
+                    showToast(warnMsg, "warning");
+                } else {
+                    alert(warnMsg);
+                }
+                return; // BLOCK DELETION
+            }
+
+            openDeleteTeamModal("doctor", doctorId, doctorName);
+        } catch (err) {
+            console.error("Error checking doctor active appointments:", err);
+            openDeleteTeamModal("doctor", doctorId, doctorName);
+        }
+    };
+
+    window.promptDeleteStaff = function (staffId, staffName) {
+        openDeleteTeamModal("staff", staffId, staffName);
+    };
+
+    function openDeleteTeamModal(type, id, name) {
+        pendingDeleteTeamType = type;
+        pendingDeleteTeamId = id;
+        pendingDeleteTeamName = name;
+
+        const modal = document.getElementById("confirmDeleteTeamModal");
+        const title = document.getElementById("deleteModalTitle");
+        const text = document.getElementById("deleteModalText");
+
+        if (!modal) return;
+
+        if (type === "doctor") {
+            if (title) title.textContent = "Remove Doctor";
+            if (text) text.innerHTML = `Kya aap sach mein <strong>${escapeHtml(name)}</strong> ko remove karna chahte hain? Ye action wapas nahi ho sakta.`;
+        } else {
+            if (title) title.textContent = "Remove Staff Member";
+            if (text) text.innerHTML = `Kya aap sach mein staff member <strong>${escapeHtml(name)}</strong> ko remove karna chahte hain? Ye action wapas nahi ho sakta.`;
+        }
+
+        modal.style.display = "flex";
+    }
+
+    function closeDeleteTeamModal() {
+        const modal = document.getElementById("confirmDeleteTeamModal");
+        if (modal) modal.style.display = "none";
+        pendingDeleteTeamType = null;
+        pendingDeleteTeamId = null;
+        pendingDeleteTeamName = "";
+    }
+
+    const cancelDeleteTeamBtn = document.getElementById("cancelDeleteTeamBtn");
+    const confirmDeleteTeamBtn = document.getElementById("confirmDeleteTeamBtn");
+
+    if (cancelDeleteTeamBtn) cancelDeleteTeamBtn.addEventListener("click", closeDeleteTeamModal);
+
+    if (confirmDeleteTeamBtn) {
+        confirmDeleteTeamBtn.addEventListener("click", async function () {
+            if (!pendingDeleteTeamType || !pendingDeleteTeamId || !supabaseClient) return;
+
+            confirmDeleteTeamBtn.disabled = true;
+            confirmDeleteTeamBtn.textContent = "Deleting...";
+
+            try {
+                if (pendingDeleteTeamType === "doctor") {
+                    const { error } = await supabaseClient.from("doctors").delete().eq("id", pendingDeleteTeamId);
+                    if (error) throw error;
+                    if (typeof showToast === "function") {
+                        showToast(`Doctor ${pendingDeleteTeamName} successfully removed`, "success");
+                    }
+                } else if (pendingDeleteTeamType === "staff") {
+                    const { error } = await supabaseClient.from("staff").delete().eq("id", pendingDeleteTeamId);
+                    if (error) throw error;
+                    if (typeof showToast === "function") {
+                        showToast(`Staff member ${pendingDeleteTeamName} successfully removed`, "success");
+                    }
+                }
+
+                closeDeleteTeamModal();
+                await fetchTeamLists();
+                await fetchDoctorsList();
+
+            } catch (err) {
+                console.error("Error deleting team member:", err);
+                if (typeof showToast === "function") {
+                    showToast("Failed to remove: " + (err.message || "Database error"), "error");
+                }
+            } finally {
+                confirmDeleteTeamBtn.disabled = false;
+                confirmDeleteTeamBtn.innerHTML = "🗑️ Yes, Delete";
+            }
+        });
     }
 
     // ADD NEW DOCTOR MODAL & FORM

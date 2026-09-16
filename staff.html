@@ -26,35 +26,19 @@
         ⚠️ <strong>Supabase Setup Required:</strong> Please open <code>js/config.js</code> and paste your actual <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code>.
     </div>
 
-    <!-- Header Navigation -->
-    <header class="landing-header">
-        <div class="landing-nav-container">
-            <a href="home.html" class="landing-logo">
+    <!-- Header Navigation (Unified 2-Row Block) -->
+    <header class="landing-header portal-unified-header">
+        <!-- TOP ROW: Logo + Role Badge (Left) | Logout Button (Right) -->
+        <div class="header-top-row">
+            <a href="staff.html" class="landing-logo" style="display: flex; align-items: center; gap: 6px; text-decoration: none;">
                 <div class="landing-logo-icon">
                     <img src="assets/hero-tooth-illustration_4.svg" alt="SmileCare Logo" class="brand-logo-img">
                 </div>
                 <div class="landing-logo-text">SmileCare <span>Dental Clinic</span></div>
+                <span class="portal-badge badge-staff">💼 Staff Portal</span>
             </a>
 
-            <ul class="landing-nav-links">
-                <li><a href="home.html">Home</a></li>
-                <li><a href="about-clinic.html">About Clinic</a></li>
-                <li><a href="our-doctors.html">Our Doctors</a></li>
-                <li><a href="why-us.html">Why Us</a></li>
-                <li><a href="treatments.html">Treatments</a></li>
-                <li><a href="testimonials.html">Testimonials</a></li>
-            </ul>
-
             <div class="landing-nav-actions">
-                <a href="my-appointments.html" class="btn-teal-outline" title="My Appointments">
-                    <span class="nav-btn-text">My Appointments</span>
-                    <span class="nav-btn-text-short">Appointments</span>
-                </a>
-                <a href="index.html" class="btn-teal" title="Book Appointment">
-                    <span class="nav-btn-text">Book Appointment</span>
-                    <span class="nav-btn-text-short">Book</span>
-                </a>
-                <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Mobile Navigation">☰</button>
                 <!-- Logout Button (Shown when logged in) -->
                 <button id="logoutBtn" class="nav-btn nav-btn-danger" style="display: none;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -63,22 +47,6 @@
                     Logout
                 </button>
             </div>
-        </div>
-
-        <!-- Mobile Navigation Dropdown Drawer -->
-        <div class="mobile-nav-drawer" id="mobileNavDrawer">
-            <ul class="mobile-nav-list">
-                <li><a href="home.html">🏠 Home</a></li>
-                <li><a href="about-clinic.html">🏥 About Clinic</a></li>
-                <li><a href="our-doctors.html">👨‍⚕️ Our Doctors</a></li>
-                <li><a href="why-us.html">✨ Why Us</a></li>
-                <li><a href="treatments.html">🩺 Treatments</a></li>
-                <li><a href="testimonials.html">⭐ Testimonials</a></li>
-                <li style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; flex-direction: column; gap: 10px;">
-                    <a href="index.html" class="btn-teal" style="justify-content: center;">📅 Book Appointment</a>
-                    <a href="my-appointments.html" class="btn-teal-outline" style="justify-content: center;">📋 My Appointments</a>
-                </li>
-            </ul>
         </div>
     </header>
 
@@ -124,7 +92,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
                     <div>
                         <h1 id="staffWelcomeTitle" style="font-size: 1.6rem; font-weight: 800; color: var(--text-dark); margin: 0;">
-                            Welcome, <span id="staffWelcomeName" class="doctor-name-teal">Staff Member</span> <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">(Staff Desk)</span>
+                            Welcome, <span id="staffWelcomeName" class="doctor-name-teal">Clinic Staff</span> <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">(Staff Desk)</span>
                         </h1>
                         <p id="staffWelcomeSubtitle" style="font-size: 0.92rem; color: var(--text-muted); margin: 4px 0 0 0;">
                             Front Desk & Reception Portal | Upload Patient Reports & Create Phone Bookings
@@ -140,7 +108,7 @@
 
             <!-- Stats Summary Cards -->
             <div class="stats-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
-                <div class="stat-card" style="background: white; padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px;">
+                <div class="stat-card" style="background: white; padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); border-left: 4px solid #10b981 !important; display: flex; align-items: center; gap: 16px;">
                     <div style="background: #f0fdf4; color: #059669; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
                         ✅
                     </div>
@@ -150,7 +118,7 @@
                     </div>
                 </div>
 
-                <div class="stat-card" style="background: white; padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px;">
+                <div class="stat-card" style="background: white; padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); border-left: 4px solid #3b82f6 !important; display: flex; align-items: center; gap: 16px;">
                     <div style="background: #e0f2fe; color: #0284c7; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
                         📄
                     </div>
@@ -160,7 +128,7 @@
                     </div>
                 </div>
 
-                <div class="stat-card" style="background: white; padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 16px;">
+                <div class="stat-card" style="background: white; padding: 20px; border-radius: 14px; border: 1px solid var(--border-color); border-left: 4px solid #f59e0b !important; display: flex; align-items: center; gap: 16px;">
                     <div style="background: #fff7ed; color: #ea580c; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
                         ⏳
                     </div>

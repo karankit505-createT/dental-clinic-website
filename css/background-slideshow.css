@@ -72,6 +72,7 @@
 
 /* Slideshow Manual Navigation Arrow Buttons */
 .slideshow-arrow {
+    display: none !important;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);

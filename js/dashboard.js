@@ -210,13 +210,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         loginState.style.display = "block";
         dashboardState.style.display = "none";
-        logoutBtn.style.display = "none";
+        if (logoutBtn) logoutBtn.style.display = "none";
+        const portalHeaderTabsRow = document.getElementById("portalHeaderTabsRow");
+        if (portalHeaderTabsRow) portalHeaderTabsRow.style.display = "none";
     }
 
     function showDashboardState() {
         loginState.style.display = "none";
         dashboardState.style.display = "block";
-        logoutBtn.style.display = "inline-flex";
+        if (logoutBtn) logoutBtn.style.display = "inline-flex";
+        const portalHeaderTabsRow = document.getElementById("portalHeaderTabsRow");
+        if (portalHeaderTabsRow) portalHeaderTabsRow.style.display = "block";
     }
 
     // 3. Login Form Submit Handler (Strict Supabase Auth Verification)
@@ -437,7 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${item.age || '-'}</td>
                 <td>${escapeHtml(genderDisplay)}</td>
                 <td>${escapeHtml(item.mobile || '-')}</td>
-                <td style="max-width:220px; word-wrap:break-word;">${escapeHtml(issueDisplay)}</td>
+                <td class="col-issue" style="max-width:240px; min-width:160px; white-space:normal; word-break:break-word; line-height:1.4;">${escapeHtml(issueDisplay)}</td>
                 <td>${formattedDate}</td>
                 <td>${formattedTime}</td>
                 <td>
@@ -970,13 +974,13 @@ document.addEventListener("DOMContentLoaded", function () {
         if (tab === "availability") {
             if (tabBtnAppointments) {
                 tabBtnAppointments.classList.remove("active");
-                tabBtnAppointments.style.color = "var(--text-muted)";
-                tabBtnAppointments.style.borderBottom = "none";
+                tabBtnAppointments.style.color = "";
+                tabBtnAppointments.style.borderBottom = "";
             }
             if (tabBtnAvailability) {
                 tabBtnAvailability.classList.add("active");
-                tabBtnAvailability.style.color = "var(--primary)";
-                tabBtnAvailability.style.borderBottom = "3px solid var(--primary)";
+                tabBtnAvailability.style.color = "";
+                tabBtnAvailability.style.borderBottom = "";
             }
             if (appointmentsTabSection) appointmentsTabSection.style.display = "none";
             if (availabilityTabSection) availabilityTabSection.style.display = "block";
@@ -985,13 +989,13 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             if (tabBtnAvailability) {
                 tabBtnAvailability.classList.remove("active");
-                tabBtnAvailability.style.color = "var(--text-muted)";
-                tabBtnAvailability.style.borderBottom = "none";
+                tabBtnAvailability.style.color = "";
+                tabBtnAvailability.style.borderBottom = "";
             }
             if (tabBtnAppointments) {
                 tabBtnAppointments.classList.add("active");
-                tabBtnAppointments.style.color = "var(--primary)";
-                tabBtnAppointments.style.borderBottom = "3px solid var(--primary)";
+                tabBtnAppointments.style.color = "";
+                tabBtnAppointments.style.borderBottom = "";
             }
             if (availabilityTabSection) availabilityTabSection.style.display = "none";
             if (appointmentsTabSection) appointmentsTabSection.style.display = "block";
