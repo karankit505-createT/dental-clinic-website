@@ -267,7 +267,7 @@ window.generateAppointmentPDF = function (data) {
         doc.setFont("helvetica", "normal");
         doc.setFontSize(7.5);
         doc.setTextColor(100, 116, 139); // Grey
-        doc.text("123 Health Avenue, Medical City  |  +91 98765 43210  |  www.smilecaredental.com", 105, footerY + 12, { align: "center" });
+        doc.text("No. 45, Anna Salai, Thousand Lights, Chennai - 600006  |  +91 98765 43210  |  www.smilecaredental.com", 105, footerY + 12, { align: "center" });
 
 
         // ----------------------------------------------------------------
@@ -588,7 +588,7 @@ window.generateTreatmentReportPDF = function (data) {
         doc.setFont("helvetica", "normal");
         doc.setFontSize(7.5);
         doc.setTextColor(100, 116, 139);
-        doc.text("123 Health Avenue, Medical City  |  +91 98765 43210  |  www.smilecaredental.com", 105, footerY + 13, { align: "center" });
+        doc.text("No. 45, Anna Salai, Thousand Lights, Chennai - 600006  |  +91 98765 43210  |  www.smilecaredental.com", 105, footerY + 13, { align: "center" });
 
 
         // 5. SAVE WITH CLEAN FILENAME (Format: Treatment_Report_[PatientName]_[Date].pdf)

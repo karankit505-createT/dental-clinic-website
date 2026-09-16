@@ -1,53 +1,55 @@
-<svg width="600" height="700" viewBox="0 0 600 700" xmlns="http://www.w3.org/2000/svg">
+<svg width="500" height="500" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
   <defs>
+    <!-- Premium Brand Teal Gradient -->
     <linearGradient id="brandTealGradReal3" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#2dd4bf"/>
       <stop offset="50%" stop-color="#0d9488"/>
       <stop offset="100%" stop-color="#0f766e"/>
     </linearGradient>
 
+    <!-- Glossy Pure White Tooth Gradient -->
     <linearGradient id="whiteToothGradReal3" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#ffffff"/>
       <stop offset="60%" stop-color="#f8fafc"/>
       <stop offset="100%" stop-color="#e2e8f0"/>
     </linearGradient>
 
+    <!-- Soft Drop Shadow -->
     <filter id="toothRealShadow3" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#0f766e" flood-opacity="0.40"/>
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0f766e" flood-opacity="0.35"/>
     </filter>
   </defs>
 
-  <rect x="70" y="70" width="460" height="560" rx="140" fill="url(#brandTealGradReal3)" filter="url(#toothRealShadow3)"/>
+  <!-- Modern Rounded Shield Badge (Clean, No Artifacts) -->
+  <rect x="35" y="35" width="430" height="430" rx="100" fill="url(#brandTealGradReal3)" filter="url(#toothRealShadow3)"/>
 
-  <path d="M 300 170
-           C 250 155, 180 155, 145 195
-           C 115 230, 110 275, 118 320
-           C 125 365, 140 400, 155 450
-           C 170 500, 185 550, 195 595
-           C 202 625, 215 645, 230 645
-           C 245 645, 255 615, 268 560
-           C 278 520, 288 480, 300 480
-           C 312 480, 322 520, 332 560
-           C 345 615, 355 645, 370 645
-           C 385 645, 398 625, 405 595
-           C 415 550, 430 500, 445 450
-           C 460 400, 475 365, 482 320
-           C 490 275, 485 230, 455 195
-           C 420 155, 350 155, 300 170 Z"
+  <!-- Tooth Anatomy Path (Centered inside badge) -->
+  <path d="M 250 115
+           C 210 102, 150 102, 120 135
+           C 95 165, 90 205, 96 242
+           C 102 280, 115 310, 128 350
+           C 140 390, 152 415, 162 440
+           C 168 455, 180 460, 192 450
+           C 205 440, 215 410, 225 365
+           C 233 330, 241 300, 250 300
+           C 259 300, 267 330, 275 365
+           C 285 410, 295 440, 308 450
+           C 320 460, 332 455, 338 440
+           C 348 415, 360 390, 372 350
+           C 385 310, 398 280, 404 242
+           C 410 205, 405 165, 380 135
+           C 350 102, 290 102, 250 115 Z"
         fill="url(#whiteToothGradReal3)"/>
 
-  <path d="M 240 185 C 270 210, 330 210, 360 185" fill="none" stroke="#cbd5e1" stroke-width="5" stroke-linecap="round" opacity="0.65"/>
+  <!-- Molar Crown Groove Line -->
+  <path d="M 200 130 C 225 150, 275 150, 300 130" fill="none" stroke="#cbd5e1" stroke-width="4.5" stroke-linecap="round" opacity="0.6"/>
 
-  <path d="M 170 215
-           C 145 250, 140 290, 145 330
-           C 148 350, 154 365, 162 375
-           C 156 345, 158 310, 175 275
-           C 190 245, 215 225, 245 212
-           C 220 205, 190 205, 170 215 Z"
+  <!-- Glossy Reflection Highlight -->
+  <path d="M 140 152
+           C 120 180, 115 212, 120 245
+           C 122 260, 127 272, 134 280
+           C 129 255, 130 228, 144 200
+           C 156 175, 177 158, 202 147
+           C 181 142, 156 143, 140 152 Z"
         fill="#ffffff" opacity="0.85"/>
-
-  <circle cx="135" cy="145" r="8" fill="#ffffff" opacity="0.9"/>
-  <circle cx="465" cy="165" r="10" fill="#ffffff" opacity="0.9"/>
-  <circle cx="455" cy="540" r="7" fill="#ffffff" opacity="0.8"/>
-  <circle cx="145" cy="520" r="6" fill="#ffffff" opacity="0.85"/>
 </svg>

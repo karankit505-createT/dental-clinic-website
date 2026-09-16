@@ -76,18 +76,42 @@ async function loadDoctorsFromSupabase() {
                 const docId = doc.id || (idx + 1);
                 const rawName = doc.name ? String(doc.name).trim() : `Doctor ${idx + 1}`;
                 const displayName = rawName.startsWith("Dr.") ? rawName : `Dr. ${rawName}`;
-                const spec = doc.specialization || "Dental Specialist";
+                let spec = doc.specialization || "Dental Specialist";
                 const initials = rawName.replace(/^Dr\.\s*/i, '').split(' ').map(n => n[0]).join('').substr(0, 2).toUpperCase() || 'DR';
                 
-                const shortBio = `${displayName} is a dedicated dental professional specializing in ${spec}, committed to providing quality, patient-focused care with a gentle touch.`;
-                const fullBio = doc.bio || `${displayName} brings years of clinical experience in ${spec}. With a strong academic background and commitment to continuous learning, ${displayName.split(' ')[1] || 'the doctor'} focuses on delivering personalized dental care using modern techniques, ensuring every visit is a positive experience.`;
-                const photoUrl = (idx === 0) ? 'assets/doctor-1.jpg' : (idx === 1 ? 'assets/doctor-2.jpg' : '');
+                let degree = "BDS, MDS";
+                let shortBio = "";
+                let fullBio = "";
+                let expBadge = "⭐ Expert Specialist";
+
+                const lowerName = displayName.toLowerCase();
+
+                if (lowerName.includes("rajesh")) {
+                    degree = "BDS, MDS (Implants & Surgery)";
+                    spec = "Senior Dentist & Implantologist";
+                    expBadge = "⭐ 12+ Yrs Exp | Implant Specialist";
+                    shortBio = `${displayName} is a leading specialist in dental implants, painless root canal therapies, and surgical extractions, known for his gentle approach and precision treatment protocols.`;
+                    fullBio = doc.bio || `${displayName} completed his MDS in Oral & Maxillofacial Surgery and brings over 12 years of hands-on surgical experience. Having performed over 3,500+ successful implant procedures and full-mouth restorations, ${displayName} specializes in digital 3D-guided implant placement, bone grafting, and immediate tooth replacement. He prioritizes patient comfort using painless laser-assisted techniques, ensuring every visit is stress-free and smooth.`;
+                } else if (lowerName.includes("priya") || lowerName.includes("ananya")) {
+                    degree = "BDS, MDS (Orthodontics)";
+                    spec = "Cosmetic Dentist & Orthodontist Specialist";
+                    expBadge = "⭐ 8+ Yrs Exp | Orthodontic Expert";
+                    shortBio = `${displayName} is an expert Orthodontist specializing in Invisalign clear aligners, ceramic braces, porcelain veneers, and smile makeovers for patients of all ages.`;
+                    fullBio = doc.bio || `${displayName} holds an MDS in Orthodontics & Dentofacial Orthopedics with 8+ years of specialized experience in smile designing and dental alignment. Having crafted more than 2,000+ flawless, confident smiles, she is a certified Invisalign clear aligner specialist, aesthetic veneer designer, and laser teeth whitening practitioner. ${displayName} focuses on gentle, conservative aesthetic treatments tailored to each patient's facial structure and lifestyle.`;
+                } else {
+                    degree = "BDS, MDS";
+                    expBadge = "⭐ Senior Specialist";
+                    shortBio = `${displayName} specializes in ${spec}, focusing on modern preventive techniques, advanced diagnostics, and compassionate dental care.`;
+                    fullBio = doc.bio || `${displayName} is a highly accomplished dental practitioner specializing in ${spec}. With extensive clinical experience and dedication to patient wellness, ${displayName.split(' ')[1] || 'the doctor'} creates tailored treatment plans utilizing modern dental technology to deliver painless, long-lasting results.`;
+                }
+
+                const photoUrl = (idx === 0 || lowerName.includes("rajesh")) ? 'assets/doctor-1.jpg' : ((idx === 1 || lowerName.includes("priya")) ? 'assets/doctor-2.jpg' : '');
 
                 return `
                     <div class="doctor-card-showcase animate-on-scroll is-visible">
                         <div class="doctor-left-content">
                             <span class="doctor-badge-tag">👨‍⚕️ ABOUT DOCTOR</span>
-                            <h3 class="doctor-full-name">${escapeHtml(displayName)} <span class="doctor-degree">BDS, MDS</span></h3>
+                            <h3 class="doctor-full-name">${escapeHtml(displayName)} <span class="doctor-degree">${escapeHtml(degree)}</span></h3>
                             <div class="doctor-accent-bar"></div>
                             <div class="doctor-spec-pill">${escapeHtml(spec)}</div>
 
@@ -109,7 +133,7 @@ async function loadDoctorsFromSupabase() {
                                 ${photoUrl ? `<img src="${photoUrl}" alt="${escapeHtml(displayName)}" class="doctor-photo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : ''}
                                 <div class="doctor-avatar-circle" style="${photoUrl ? 'display: none;' : ''}">${escapeHtml(initials)}</div>
                                 <div class="doctor-exp-badge">
-                                    ⭐ Expert Specialist
+                                    ${escapeHtml(expBadge)}
                                 </div>
                             </div>
                         </div>

@@ -296,15 +296,15 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table style="width: 100%;">
+                        <table style="width: 100%; table-layout: fixed; border-collapse: collapse;">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Doctor Name</th>
-                                    <th>Specialization</th>
-                                    <th>Email Address</th>
-                                    <th>Registered Date</th>
-                                    <th style="text-align: center;">Actions</th>
+                                    <th style="width: 50px; text-align: left; padding: 14px 16px;">#</th>
+                                    <th style="width: 26%; text-align: left; padding: 14px 16px;">Doctor Name</th>
+                                    <th style="width: 22%; text-align: left; padding: 14px 16px;">Specialization</th>
+                                    <th style="width: 20%; text-align: left; padding: 14px 16px;">Mobile Number</th>
+                                    <th style="width: 17%; text-align: left; padding: 14px 16px;">Registered Date</th>
+                                    <th style="width: 15%; text-align: center; padding: 14px 16px;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="doctorsTableBody">
@@ -327,15 +327,15 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table style="width: 100%;">
+                        <table style="width: 100%; table-layout: fixed; border-collapse: collapse;">
                             <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Staff Name</th>
-                                    <th>Email Address</th>
-                                    <th>Assigned Role</th>
-                                    <th>Created Date</th>
-                                    <th style="text-align: center;">Actions</th>
+                                    <th style="width: 50px; text-align: left; padding: 14px 16px;">#</th>
+                                    <th style="width: 26%; text-align: left; padding: 14px 16px;">Staff Name</th>
+                                    <th style="width: 22%; text-align: left; padding: 14px 16px;">Assigned Role</th>
+                                    <th style="width: 20%; text-align: left; padding: 14px 16px;">Mobile Number</th>
+                                    <th style="width: 17%; text-align: left; padding: 14px 16px;">Registered Date</th>
+                                    <th style="width: 15%; text-align: center; padding: 14px 16px;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="staffTableBody">
@@ -346,7 +346,7 @@
                 </div>
 
                 <div style="margin-top: 14px; padding: 12px 16px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; font-size: 0.82rem; color: #64748b;">
-                    💡 <strong>Note:</strong> Removing a doctor or staff member deletes their record from the clinic database. Please also remove their login email from the Supabase Authentication dashboard separately if you wish to revoke login access completely.
+                    💡 <strong>Note:</strong> Removing a doctor or staff member deletes their record from the clinic database.
                 </div>
             </div>
 
@@ -648,8 +648,8 @@
                     <input type="text" id="newDoctorSpec" placeholder="Orthodontics / Root Canal / General" required style="width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 8px;">
                 </div>
                 <div style="margin-bottom: 20px;">
-                    <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 4px;">Email Address <span style="color:#e11d48;">*</span></label>
-                    <input type="email" id="newDoctorEmail" placeholder="doctor@smilecare.com" required style="width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 4px;">Mobile Number <span style="color:#e11d48;">*</span></label>
+                    <input type="tel" id="newDoctorMobile" placeholder="10-digit mobile number (e.g. 9876543210)" required style="width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 8px;">
                 </div>
                 <div style="display: flex; gap: 12px; justify-content: flex-end;">
                     <button type="button" id="cancelAddDoctorModalBtn" style="padding: 9px 18px; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer;">Cancel</button>
@@ -672,15 +672,12 @@
                     <input type="text" id="newStaffName" placeholder="Priya Singh" required style="width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 8px;">
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 4px;">Email Address <span style="color:#e11d48;">*</span></label>
-                    <input type="email" id="newStaffEmail" placeholder="staff@smilecare.com" required style="width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 4px;">Mobile Number <span style="color:#e11d48;">*</span></label>
+                    <input type="tel" id="newStaffMobile" placeholder="10-digit mobile number (e.g. 9876543210)" required style="width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 8px;">
                 </div>
                 <div style="margin-bottom: 20px;">
-                    <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 4px;">Assign Role <span style="color:#e11d48;">*</span></label>
-                    <select id="newStaffRole" required style="width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 8px; background: white;">
-                        <option value="Receptionist">Receptionist / Front Desk</option>
-                        <option value="Admin">Admin</option>
-                    </select>
+                    <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 4px;">Assign Role / Post <span style="color:#e11d48;">*</span></label>
+                    <input type="text" id="newStaffRole" placeholder="e.g. Receptionist, Nurse, Clinic Manager, Accountant" required style="width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 8px;">
                 </div>
                 <div style="display: flex; gap: 12px; justify-content: flex-end;">
                     <button type="button" id="cancelAddStaffModalBtn" style="padding: 9px 18px; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer;">Cancel</button>
