@@ -347,12 +347,90 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // --------------------------------------------------------------------
+    // DATE & STATUS HELPERS (Auto-detect Missed, Tomorrow Highlight, CSS classes)
+    // --------------------------------------------------------------------
+    
+    /**
+     * Helper to normalize a date string/object (YYYY-MM-DD) to midnight local time (00:00:00.000)
+     */
+    function getNormalizedDate(dateInput) {
+        if (!dateInput) return null;
+        try {
+            const cleanStr = String(dateInput).trim().split("T")[0];
+            const parts = cleanStr.split("-");
+            if (parts.length === 3) {
+                const year = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1;
+                const day = parseInt(parts[2], 10);
+                if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+                    return new Date(year, month, day, 0, 0, 0, 0);
+                }
+            }
+            const d = new Date(dateInput);
+            if (isNaN(d.getTime())) return null;
+            d.setHours(0, 0, 0, 0);
+            return d;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    /**
+     * Classifies appointment date relative to today's local date:
+     * 'past' | 'today' | 'tomorrow' | 'future'
+     */
+    function getRelativeDateCategory(appointmentDateStr) {
+        const appDate = getNormalizedDate(appointmentDateStr);
+        if (!appDate) return 'unknown';
+
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const appTime = appDate.getTime();
+        const todayTime = today.getTime();
+        const tomorrowTime = tomorrow.getTime();
+
+        if (appTime < todayTime) {
+            return 'past';
+        } else if (appTime === todayTime) {
+            return 'today';
+        } else if (appTime === tomorrowTime) {
+            return 'tomorrow';
+        } else {
+            return 'future';
+        }
+    }
+
+    /**
+     * Maps status string to a clean CSS class name ('Pending', 'Confirmed', 'Completed', 'Cancelled', 'Missed')
+     */
+    function getStatusClass(status) {
+        if (!status) return 'Pending';
+        if (status.includes('Missed')) return 'Missed';
+        return status;
+    }
+
     // Update Overview Stats Cards
     function updateStats(appointmentsList) {
-        statTotal.textContent = appointmentsList.length;
-        statPending.textContent = appointmentsList.filter(a => a.status === 'Pending').length;
-        statConfirmed.textContent = appointmentsList.filter(a => a.status === 'Confirmed').length;
-        statCompleted.textContent = appointmentsList.filter(a => a.status === 'Completed').length;
+        if (statTotal) statTotal.textContent = appointmentsList.length;
+        if (statPending) statPending.textContent = appointmentsList.filter(a => a.status === 'Pending').length;
+        if (statConfirmed) statConfirmed.textContent = appointmentsList.filter(a => a.status === 'Confirmed').length;
+        if (statCompleted) statCompleted.textContent = appointmentsList.filter(a => a.status === 'Completed').length;
+        
+        const statMissed = document.getElementById("statMissed");
+        if (statMissed) {
+            const missedCount = appointmentsList.filter(a => {
+                const isExplicit = (a.status === 'Missed / No-Show' || a.status === 'Missed');
+                const dateCat = getRelativeDateCategory(a.appointment_date);
+                const isAuto = (dateCat === 'past') && (a.status === 'Pending' || a.status === 'Confirmed');
+                return isExplicit || isAuto;
+            }).length;
+            statMissed.textContent = missedCount;
+        }
     }
 
     // 6. Combined Filter Logic (Date + Status + Patient Name Search)
@@ -368,8 +446,17 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // 2. Status Filter
-            if (statusVal && statusVal !== "All" && item.status !== statusVal) {
-                return false;
+            if (statusVal && statusVal !== "All") {
+                if (statusVal === "Missed / No-Show" || statusVal === "Missed") {
+                    const dateCat = getRelativeDateCategory(item.appointment_date);
+                    const isAutoMissed = (dateCat === 'past') && (item.status === 'Pending' || item.status === 'Confirmed');
+                    const isExplicitMissed = (item.status === 'Missed / No-Show' || item.status === 'Missed');
+                    if (!isAutoMissed && !isExplicitMissed) {
+                        return false;
+                    }
+                } else if (item.status !== statusVal) {
+                    return false;
+                }
             }
 
             // 3. Search Filter (patient_name case-insensitive partial match & mobile match)
@@ -421,9 +508,35 @@ document.addEventListener("DOMContentLoaded", function () {
         list.forEach((item, index) => {
             const tr = document.createElement("tr");
 
-            // Date formatting
+            // Date relative classification (past, today, tomorrow, future)
+            const dateCat = getRelativeDateCategory(item.appointment_date);
+            
+            // Auto-detect Missed: past date AND status is still Pending or Confirmed
+            const isAutoMissed = (dateCat === 'past') && (item.status === 'Pending' || item.status === 'Confirmed');
+            const isExplicitMissed = (item.status === 'Missed / No-Show' || item.status === 'Missed');
+            const isMissed = isAutoMissed || isExplicitMissed;
+            const isTomorrow = (dateCat === 'tomorrow');
+            const isToday = (dateCat === 'today');
+
+            // Apply row highlighting class
+            if (isMissed) {
+                tr.classList.add("row-missed");
+            } else if (isTomorrow) {
+                tr.classList.add("row-tomorrow");
+            } else if (isToday) {
+                tr.classList.add("row-today");
+            }
+
+            // Date formatting + relative date tag badge
             const formattedDate = item.appointment_date || "-";
             const formattedTime = (typeof formatTime12Hour === "function") ? formatTime12Hour(item.appointment_time) : (item.appointment_time || "-");
+
+            let dateBadgeHtml = "";
+            if (isTomorrow) {
+                dateBadgeHtml = ` <span class="badge-tag badge-tomorrow-tag">📅 Tomorrow</span>`;
+            } else if (isToday) {
+                dateBadgeHtml = ` <span class="badge-tag badge-today-tag">📌 Today</span>`;
+            }
 
             let genderDisplay = item.gender || '-';
             let issueDisplay = item.issue || '-';
@@ -435,6 +548,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
+            // Current status display for select dropdown
+            const currentStatus = isAutoMissed ? "Missed / No-Show" : (item.status || "Pending");
+            const statusClass = getStatusClass(currentStatus);
+
             tr.innerHTML = `
                 <td style="font-weight: 600; color: #64748b;">${index + 1}</td>
                 <td><strong>${escapeHtml(item.patient_name)}</strong></td>
@@ -442,14 +559,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td>${escapeHtml(genderDisplay)}</td>
                 <td>${escapeHtml(item.mobile || '-')}</td>
                 <td class="col-issue" style="max-width:240px; min-width:160px; white-space:normal; word-break:break-word; line-height:1.4;">${escapeHtml(issueDisplay)}</td>
-                <td>${formattedDate}</td>
+                <td>${formattedDate}${dateBadgeHtml}</td>
                 <td>${formattedTime}</td>
                 <td>
-                    <select class="status-select ${item.status || 'Pending'}" data-id="${item.id}">
-                        <option value="Pending" ${item.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                        <option value="Confirmed" ${item.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
-                        <option value="Completed" ${item.status === 'Completed' ? 'selected' : ''}>Completed</option>
-                        <option value="Cancelled" ${item.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                    <select class="status-select ${statusClass}" data-id="${item.id}">
+                        <option value="Pending" ${currentStatus === 'Pending' ? 'selected' : ''}>Pending</option>
+                        <option value="Confirmed" ${currentStatus === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+                        <option value="Completed" ${currentStatus === 'Completed' ? 'selected' : ''}>Completed</option>
+                        <option value="Cancelled" ${currentStatus === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                        <option value="Missed / No-Show" ${(currentStatus === 'Missed / No-Show' || currentStatus === 'Missed') ? 'selected' : ''}>Missed / No-Show</option>
                     </select>
                 </td>
             `;
@@ -853,7 +971,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const newStatus = selectElem.value;
 
         // Update class styling immediately
-        selectElem.className = `status-select ${newStatus}`;
+        const statusClass = getStatusClass(newStatus);
+        selectElem.className = `status-select ${statusClass}`;
 
         try {
             const { data, error } = await supabaseClient

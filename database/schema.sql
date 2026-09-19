@@ -103,6 +103,25 @@ CREATE POLICY "Allow public read access to doctors"
 ON public.doctors FOR SELECT TO public
 USING (true);
 
+-- Allow public insert into doctors (Admin Portal add doctor)
+DROP POLICY IF EXISTS "Allow public insert into doctors" ON public.doctors;
+CREATE POLICY "Allow public insert into doctors"
+ON public.doctors FOR INSERT TO public
+WITH CHECK (true);
+
+-- Allow public update access to doctors
+DROP POLICY IF EXISTS "Allow public update to doctors" ON public.doctors;
+CREATE POLICY "Allow public update to doctors"
+ON public.doctors FOR UPDATE TO public
+USING (true)
+WITH CHECK (true);
+
+-- Allow public delete access to doctors
+DROP POLICY IF EXISTS "Allow public delete to doctors" ON public.doctors;
+CREATE POLICY "Allow public delete to doctors"
+ON public.doctors FOR DELETE TO public
+USING (true);
+
 -- Allow public users to insert new appointments (booking form submission)
 DROP POLICY IF EXISTS "Allow public insert into appointments" ON public.appointments;
 CREATE POLICY "Allow public insert into appointments"

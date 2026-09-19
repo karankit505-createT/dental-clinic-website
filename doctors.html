@@ -16,7 +16,7 @@
     <script src="js/pdf-generator.js?v=8"></script>
 
     <!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="css/style.css?v=15">
+    <link rel="stylesheet" href="css/style.css?v=500">
     <link rel="stylesheet" href="css/background-slideshow.css">
 </head>
 <body>
@@ -106,23 +106,27 @@
 
             <!-- TAB 1: Appointments Schedule Section -->
             <div id="appointmentsTabSection">
-                <!-- Stats Bar -->
-                <div class="stats-grid">
-                    <div class="stat-card" style="border-left: 4px solid #0d9488 !important;">
-                        <div class="stat-label">Total Appointments</div>
-                        <div id="statTotal" class="stat-number">0</div>
+                <!-- Stats Bar (Strict 5-Card Single Row Layout) -->
+                <div class="stats-grid" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 10px !important; width: 100% !important; margin-bottom: 24px !important;">
+                    <div class="stat-card" style="flex: 1 1 0% !important; min-width: 0 !important; border-left: 4px solid #0d9488 !important; padding: 12px 14px !important;">
+                        <div class="stat-label" style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;">Total Appointments</div>
+                        <div id="statTotal" class="stat-number" style="font-size: 1.6rem !important; font-weight: 800 !important; margin-top: 2px !important;">0</div>
                     </div>
-                    <div class="stat-card" style="border-left: 4px solid var(--status-pending-text);">
-                        <div class="stat-label">Pending</div>
-                        <div id="statPending" class="stat-number" style="color: var(--status-pending-text);">0</div>
+                    <div class="stat-card" style="flex: 1 1 0% !important; min-width: 0 !important; border-left: 4px solid var(--status-pending-text) !important; padding: 12px 14px !important;">
+                        <div class="stat-label" style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;">Pending</div>
+                        <div id="statPending" class="stat-number" style="font-size: 1.6rem !important; font-weight: 800 !important; margin-top: 2px !important; color: var(--status-pending-text) !important;">0</div>
                     </div>
-                    <div class="stat-card" style="border-left: 4px solid var(--status-confirmed-text);">
-                        <div class="stat-label">Confirmed</div>
-                        <div id="statConfirmed" class="stat-number" style="color: var(--status-confirmed-text);">0</div>
+                    <div class="stat-card" style="flex: 1 1 0% !important; min-width: 0 !important; border-left: 4px solid var(--status-confirmed-text) !important; padding: 12px 14px !important;">
+                        <div class="stat-label" style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;">Confirmed</div>
+                        <div id="statConfirmed" class="stat-number" style="font-size: 1.6rem !important; font-weight: 800 !important; margin-top: 2px !important; color: var(--status-confirmed-text) !important;">0</div>
                     </div>
-                    <div class="stat-card" style="border-left: 4px solid var(--status-completed-text);">
-                        <div class="stat-label">Completed</div>
-                        <div id="statCompleted" class="stat-number" style="color: var(--status-completed-text);">0</div>
+                    <div class="stat-card" style="flex: 1 1 0% !important; min-width: 0 !important; border-left: 4px solid var(--status-completed-text) !important; padding: 12px 14px !important;">
+                        <div class="stat-label" style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;">Completed</div>
+                        <div id="statCompleted" class="stat-number" style="font-size: 1.6rem !important; font-weight: 800 !important; margin-top: 2px !important; color: var(--status-completed-text) !important;">0</div>
+                    </div>
+                    <div class="stat-card" style="flex: 1 1 0% !important; min-width: 0 !important; border-left: 4px solid #c2410c !important; padding: 12px 14px !important;">
+                        <div class="stat-label" style="font-size: 0.78rem !important; font-weight: 700 !important; color: #64748b !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;">Missed / No-Show</div>
+                        <div id="statMissed" class="stat-number" style="font-size: 1.6rem !important; font-weight: 800 !important; margin-top: 2px !important; color: #c2410c !important;">0</div>
                     </div>
                 </div>
 
@@ -148,6 +152,7 @@
                                 <option value="Confirmed">Confirmed</option>
                                 <option value="Completed">Completed</option>
                                 <option value="Cancelled">Cancelled</option>
+                                <option value="Missed / No-Show">Missed / No-Show</option>
                             </select>
                         </div>
 
@@ -286,6 +291,6 @@
 
     <!-- Dashboard Logic Script -->
     <script src="js/background-slideshow.js"></script>
-    <script src="js/dashboard.js?v=99"></script>
+    <script src="js/dashboard.js?v=502"></script>
 </body>
 </html>

@@ -506,7 +506,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const doctorName = getDoctorName(item.doctor_id, item.doctors);
 
             tr.innerHTML = `
-                <td><strong>#${index + 1}</strong></td>
+                <td><strong>${index + 1}</strong></td>
                 <td>
                     <div style="font-weight: 700; color: var(--text-dark);">${escapeHtml(item.patient_name)}</div>
                     <div style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(item.mobile || '')}</div>

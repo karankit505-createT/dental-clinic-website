@@ -54,7 +54,8 @@ window.generateAppointmentPDF = function (data) {
         const appointmentDateRaw = String(data.appointment_date || data.appointmentDate || "").trim();
         const readableDate = formatReadableDate(appointmentDateRaw);
 
-        const appointmentTime = String(data.appointment_time || data.appointmentTime || "-").trim();
+        const rawTimeStr = String(data.appointment_time || data.appointmentTime || "-").trim();
+        const appointmentTime = (typeof formatTime12Hour === "function") ? formatTime12Hour(rawTimeStr) : rawTimeStr;
         const issue = String(data.issue || "-").trim();
         const status = String(data.status || "Pending").trim();
 

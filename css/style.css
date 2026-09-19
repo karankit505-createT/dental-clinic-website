@@ -34,6 +34,10 @@
     --status-cancelled-text: #be123c;
     --status-cancelled-border: #fca5a5;
 
+    --status-missed-bg: #fff7ed;
+    --status-missed-text: #c2410c;
+    --status-missed-border: #fdba74;
+
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
@@ -709,11 +713,11 @@ input[type="file"] {
     font-size: 0.9rem;
 }
 
-/* Stats Cards */
+/* Stats Cards (Single Row Layout) */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
     margin-bottom: 28px;
     width: 100%;
 }
@@ -722,21 +726,38 @@ input[type="file"] {
     background-color: #ffffff;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
-    padding: 26px 24px;
+    padding: 18px 20px;
     box-shadow: var(--shadow-sm);
+    min-width: 0;
 }
 
 .stat-number {
-    font-size: 2.2rem;
+    font-size: 2rem;
     font-weight: 800;
     color: var(--text-dark);
     margin-top: 4px;
 }
 
 .stat-label {
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     color: var(--text-muted);
     font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 1024px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+}
+
+@media (max-width: 640px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /* Filter Controls Card */
@@ -1178,6 +1199,68 @@ tbody tr:last-child td {
     background-color: var(--status-cancelled-bg);
     color: var(--status-cancelled-text);
     border-color: var(--status-cancelled-border);
+}
+
+.status-select.Missed {
+    background-color: var(--status-missed-bg, #fff7ed);
+    color: var(--status-missed-text, #c2410c);
+    border-color: var(--status-missed-border, #fdba74);
+}
+
+/* Row Highlighting for Missed and Tomorrow Appointments */
+tbody tr.row-missed {
+    background-color: #fff5f5 !important;
+    border-left: 4px solid #ef4444 !important;
+}
+
+tbody tr.row-missed:hover {
+    background-color: #fee2e2 !important;
+}
+
+tbody tr.row-tomorrow {
+    background-color: #fffbeb !important;
+    border-left: 4px solid #f59e0b !important;
+}
+
+tbody tr.row-tomorrow:hover {
+    background-color: #fef3c7 !important;
+}
+
+tbody tr.row-today {
+    border-left: 4px solid #0d9488 !important;
+}
+
+/* Small Tag Badges for Dates & Statuses */
+.badge-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0.2px;
+    line-height: 1.2;
+}
+
+.badge-missed-tag {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.badge-tomorrow-tag {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.badge-today-tag {
+    background-color: #ccfbf1;
+    color: #0f766e;
+    border: 1px solid #99f6e4;
 }
 
 /* Empty Table State */
@@ -3083,6 +3166,41 @@ table tbody tr:hover {
     background: #e9d5ff !important;
     color: #6b21a8 !important;
     border-color: #c084fc !important;
+}
+
+/* Single Row Horizontal Alignment for Stats Bar (All 5 Cards in 1 Line) */
+.stats-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    width: 100% !important;
+    margin-bottom: 24px !important;
+    align-items: stretch !important;
+}
+
+.stats-grid .stat-card {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 12px 14px !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+}
+
+.stats-grid .stat-label {
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.stats-grid .stat-number {
+    font-size: 1.6rem !important;
+    font-weight: 800 !important;
+    margin-top: 2px !important;
 }
 
 

@@ -1,6 +1,15 @@
-// ==========================================
-// ADMIN PORTAL LOGIC (admin.js - Admin Only)
-// ==========================================
+// Global escapeHtml Fallback
+if (typeof escapeHtml !== "function") {
+    window.escapeHtml = function(str) {
+        if (!str) return "";
+        return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    };
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     const configAlert = document.getElementById("configAlert");
@@ -181,7 +190,25 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Check stored session immediately on load
+    const storedAdminStr = sessionStorage.getItem("loggedInAdmin") || localStorage.getItem("loggedInAdmin");
+    if (storedAdminStr) {
+        try {
+            currentStaff = JSON.parse(storedAdminStr);
+            if (currentStaff && currentStaff.role === "Admin") {
+                updateStaffHeader(currentStaff);
+                showDashboardState();
+                fetchDoctorsList();
+                fetchAllAppointments();
+                fetchTeamLists();
+            }
+        } catch (e) {
+            console.warn("Error parsing stored admin session:", e);
+        }
+    }
+
     if (supabaseClient) {
+        checkAuthSession();
         supabaseClient.auth.onAuthStateChange(async (event, session) => {
             if (session && session.user && session.user.email) {
                 const staffProfile = await loadStaffProfile(session.user.email);
@@ -377,6 +404,55 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Helper: Normalize date string (YYYY-MM-DD) to midnight local time
+    function getNormalizedDate(dateInput) {
+        if (!dateInput) return null;
+        try {
+            const cleanStr = String(dateInput).trim().split("T")[0];
+            const parts = cleanStr.split("-");
+            if (parts.length === 3) {
+                const year = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1;
+                const day = parseInt(parts[2], 10);
+                if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+                    return new Date(year, month, day, 0, 0, 0, 0);
+                }
+            }
+            const d = new Date(dateInput);
+            if (isNaN(d.getTime())) return null;
+            d.setHours(0, 0, 0, 0);
+            return d;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // Helper: Classify relative date ('past', 'today', 'tomorrow', 'future')
+    function getRelativeDateCategory(appointmentDateStr) {
+        const appDate = getNormalizedDate(appointmentDateStr);
+        if (!appDate) return 'unknown';
+
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const appTime = appDate.getTime();
+        const todayTime = today.getTime();
+        const tomorrowTime = tomorrow.getTime();
+
+        if (appTime < todayTime) {
+            return 'past';
+        } else if (appTime === todayTime) {
+            return 'today';
+        } else if (appTime === tomorrowTime) {
+            return 'tomorrow';
+        } else {
+            return 'future';
+        }
+    }
+
     // Fetch Doctors List
     async function fetchDoctorsList() {
         if (!supabaseClient) return;
@@ -421,14 +497,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getDoctorName(doctorId, docData) {
-        if (docData && docData.name) {
-            let n = docData.name.trim();
+        let docObj = docData;
+        if (Array.isArray(docData) && docData.length > 0) {
+            docObj = docData[0];
+        }
+        if (docObj && docObj.name) {
+            let n = String(docObj.name).trim();
             return /^dr\.?\s+/i.test(n) ? n : "Dr. " + n;
         }
-        if (doctorId) {
+        if (doctorId && Array.isArray(doctorsList)) {
             const found = doctorsList.find(d => String(d.id) === String(doctorId));
             if (found && found.name) {
-                let n = found.name.trim();
+                let n = String(found.name).trim();
                 return /^dr\.?\s+/i.test(n) ? n : "Dr. " + n;
             }
         }
@@ -498,11 +578,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const pendingReportsCount = totalCompleted - withReportsCount;
 
+        const missedCount = sourceApps.filter(a => {
+            const isExplicit = (a.status === "Missed / No-Show" || a.status === "Missed");
+            const dateCat = getRelativeDateCategory(a.appointment_date);
+            const isAuto = (dateCat === "past") && (a.status === "Pending" || a.status === "Confirmed");
+            return isExplicit || isAuto;
+        }).length;
+
         const elTotal = document.getElementById("statTotal");
         const elPending = document.getElementById("statPending");
         const elConfirmed = document.getElementById("statConfirmed");
         const elCompleted = document.getElementById("statCompleted");
         const elCancelled = document.getElementById("statCancelled");
+        const elMissed = document.getElementById("statMissed");
         const elWithReports = document.getElementById("statWithReports");
         const elPendingReports = document.getElementById("statPendingReports");
 
@@ -511,6 +599,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (elConfirmed) elConfirmed.textContent = confirmedCount;
         if (elCompleted) elCompleted.textContent = totalCompleted;
         if (elCancelled) elCancelled.textContent = cancelledCount;
+        if (elMissed) elMissed.textContent = missedCount;
         if (elWithReports) elWithReports.textContent = withReportsCount;
         if (elPendingReports) elPendingReports.textContent = pendingReportsCount;
     }
@@ -521,10 +610,30 @@ document.addEventListener("DOMContentLoaded", function () {
         let filtered = [...allAppointments];
 
         if (filterDate && filterDate.value) {
-            filtered = filtered.filter(item => item.appointment_date === filterDate.value);
+            const targetDateStr = String(filterDate.value).trim().split("T")[0];
+            filtered = filtered.filter(item => {
+                if (!item.appointment_date) return false;
+                const itemDateStr = String(item.appointment_date).trim().split("T")[0];
+                return itemDateStr === targetDateStr;
+            });
         }
-        if (filterStatus && filterStatus.value !== "All") {
-            filtered = filtered.filter(item => item.status === filterStatus.value);
+        if (filterStatus && filterStatus.value && filterStatus.value !== "All") {
+            const selectedStatus = filterStatus.value;
+            if (selectedStatus === "Missed / No-Show" || selectedStatus === "Missed") {
+                filtered = filtered.filter(item => {
+                    const isExplicit = (item.status === "Missed / No-Show" || item.status === "Missed");
+                    const dateCat = getRelativeDateCategory(item.appointment_date);
+                    const isAuto = (dateCat === "past") && (item.status === "Pending" || item.status === "Confirmed");
+                    return isExplicit || isAuto;
+                });
+            } else {
+                filtered = filtered.filter(item => {
+                    const dateCat = getRelativeDateCategory(item.appointment_date);
+                    const isAutoMissed = (dateCat === "past") && (item.status === "Pending" || item.status === "Confirmed");
+                    if (isAutoMissed) return false;
+                    return item.status === selectedStatus;
+                });
+            }
         }
         if (filterDoctor && filterDoctor.value !== "All") {
             filtered = filtered.filter(item => String(item.doctor_id) === String(filterDoctor.value));
@@ -535,6 +644,43 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         renderAppointmentsTable(filtered);
+    }
+
+    async function handleAdminStatusChange(e) {
+        const selectElem = e.target;
+        const appointmentId = selectElem.getAttribute("data-id");
+        const newStatus = selectElem.value;
+
+        const statusClass = newStatus.includes("Missed") ? "Missed" : newStatus;
+        selectElem.className = `status-select ${statusClass}`;
+
+        try {
+            const { error } = await supabaseClient
+                .from("appointments")
+                .update({ status: newStatus })
+                .eq("id", appointmentId);
+
+            if (error) {
+                console.error("Status update error:", error);
+                if (typeof showToast === "function") showToast("Failed to update status: " + error.message, "error");
+                fetchAppointments();
+                return;
+            }
+
+            if (typeof showToast === "function") {
+                showToast(`Status updated to '${newStatus}'`, "success");
+            }
+
+            const targetItem = allAppointments.find(a => String(a.id) === String(appointmentId));
+            if (targetItem) {
+                targetItem.status = newStatus;
+                updateStatsCounters();
+                applyClientFilters();
+            }
+
+        } catch (err) {
+            console.error("Status Change Exception:", err);
+        }
     }
 
     if (filterDate) filterDate.addEventListener("change", applyClientFilters);
@@ -576,7 +722,27 @@ document.addEventListener("DOMContentLoaded", function () {
         if (appointmentsTable) appointmentsTable.style.display = "table";
 
         list.forEach((item, index) => {
-            const tr = document.createElement("tr");
+            try {
+                const tr = document.createElement("tr");
+
+            // Date relative classification (past, today, tomorrow, future)
+            const dateCat = getRelativeDateCategory(item.appointment_date);
+            
+            // Auto-detect Missed: past date AND status is still Pending or Confirmed
+            const isAutoMissed = (dateCat === 'past') && (item.status === 'Pending' || item.status === 'Confirmed');
+            const isExplicitMissed = (item.status === 'Missed / No-Show' || item.status === 'Missed');
+            const isMissed = isAutoMissed || isExplicitMissed;
+            const isTomorrow = (dateCat === 'tomorrow');
+            const isToday = (dateCat === 'today');
+
+            // Apply row highlighting class
+            if (isMissed) {
+                tr.classList.add("row-missed");
+            } else if (isTomorrow) {
+                tr.classList.add("row-tomorrow");
+            } else if (isToday) {
+                tr.classList.add("row-today");
+            }
 
             const dropdownId = `adminReportDropdown-${item.id}`;
             const existingReports = (typeof getAppointmentReports === "function") ? getAppointmentReports(item) : [];
@@ -612,41 +778,40 @@ document.addEventListener("DOMContentLoaded", function () {
                 `;
             }
 
-            let adminReportActionHtml = "";
+            // Current Status Pill Badge (Read-only for Admin)
+            const currentStatus = isAutoMissed ? "Missed / No-Show" : (item.status || "Pending");
+            let badgeStyle = "background: #fef3c7; color: #d97706; border: 1px solid #fcd34d;";
+            let badgeIcon = "⏳";
 
-            if (item.status === "Completed") {
-                const hasReports = existingReports.length > 0;
-                const uploadBtnLabel = hasReports ? "➕ Add Report" : "📤 Upload Report";
-                const uploadBtnBg = hasReports 
-                    ? "linear-gradient(135deg, #10b981 0%, #059669 100%)" 
-                    : "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)";
-                adminReportActionHtml = `
-                    <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
-                        <button type="button" class="btn-open-upload-modal" data-id="${item.id}" data-name="${escapeHtml(item.patient_name)}" style="padding: 6px 12px; font-size: 0.78rem; background: ${uploadBtnBg}; color: white; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.12);">
-                            ${uploadBtnLabel}
-                        </button>
-                        ${reportDropdownHtml}
-                    </div>
-                `;
-            } else if (item.status === "Cancelled") {
-                adminReportActionHtml = `<span style="font-size: 0.78rem; color: #9f1239; font-weight: 600; background: #ffe4e6; padding: 4px 10px; border-radius: 6px; border: 1px solid #fecdd3;">🚫 Cancelled</span>`;
-            } else {
-                adminReportActionHtml = `<span style="font-size: 0.78rem; color: #64748b; font-weight: 600; background: #f1f5f9; padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1;">⏳ Checkup Pending</span>`;
+            if (currentStatus === "Confirmed") {
+                badgeStyle = "background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd;";
+                badgeIcon = "📅";
+            } else if (currentStatus === "Completed") {
+                badgeStyle = "background: #dcfce7; color: #15803d; border: 1px solid #86efac;";
+                badgeIcon = "✅";
+            } else if (currentStatus === "Cancelled") {
+                badgeStyle = "background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3;";
+                badgeIcon = "❌";
+            } else if (currentStatus.includes("Missed")) {
+                badgeStyle = "background: #ffedd5; color: #c2410c; border: 1px solid #fdba74;";
+                badgeIcon = "⚠️";
             }
 
-            let statusBadgeHtml = "";
-            if (item.status === "Completed") {
-                statusBadgeHtml = `<span style="background: var(--status-completed-bg); color: var(--status-completed-text); border: 1px solid var(--status-completed-border); padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 0.78rem;">✅ Completed</span>`;
-            } else if (item.status === "Confirmed") {
-                statusBadgeHtml = `<span style="background: var(--status-confirmed-bg); color: var(--status-confirmed-text); border: 1px solid var(--status-confirmed-border); padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 0.78rem;">📅 Confirmed</span>`;
-            } else if (item.status === "Cancelled") {
-                statusBadgeHtml = `<span style="background: var(--status-cancelled-bg); color: var(--status-cancelled-text); border: 1px solid var(--status-cancelled-border); padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 0.78rem;">❌ Cancelled</span>`;
-            } else {
-                statusBadgeHtml = `<span style="background: var(--status-pending-bg); color: var(--status-pending-text); border: 1px solid var(--status-pending-border); padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 0.78rem;">⏳ Pending</span>`;
-            }
+            const statusCellHtml = `
+                <span style="${badgeStyle} padding: 6px 12px; font-size: 0.82rem; font-weight: 700; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;">
+                    ${badgeIcon} ${escapeHtml(currentStatus)}
+                </span>
+            `;
 
             const formattedDate = item.appointment_date || "-";
             const formattedTime = (typeof formatTime12Hour === "function") ? formatTime12Hour(item.appointment_time) : (item.appointment_time || "-");
+
+            let dateBadgeHtml = "";
+            if (isTomorrow) {
+                dateBadgeHtml = ` <span class="badge-tag badge-tomorrow-tag">📅 Tomorrow</span>`;
+            } else if (isToday) {
+                dateBadgeHtml = ` <span class="badge-tag badge-today-tag">📌 Today</span>`;
+            }
 
             let genderDisplay = item.gender || '-';
             let issueDisplay = item.issue || '-';
@@ -673,7 +838,7 @@ document.addEventListener("DOMContentLoaded", function () {
             `;
 
             tr.innerHTML = `
-                <td><strong>#${index + 1}</strong></td>
+                <td><strong>${index + 1}</strong></td>
                 <td>
                     <div style="font-weight: 700; color: var(--text-dark);">${escapeHtml(item.patient_name)}</div>
                     <div style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(item.mobile || '')}</div>
@@ -685,7 +850,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div style="font-weight: 700; color: #0d9488; font-size: 0.88rem;">${escapeHtml(doctorName)}</div>
                 </td>
                 <td>
-                    <div style="font-weight: 600; color: #1e293b;">📅 ${formattedDate}</div>
+                    <div style="font-weight: 600; color: #1e293b;">📅 ${formattedDate}${dateBadgeHtml}</div>
                     <div style="font-size: 0.8rem; color: #0284c7; font-weight: 700;">⏰ ${formattedTime}</div>
                 </td>
                 <td class="col-issue" style="max-width:220px; min-width:160px; white-space:normal; word-break:break-word;">
@@ -693,12 +858,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         ${escapeHtml(issueDisplay)}
                     </div>
                 </td>
-                <td>${statusBadgeHtml}</td>
-                <td>${adminReportActionHtml}</td>
+                <td>${statusCellHtml}</td>
                 <td>${adminActionsHtml}</td>
             `;
 
-            tableBody.appendChild(tr);
+                tableBody.appendChild(tr);
+            } catch (err) {
+                console.error("Error rendering row:", err, item);
+            }
         });
 
         // Toggle dropdown listener with fixed viewport positioning (prevents overflow clipping)
@@ -793,11 +960,12 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("editPatientName").value = item.patient_name || "";
         document.getElementById("editMobile").value = item.mobile || "";
         document.getElementById("editDate").value = item.appointment_date || "";
-        document.getElementById("editTime").value = item.appointment_time || "";
+        const rawTimeVal = item.appointment_time || "";
+        document.getElementById("editTime").value = (typeof formatTime12Hour === "function") ? formatTime12Hour(rawTimeVal) : rawTimeVal;
         document.getElementById("editIssue").value = item.issue || "";
         
-        const statusSelect = document.getElementById("editStatusSelect");
-        if (statusSelect) statusSelect.value = item.status || "Pending";
+        const statusInput = document.getElementById("editStatusInput") || document.getElementById("editStatusSelect");
+        if (statusInput) statusInput.value = item.status || "Pending";
 
         const doctorSelect = document.getElementById("editDoctorSelect");
         if (doctorSelect) doctorSelect.value = item.doctor_id || "";
@@ -819,9 +987,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const patient_name = document.getElementById("editPatientName").value.trim();
             const mobile = document.getElementById("editMobile").value.trim();
             const doctor_id = document.getElementById("editDoctorSelect").value;
-            const status = document.getElementById("editStatusSelect").value;
             const appointment_date = document.getElementById("editDate").value;
-            const appointment_time = document.getElementById("editTime").value.trim();
+            const rawTimeInput = document.getElementById("editTime").value.trim();
+            const appointment_time = (typeof formatTime12Hour === "function") ? formatTime12Hour(rawTimeInput) : rawTimeInput;
             const issue = document.getElementById("editIssue").value.trim();
 
             try {
@@ -831,7 +999,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         patient_name,
                         mobile,
                         doctor_id: doctor_id || null,
-                        status,
                         appointment_date,
                         appointment_time,
                         issue
@@ -940,19 +1107,29 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 tr.innerHTML = `
-                    <td style="text-align: left; padding: 14px 16px;"><strong>#${idx + 1}</strong></td>
+                    <td style="text-align: left; padding: 14px 16px;"><strong>${idx + 1}</strong></td>
                     <td style="text-align: left; padding: 14px 16px;"><strong style="color: #0d9488;">👨‍⚕️ ${escapeHtml(cleanName)}</strong></td>
                     <td style="text-align: left; padding: 14px 16px;"><span style="display: inline-flex; align-items: center; gap: 4px; background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">${escapeHtml(doc.specialization || 'General')}</span></td>
                     <td style="text-align: left; padding: 14px 16px;"><strong>📱 ${escapeHtml(docMobile)}</strong></td>
                     <td style="text-align: left; padding: 14px 16px;">${regDate}</td>
                     <td style="text-align: center; padding: 14px 16px;">
-                        <button type="button" onclick="promptDeleteDoctor('${doc.id}', '${escapeHtml(cleanName)}')" style="padding: 5px 12px; font-size: 0.78rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;" title="Delete Doctor">
+                        <button type="button" class="btn-delete-team-doctor" data-id="${doc.id}" data-name="${escapeHtml(cleanName)}" style="padding: 5px 12px; font-size: 0.78rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;" title="Delete Doctor">
                             🗑️ Delete
                         </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+
+            // Bind click listeners via data attributes to prevent inline JS quote escaping issues
+            tbody.querySelectorAll(".btn-delete-team-doctor").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const doctorId = this.getAttribute("data-id");
+                    const doctorName = this.getAttribute("data-name");
+                    promptDeleteDoctor(doctorId, doctorName);
+                });
+            });
+
         } catch (e) {
             console.error("Error fetching doctors team:", e);
         }
@@ -993,19 +1170,29 @@ document.addEventListener("DOMContentLoaded", function () {
                     : `<span style="display: inline-flex; align-items: center; gap: 4px; background: #f0fdf4; color: #0d9488; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">📋 ${escapeHtml(roleStr)}</span>`;
 
                 tr.innerHTML = `
-                    <td style="text-align: left; padding: 14px 16px;"><strong>#${idx + 1}</strong></td>
+                    <td style="text-align: left; padding: 14px 16px;"><strong>${idx + 1}</strong></td>
                     <td style="text-align: left; padding: 14px 16px;"><strong>👤 ${escapeHtml(st.name)}</strong></td>
                     <td style="text-align: left; padding: 14px 16px;">${roleBadge}</td>
                     <td style="text-align: left; padding: 14px 16px;"><strong>📱 ${escapeHtml(stMobile)}</strong></td>
                     <td style="text-align: left; padding: 14px 16px;">${regDate}</td>
                     <td style="text-align: center; padding: 14px 16px;">
-                        <button type="button" onclick="promptDeleteStaff('${st.id}', '${escapeHtml(st.name)}')" style="padding: 5px 12px; font-size: 0.78rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;" title="Delete Staff Member">
+                        <button type="button" class="btn-delete-team-staff" data-id="${st.id}" data-name="${escapeHtml(st.name)}" style="padding: 5px 12px; font-size: 0.78rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;" title="Delete Staff Member">
                             🗑️ Delete
                         </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+
+            // Bind click listeners via data attributes to prevent inline JS quote escaping issues
+            tbody.querySelectorAll(".btn-delete-team-staff").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const staffId = this.getAttribute("data-id");
+                    const staffName = this.getAttribute("data-name");
+                    promptDeleteStaff(staffId, staffName);
+                });
+            });
+
         } catch (e) {
             console.error("Error fetching staff team:", e);
         }
@@ -1017,24 +1204,33 @@ document.addEventListener("DOMContentLoaded", function () {
     let pendingDeleteTeamName = "";
 
     window.promptDeleteDoctor = async function (doctorId, doctorName) {
-        if (!supabaseClient) return;
+        if (!supabaseClient) {
+            alert("Supabase client not initialized.");
+            return;
+        }
 
-        // REQUIREMENT 5: Check Active Appointments
         try {
+            // Check for active appointments for this doctor
             const { data: activeApps, error } = await supabaseClient
                 .from("appointments")
                 .select("id")
                 .eq("doctor_id", doctorId)
                 .in("status", ["Pending", "Confirmed"]);
 
+            if (error) {
+                console.warn("Could not check active appointments for doctor:", error);
+            }
+
             if (!error && activeApps && activeApps.length > 0) {
                 const count = activeApps.length;
-                const warnMsg = `⚠️ Is doctor ki ${count} active appointments (Pending/Confirmed) hain. Delete karne se pehle unhe kisi aur doctor ko reassign karein ya cancel karein.`;
+                let cleanDocName = String(doctorName || "").trim();
+                if (!/^dr\.?\s+/i.test(cleanDocName)) cleanDocName = "Dr. " + cleanDocName;
+
+                const warnMsg = `⚠️ ${cleanDocName} has ${count} active appointment(s) (Pending/Confirmed). Please reassign or cancel those appointments before deleting this doctor.`;
                 if (typeof showToast === "function") {
                     showToast(warnMsg, "warning");
-                } else {
-                    alert(warnMsg);
                 }
+                alert(warnMsg);
                 return; // BLOCK DELETION
             }
 
@@ -1046,6 +1242,13 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     window.promptDeleteStaff = function (staffId, staffName) {
+        // Prevent logged-in admin from deleting their own staff account
+        if (currentStaff && String(currentStaff.id) === String(staffId)) {
+            const selfWarn = "⚠️ You cannot delete your own logged-in Admin account.";
+            if (typeof showToast === "function") showToast(selfWarn, "warning");
+            alert(selfWarn);
+            return;
+        }
         openDeleteTeamModal("staff", staffId, staffName);
     };
 
@@ -1058,17 +1261,25 @@ document.addEventListener("DOMContentLoaded", function () {
         const title = document.getElementById("deleteModalTitle");
         const text = document.getElementById("deleteModalText");
 
-        if (!modal) return;
+        if (!modal) {
+            console.error("confirmDeleteTeamModal element not found in DOM!");
+            alert(`Are you sure you want to delete ${type} "${name}"?`);
+            return;
+        }
+
+        let cleanDocName = String(name || "").trim();
+        if (type === "doctor" && !/^dr\.?\s+/i.test(cleanDocName)) cleanDocName = "Dr. " + cleanDocName;
 
         if (type === "doctor") {
             if (title) title.textContent = "Remove Doctor";
-            if (text) text.innerHTML = `Kya aap sach mein <strong>${escapeHtml(name)}</strong> ko remove karna chahte hain? Ye action wapas nahi ho sakta.`;
+            if (text) text.innerHTML = `Are you sure you want to remove <strong>${escapeHtml(cleanDocName)}</strong>? This action cannot be undone.`;
         } else {
             if (title) title.textContent = "Remove Staff Member";
-            if (text) text.innerHTML = `Kya aap sach mein staff member <strong>${escapeHtml(name)}</strong> ko remove karna chahte hain? Ye action wapas nahi ho sakta.`;
+            if (text) text.innerHTML = `Are you sure you want to remove staff member <strong>${escapeHtml(name)}</strong>? This action cannot be undone.`;
         }
 
         modal.style.display = "flex";
+        try { modal.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e){}
     }
 
     function closeDeleteTeamModal() {
@@ -1093,27 +1304,70 @@ document.addEventListener("DOMContentLoaded", function () {
 
             try {
                 if (pendingDeleteTeamType === "doctor") {
-                    const { error } = await supabaseClient.from("doctors").delete().eq("id", pendingDeleteTeamId);
+                    // Step 1: Disassociate any appointments linked to this doctor (set doctor_id = null)
+                    const { error: appUpdateErr } = await supabaseClient
+                        .from("appointments")
+                        .update({ doctor_id: null })
+                        .eq("doctor_id", pendingDeleteTeamId);
+                    
+                    if (appUpdateErr) {
+                        console.warn("Warning updating doctor_id in appointments:", appUpdateErr);
+                    }
+
+                    // Step 2: Delete related records in doctor_availability & doctor_leaves if tables exist
+                    try {
+                        await supabaseClient.from("doctor_availability").delete().eq("doctor_id", pendingDeleteTeamId);
+                        await supabaseClient.from("doctor_leaves").delete().eq("doctor_id", pendingDeleteTeamId);
+                    } catch (relErr) {
+                        console.warn("Non-fatal error clearing doctor availability/leaves:", relErr);
+                    }
+
+                    // Step 3: Delete doctor row
+                    const { data, error } = await supabaseClient
+                        .from("doctors")
+                        .delete()
+                        .eq("id", pendingDeleteTeamId)
+                        .select();
+
                     if (error) throw error;
+
+                    if (!data || data.length === 0) {
+                        throw new Error("Delete action failed (0 rows deleted). Please check if DELETE RLS policy is enabled on the 'doctors' table in Supabase dashboard.");
+                    }
+
                     if (typeof showToast === "function") {
-                        showToast(`Doctor ${pendingDeleteTeamName} successfully removed`, "success");
+                        showToast(`Doctor "${pendingDeleteTeamName}" successfully removed`, "success");
                     }
                 } else if (pendingDeleteTeamType === "staff") {
-                    const { error } = await supabaseClient.from("staff").delete().eq("id", pendingDeleteTeamId);
+                    const { data, error } = await supabaseClient
+                        .from("staff")
+                        .delete()
+                        .eq("id", pendingDeleteTeamId)
+                        .select();
+
                     if (error) throw error;
+
+                    if (!data || data.length === 0) {
+                        throw new Error("Delete action failed (0 rows deleted). Please check if DELETE RLS policy is enabled on the 'staff' table in Supabase dashboard.");
+                    }
+
                     if (typeof showToast === "function") {
-                        showToast(`Staff member ${pendingDeleteTeamName} successfully removed`, "success");
+                        showToast(`Staff member "${pendingDeleteTeamName}" successfully removed`, "success");
                     }
                 }
 
                 closeDeleteTeamModal();
-                await fetchTeamLists();
+                // Refresh all UI data live without page reload
                 await fetchDoctorsList();
+                await fetchTeamLists();
+                await fetchAllAppointments();
 
             } catch (err) {
                 console.error("Error deleting team member:", err);
+                const errMsg = err.message || "Database error occurred";
+                alert(`⚠️ Delete Failed: ${errMsg}`);
                 if (typeof showToast === "function") {
-                    showToast("Failed to remove: " + (err.message || "Database error"), "error");
+                    showToast("Failed to remove: " + errMsg, "error");
                 }
             } finally {
                 confirmDeleteTeamBtn.disabled = false;
