@@ -16,6 +16,7 @@
 
     <!-- Config & Custom Stylesheet -->
     <script src="js/config.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <link rel="stylesheet" href="css/style.css?v=100">
     <link rel="stylesheet" href="css/background-slideshow.css">
 
@@ -360,15 +361,15 @@
         <!-- Mobile Navigation Dropdown Drawer -->
         <div class="mobile-nav-drawer" id="mobileNavDrawer">
             <ul class="mobile-nav-list">
-                <li><a href="home.html">🏠 Home</a></li>
-                <li><a href="about-clinic.html">🏥 About Clinic</a></li>
-                <li><a href="our-doctors.html">👨‍⚕️ Our Doctors</a></li>
-                <li><a href="why-us.html">✨ Why Us</a></li>
-                <li><a href="treatments.html" class="active">🩺 Treatments</a></li>
-                <li><a href="testimonials.html">⭐ Testimonials</a></li>
+                <li><a href="home.html"><i data-lucide="home" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Home</a></li>
+                <li><a href="about-clinic.html"><i data-lucide="building-2" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> About Clinic</a></li>
+                <li><a href="our-doctors.html"><i data-lucide="user-check" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Our Doctors</a></li>
+                <li><a href="why-us.html"><i data-lucide="sparkles" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Why Us</a></li>
+                <li><a href="treatments.html" class="active"><i data-lucide="stethoscope" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Treatments</a></li>
+                <li><a href="testimonials.html"><i data-lucide="star" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Testimonials</a></li>
                 <li style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; flex-direction: column; gap: 10px;">
-                    <a href="index.html" class="btn-teal" style="justify-content: center;">📅 Book Appointment</a>
-                    <a href="my-appointments.html" class="btn-teal-outline" style="justify-content: center;">📋 My Appointments</a>
+                    <a href="index.html" class="btn-teal" style="justify-content: center;"><i data-lucide="calendar" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i> Book Appointment</a>
+                    <a href="my-appointments.html" class="btn-teal-outline" style="justify-content: center;"><i data-lucide="clipboard-list" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i> My Appointments</a>
                 </li>
             </ul>
         </div>
@@ -376,19 +377,15 @@
 
     <!-- PAGE HERO BANNER -->
     <section class="page-hero-banner">
-        <div class="hero-badge-pill">🩺 ADVANCED PROCEDURES</div>
-        <h1 class="page-hero-title">Treatments & Dental Services</h1>
+        <h1 class="page-hero-title">Dental Treatments & Services</h1>
         <div class="page-hero-breadcrumb">
             <a href="home.html">Home</a> <span class="bc-sep">›</span> <span class="bc-current">Treatments</span>
         </div>
     </section>
 
-    <!-- SECTION 5: TREATMENTS OFFERED -->
-    <section class="section-padding" style="background: rgba(255, 255, 255, 0.85);">
-        <div class="section-header">
-            <span style="background: #e6fffa; color: #0d9488; padding: 6px 16px; border-radius: 30px; font-size: 0.88rem; font-weight: 700; display: inline-block; margin-bottom: 12px; border: 1px solid #b2f5ea;">
-                🩺 Comprehensive Dental Services
-            </span>
+    <!-- TREATMENTS LIST SECTION -->
+    <section class="section-padding">
+        <div style="text-align: center; max-width: 700px; margin: 0 auto 48px auto;">
             <h2 class="section-title">Treatments Offered</h2>
             <p class="section-subtitle">
                 Comprehensive dental treatments powered by advanced technology and pain-free techniques.
@@ -396,10 +393,10 @@
         </div>
 
         <div class="treatments-grid">
-            <!-- Treatment 1 -->
-            <div class="treatment-card">
+            <!-- Treatment 1: Root Canal Treatment -->
+            <div class="treatment-card animate-on-scroll">
                 <div class="treatment-img-wrapper">
-                    <img src="assets/treatment_root_canal.jpg" alt="Root Canal Treatment" class="treatment-img">
+                    <img src="assets/treatment_root_canal.jpg" alt="Root Canal Treatment" class="treatment-img" onerror="this.src='https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80'">
                     <span class="treatment-badge">Single Sitting RCT</span>
                 </div>
                 <div class="treatment-body">
@@ -408,15 +405,15 @@
                         Modern rotary painless RCT technology to permanently eliminate severe toothaches and dental infection.
                     </p>
                     <div class="treatment-footer">
-                        <a href="index.html?issue=Root%20Canal%20Treatment%20(RCT)%20-%20Painless%20rotary%20RCT%20for%20severe%20toothache%20and%20infection" class="btn-teal" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.92rem;">📅 Book Now</a>
+                        <a href="index.html?issue=Root%20Canal%20Treatment%20(RCT)%20-%20Painless%20rotary%20RCT%20for%20severe%20toothache%20and%20infection" class="btn-teal" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.92rem;"><i data-lucide="calendar" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Book Now</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Treatment 2 -->
-            <div class="treatment-card">
+            <!-- Treatment 2: Dental Implants -->
+            <div class="treatment-card animate-on-scroll">
                 <div class="treatment-img-wrapper">
-                    <img src="assets/treatment_dental_implants.jpg" alt="Dental Implants" class="treatment-img">
+                    <img src="assets/treatment_dental_implants.jpg" alt="Dental Implants" class="treatment-img" onerror="this.src='https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=600&q=80'">
                     <span class="treatment-badge">Permanent Solution</span>
                 </div>
                 <div class="treatment-body">
@@ -425,15 +422,15 @@
                         High-grade titanium implants providing natural appearance and strong chewing power for missing teeth.
                     </p>
                     <div class="treatment-footer">
-                        <a href="index.html?issue=Dental%20Implants%20-%20Natural%20look%20and%20strong%20chewing%20power%20for%20missing%20teeth" class="btn-teal" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.92rem;">📅 Book Now</a>
+                        <a href="index.html?issue=Dental%20Implants%20-%20Natural%20look%20and%20strong%20chewing%20power%20for%20missing%20teeth" class="btn-teal" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.92rem;"><i data-lucide="calendar" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Book Now</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Treatment 3 -->
-            <div class="treatment-card">
+            <!-- Treatment 3: Teeth Whitening & Cleaning -->
+            <div class="treatment-card animate-on-scroll">
                 <div class="treatment-img-wrapper">
-                    <img src="assets/treatment_teeth_whitening.jpg" alt="Teeth Whitening & Cleaning" class="treatment-img">
+                    <img src="assets/treatment_teeth_whitening.jpg" alt="Teeth Whitening" class="treatment-img" onerror="this.src='https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80'">
                     <span class="treatment-badge">Instant Smile Brightening</span>
                 </div>
                 <div class="treatment-body">
@@ -442,32 +439,32 @@
                         Plaque scaling, tartar removal, and professional laser bleaching to get a 3-4 shade brighter white smile.
                     </p>
                     <div class="treatment-footer">
-                        <a href="index.html?issue=Teeth%20Whitening%20%26%20Cleaning%20-%20Plaque%20scaling%20and%20laser%20bleaching%20for%20brighter%20smile" class="btn-teal" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.92rem;">📅 Book Now</a>
+                        <a href="index.html?issue=Teeth%20Whitening%20%26%20Cleaning%20-%20Plaque%20scaling%20and%20laser%20bleaching%20for%20brighter%20smile" class="btn-teal" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.92rem;"><i data-lucide="calendar" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Book Now</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Treatment 4 -->
-            <div class="treatment-card">
+            <!-- Treatment 4: Braces & Aligners -->
+            <div class="treatment-card animate-on-scroll">
                 <div class="treatment-img-wrapper">
-                    <img src="assets/treatment_braces_aligners.jpg" alt="Braces & Invisible Aligners" class="treatment-img">
+                    <img src="assets/treatment_braces_aligners.jpg" alt="Braces & Aligners" class="treatment-img" onerror="this.src='https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=600&q=80'">
                     <span class="treatment-badge">Smile Correction</span>
                 </div>
                 <div class="treatment-body">
-                    <h3 class="treatment-name">Braces & Invisible Aligners</h3>
+                    <h3 class="treatment-name">Braces & Clear Aligners</h3>
                     <p class="treatment-desc">
                         Ceramic braces and transparent clear aligners to align crooked teeth comfortably and discreetly.
                     </p>
                     <div class="treatment-footer">
-                        <a href="index.html?issue=Braces%20%26%20Invisible%20Aligners%20-%20Ceramic%20braces%20and%20transparent%20clear%20aligners" class="btn-teal" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.92rem;">📅 Book Now</a>
+                        <a href="index.html?issue=Braces%20%26%20Invisible%20Aligners%20-%20Ceramic%20braces%20and%20transparent%20clear%20aligners" class="btn-teal" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.92rem;"><i data-lucide="calendar" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Book Now</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Treatment 5 -->
-            <div class="treatment-card">
+            <!-- Treatment 5: Crowns & Bridges -->
+            <div class="treatment-card animate-on-scroll">
                 <div class="treatment-img-wrapper">
-                    <img src="assets/treatment_crowns_bridges.jpg" alt="Crowns & Bridges" class="treatment-img">
+                    <img src="assets/treatment_crowns_bridges.jpg" alt="Crowns & Bridges" class="treatment-img" onerror="this.src='https://images.unsplash.com/photo-1571772996211-2f02c9727629?auto=format&fit=crop&w=600&q=80'">
                     <span class="treatment-badge">Zirconia & Ceramic</span>
                 </div>
                 <div class="treatment-body">
@@ -476,15 +473,15 @@
                         Strong protective caps and gap-filling dental bridges backed by a 15-year warranty for damaged teeth.
                     </p>
                     <div class="treatment-footer">
-                        <a href="index.html?issue=Crowns%20%26%20Dental%20Bridges%20-%20Strong%20protective%20caps%20and%20gap%20filling%20with%2015-year%20warranty" class="btn-teal" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.92rem;">📅 Book Now</a>
+                        <a href="index.html?issue=Crowns%20%26%20Dental%20Bridges%20-%20Strong%20protective%20caps%20and%20gap%20filling%20with%2015-year%20warranty" class="btn-teal" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.92rem;"><i data-lucide="calendar" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Book Now</a>
                     </div>
                 </div>
             </div>
 
-            <!-- Treatment 6 -->
-            <div class="treatment-card">
+            <!-- Treatment 6: Pediatric Dentistry -->
+            <div class="treatment-card animate-on-scroll">
                 <div class="treatment-img-wrapper">
-                    <img src="assets/treatment_pediatric_care.jpg" alt="Pediatric Dental Care" class="treatment-img">
+                    <img src="assets/treatment_pediatric_care.jpg" alt="Pediatric Care" class="treatment-img" onerror="this.src='https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80'">
                     <span class="treatment-badge">Kids Friendly</span>
                 </div>
                 <div class="treatment-body">
@@ -493,7 +490,7 @@
                         Cavity care, fluoride coating, and gentle painless fillings for children in a warm, child-friendly environment.
                     </p>
                     <div class="treatment-footer">
-                        <a href="index.html?issue=Pediatric%20Dentistry%20(Kids%20Care)%20-%20Cavity%20care%20and%20gentle%20painless%20fillings%20for%20children" class="btn-teal" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.92rem;">📅 Book Now</a>
+                        <a href="index.html?issue=Pediatric%20Dentistry%20(Kids%20Care)%20-%20Cavity%20care%20and%20gentle%20painless%20fillings%20for%20children" class="btn-teal" style="width: 100%; justify-content: center; padding: 10px; font-size: 0.92rem;"><i data-lucide="calendar" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Book Now</a>
                     </div>
                 </div>
             </div>
@@ -503,19 +500,16 @@
     <!-- PRE-FOOTER HIGH-IMPACT CTA BANNER -->
     <section class="section-padding" style="background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; text-align: center;">
         <div style="max-width: 800px; margin: 0 auto;">
-            <span style="background: rgba(255, 255, 255, 0.2); color: white; padding: 6px 16px; border-radius: 30px; font-size: 0.88rem; font-weight: 700; display: inline-block; margin-bottom: 16px;">
-                ✨ Start Your Journey Today
-            </span>
-            <h2 style="color: white; font-size: 2.4rem; font-weight: 800; margin-bottom: 14px;">Experience Healthy, Painless Dental Care</h2>
-            <p style="font-size: 1.1rem; opacity: 0.95; margin-bottom: 32px; line-height: 1.6;">
-                Don't wait for dental discomfort to worsen. Schedule a consultation with our experienced dentists now for personalized care.
+            <h2 style="font-family: var(--font-heading); font-size: clamp(1.8rem, 3.5vw, 2.4rem); font-weight: 800; margin: 0 0 14px 0; display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                Start Your Journey Today
+            </h2>
+            <p style="font-size: 1.05rem; opacity: 0.9; max-width: 600px; margin: 0 auto 28px auto; line-height: 1.6;">
+                Book a consultation with our experienced dental team and experience pain-free, modern dental care tailored for your whole family.
             </p>
             <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-                <a href="index.html" class="btn-teal" style="background: white; color: #0f766e !important; padding: 14px 32px; font-size: 1rem; font-weight: 800; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);">
-                    📅 Book Appointment Now
-                </a>
-                <a href="tel:+919876543210" class="btn-teal-outline" style="border-color: white; color: white !important; padding: 14px 30px; font-size: 1rem;">
-                    📞 Call Us: +91 98765 43210
+                <a href="index.html" class="btn-teal" style="padding: 14px 28px; font-size: 1rem;"><i data-lucide="calendar" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i> Book Appointment Now</a>
+                <a href="tel:+919876543210" class="btn-white-outline" style="padding: 14px 28px; font-size: 1rem;">
+                    <i data-lucide="phone" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;color:#ffffff;"></i> Call Us: +91 98765 43210
                 </a>
             </div>
         </div>
@@ -572,20 +566,20 @@
             <!-- Column 3: Contact Information -->
             <div style="text-align: left;">
                 <div style="color: white; font-size: 1.1rem; font-weight: 800; margin-bottom: 20px; text-align: left;">Contact Information</div>
-                <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.92rem; text-align: left;">
-                    <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8;">
-                        <span style="font-size: 1.1rem;">📞</span> <span><strong>Phone:</strong> +91 98765 43210</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8;">
-                        <span style="font-size: 1.1rem;">📧</span> <span><strong>Email:</strong> info@smilecaredental.com</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8;">
-                        <span style="font-size: 1.1rem;">📍</span> <span><strong>Address:</strong> No. 45, Anna Salai, Near Thousand Lights, Chennai, Tamil Nadu - 600006</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8;">
-                        <span style="font-size: 1.1rem;">🕒</span> <span><strong>Timing:</strong> Mon - Sat (9:00 AM - 8:00 PM)</span>
-                    </div>
-                </div>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; text-align: left;">
+                    <li style="display: flex; align-items: flex-start; gap: 10px; color: #94a3b8;">
+                        <i data-lucide="phone" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;color:#2dd4bf;flex-shrink:0;margin-top:2px;"></i> <span><strong>Phone:</strong> +91 98765 43210</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; gap: 10px; color: #94a3b8;">
+                        <i data-lucide="mail" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;color:#2dd4bf;flex-shrink:0;margin-top:2px;"></i> <span><strong>Email:</strong> info@smilecaredental.com</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; gap: 10px; color: #94a3b8;">
+                        <i data-lucide="map-pin" style="width: 20px; height: 20px; color: #2dd4bf; flex-shrink: 0; margin-top: 2px;"></i> <span><strong>Address:</strong> No. 45, Anna Salai, Near Thousand Lights, Chennai, Tamil Nadu - 600006</span>
+                    </li>
+                    <li style="display: flex; align-items: flex-start; gap: 10px; color: #94a3b8;">
+                        <i data-lucide="clock" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;color:#2dd4bf;flex-shrink:0;margin-top:2px;"></i> <span><strong>Timing:</strong> Mon - Sat (9:00 AM - 8:00 PM)</span>
+                    </li>
+                </ul>
             </div>
         </div>
 
@@ -611,7 +605,7 @@
     <div id="enquiryModal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 99999; align-items: center; justify-content: center; padding: 16px;">
         <div style="background: white; border-radius: 16px; max-width: 480px; width: 100%; padding: 28px; box-shadow: 0 20px 30px rgba(0,0,0,0.2);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0; color: #0f172a;">📩 Quick Clinic Enquiry</h3>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0; color: #0f172a; display: flex; align-items: center; gap: 8px;"><i data-lucide="mail" style="width:20px;height:20px;vertical-align:middle;margin-right:8px;color:#0d9488;"></i> Quick Clinic Enquiry</h3>
                 <button type="button" id="closeEnquiryModal" style="background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">&times;</button>
             </div>
             <form id="enquiryForm" style="display: flex; flex-direction: column; gap: 14px;">
@@ -636,5 +630,12 @@
     <script src="js/background-slideshow.js"></script>
     <!-- Home Page Logic JS -->
     <script src="js/home.js?v=1"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
 </html>

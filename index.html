@@ -13,6 +13,7 @@
 
     <!-- Config File & Utilities -->
     <script src="js/config.js?v=20"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="js/pdf-generator.js?v=8"></script>
 
     <!-- Custom Stylesheet -->
@@ -23,7 +24,7 @@
 
     <!-- Supabase Config Warning Banner (Visible if keys are not pasted yet) -->
     <div id="configAlert" class="config-alert">
-        ⚠️ <strong>Supabase Setup Required:</strong> Please open <code>js/config.js</code> and paste your actual <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code>.
+        <i data-lucide="alert-triangle" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;color:#d97706;"></i> <strong>Supabase Setup Required:</strong> Please open <code>js/config.js</code> and paste your actual <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code>.
     </div>
 
     <!-- Header Navigation -->
@@ -62,15 +63,15 @@
         <!-- Mobile Navigation Dropdown Drawer -->
         <div class="mobile-nav-drawer" id="mobileNavDrawer">
             <ul class="mobile-nav-list">
-                <li><a href="home.html">🏠 Home</a></li>
-                <li><a href="about-clinic.html">🏥 About Clinic</a></li>
-                <li><a href="our-doctors.html">👨‍⚕️ Our Doctors</a></li>
-                <li><a href="why-us.html">✨ Why Us</a></li>
-                <li><a href="treatments.html">🩺 Treatments</a></li>
-                <li><a href="testimonials.html">⭐ Testimonials</a></li>
+                <li><a href="home.html"><i data-lucide="home" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Home</a></li>
+                <li><a href="about-clinic.html"><i data-lucide="building-2" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> About Clinic</a></li>
+                <li><a href="our-doctors.html"><i data-lucide="user-check" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Our Doctors</a></li>
+                <li><a href="why-us.html"><i data-lucide="sparkles" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Why Us</a></li>
+                <li><a href="treatments.html"><i data-lucide="stethoscope" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Treatments</a></li>
+                <li><a href="testimonials.html"><i data-lucide="star" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Testimonials</a></li>
                 <li style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; flex-direction: column; gap: 10px;">
-                    <a href="index.html" class="btn-teal" style="justify-content: center;">📅 Book Appointment</a>
-                    <a href="my-appointments.html" class="btn-teal-outline" style="justify-content: center;">📋 My Appointments</a>
+                    <a href="index.html" class="btn-teal" style="justify-content: center;"><i data-lucide="calendar" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i> Book Appointment</a>
+                    <a href="my-appointments.html" class="btn-teal-outline" style="justify-content: center;"><i data-lucide="clipboard-list" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i> My Appointments</a>
                 </li>
             </ul>
         </div>
@@ -79,7 +80,6 @@
     <!-- Main Content -->
     <main>
         <div class="hero-header">
-            <span class="hero-badge">✨ Quick & Easy Online Booking</span>
             <h1 class="hero-title">Book Your Dental Appointment</h1>
             <p class="hero-subtitle">Fill in your details below to schedule a visit with our expert dental team.</p>
         </div>
@@ -157,7 +157,7 @@
                             
                             <!-- Placeholder notice before Doctor & Date selection -->
                             <div id="selectDoctorDateNotice" class="note-box" style="margin-top: 4px; text-align: left; background-color: #f8fafc; border-color: #e2e8f0; color: #64748b;">
-                                ℹ️ Please select a <strong>Doctor</strong> and <strong>Appointment Date</strong> above to view available time slots.
+                                <i data-lucide="info" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;color:#0284c7;"></i> Please select a <strong>Doctor</strong> and <strong>Appointment Date</strong> above to view available time slots.
                             </div>
 
                             <!-- Dynamic Notice Container for Doctor Availability, Leaves & Booked Slots -->
@@ -265,7 +265,7 @@
                     <button type="button" id="bookAnotherBtn" class="btn-secondary">Book Another Appointment</button>
 
                     <div class="note-box">
-                        📌 To check your booking status anytime, visit the <a href="my-appointments.html">My Appointments</a> page and enter your mobile number.
+                        <i data-lucide="pin" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;color:#0d9488;"></i> To check your booking status anytime, visit the <a href="my-appointments.html">My Appointments</a> page and enter your mobile number.
                     </div>
                 </div>
             </div>
@@ -276,7 +276,7 @@
     <footer>
         <div class="footer-content">
             <p>© 2026 SmileCare Dental Clinic. All Rights Reserved.</p>
-            <p>📍 Address: No. 45, Anna Salai, Near Thousand Lights, Chennai - 600006 | 📞 Contact: +91 98765 43210</p>
+            <p><i data-lucide="map-pin" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;color:#0d9488;"></i> Address: No. 45, Anna Salai, Near Thousand Lights, Chennai - 600006 | <i data-lucide="phone" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;color:#0d9488;"></i> Contact: +91 98765 43210</p>
             <div class="footer-links">
                 <a href="home.html">Home</a> • 
                 <a href="index.html">Patient Booking</a> • 
@@ -294,6 +294,13 @@
     <!-- Logic Script -->
     <script src="js/background-slideshow.js"></script>
     <script src="js/booking.js?v=25"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
 </html>
   

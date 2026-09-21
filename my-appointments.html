@@ -13,6 +13,7 @@
 
     <!-- Config File & Utilities -->
     <script src="js/config.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="js/pdf-generator.js?v=8"></script>
 
     <!-- Custom Stylesheet -->
@@ -23,7 +24,7 @@
 
     <!-- Supabase Config Warning Banner -->
     <div id="configAlert" class="config-alert">
-        ⚠️ <strong>Supabase Setup Required:</strong> Please open <code>js/config.js</code> and paste your actual <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code>.
+        <i data-lucide="alert-triangle" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;color:#d97706;"></i> <strong>Supabase Setup Required:</strong> Please open <code>js/config.js</code> and paste your actual <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code>.
     </div>
 
     <!-- Header Navigation -->
@@ -62,15 +63,15 @@
         <!-- Mobile Navigation Dropdown Drawer -->
         <div class="mobile-nav-drawer" id="mobileNavDrawer">
             <ul class="mobile-nav-list">
-                <li><a href="home.html">🏠 Home</a></li>
-                <li><a href="about-clinic.html">🏥 About Clinic</a></li>
-                <li><a href="our-doctors.html">👨‍⚕️ Our Doctors</a></li>
-                <li><a href="why-us.html">✨ Why Us</a></li>
-                <li><a href="treatments.html">🩺 Treatments</a></li>
-                <li><a href="testimonials.html">⭐ Testimonials</a></li>
+                <li><a href="home.html"><i data-lucide="home" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Home</a></li>
+                <li><a href="about-clinic.html"><i data-lucide="building-2" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> About Clinic</a></li>
+                <li><a href="our-doctors.html"><i data-lucide="user-check" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Our Doctors</a></li>
+                <li><a href="why-us.html"><i data-lucide="sparkles" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Why Us</a></li>
+                <li><a href="treatments.html"><i data-lucide="stethoscope" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Treatments</a></li>
+                <li><a href="testimonials.html"><i data-lucide="star" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;"></i> Testimonials</a></li>
                 <li style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; flex-direction: column; gap: 10px;">
-                    <a href="index.html" class="btn-teal" style="justify-content: center;">📅 Book Appointment</a>
-                    <a href="my-appointments.html" class="btn-teal-outline" style="justify-content: center;">📋 My Appointments</a>
+                    <a href="index.html" class="btn-teal" style="justify-content: center;"><i data-lucide="calendar" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i> Book Appointment</a>
+                    <a href="my-appointments.html" class="btn-teal-outline" style="justify-content: center;"><i data-lucide="clipboard-list" style="width:18px;height:18px;vertical-align:middle;margin-right:8px;"></i> My Appointments</a>
                 </li>
             </ul>
         </div>
@@ -79,7 +80,6 @@
     <!-- Main Content -->
     <main>
         <div class="hero-header">
-            <span class="hero-badge">📋 Patient Portal</span>
             <h1 class="hero-title">Check My Appointments</h1>
             <p class="hero-subtitle">Enter your 10-digit mobile number below to view your scheduled appointments and live status.</p>
         </div>
@@ -131,7 +131,7 @@
     <footer>
         <div class="footer-content">
             <p>© 2026 SmileCare Dental Clinic. All Rights Reserved.</p>
-            <p>📍 Address: No. 45, Anna Salai, Near Thousand Lights, Chennai - 600006 | 📞 Contact: +91 98765 43210</p>
+            <p><i data-lucide="map-pin" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;color:#0d9488;"></i> Address: No. 45, Anna Salai, Near Thousand Lights, Chennai - 600006 | <i data-lucide="phone" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;color:#0d9488;"></i> Contact: +91 98765 43210</p>
             <div class="footer-links">
                 <a href="home.html">Home</a> • 
                 <a href="index.html">Book Appointment</a> • 
@@ -151,7 +151,7 @@
             <!-- Modal Header -->
             <div style="background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
                 <div style="font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
-                    🩺 Doctor's Reports
+                    <i data-lucide="stethoscope" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;color:white;"></i> Doctor's Reports
                 </div>
                 <button type="button" id="closeReportsModal" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: background 0.2s;" title="Close Modal">&times;</button>
             </div>
@@ -171,5 +171,12 @@
     <!-- Logic Script -->
     <script src="js/background-slideshow.js"></script>
     <script src="js/my-appointments.js?v=7"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmileCare Dental Clinic - Professional Dental Care & Wellness</title>
+    <link rel="icon" type="image/svg+xml" href="assets/hero-tooth-illustration_4.svg">
     <meta name="description" content="Welcome to SmileCare Dental Clinic - Personalized care, modern techniques, and friendly atmosphere. Book your appointment today!">
 
     <!-- Supabase JS CDN -->
@@ -16,6 +17,8 @@
 
     <!-- Config & Custom Stylesheet -->
     <script src="js/config.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <link rel="stylesheet" href="css/style.css?v=210">
     <link rel="stylesheet" href="css/background-slideshow.css">
 
@@ -189,7 +192,7 @@
 
         .btn-teal-outline {
             background: transparent;
-            color: #0f766e !important;
+            color: #0f766e;
             border: 1.8px solid #0f766e;
             padding: 9px 20px;
             border-radius: 10px;
@@ -280,7 +283,14 @@
         }
 
         .hero-overlay {
-            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0.35) 100%);
+            pointer-events: none;
         }
 
         .hero-container {
@@ -317,17 +327,17 @@
             letter-spacing: -0.02em;
             line-height: 1.15;
             margin-bottom: 24px;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.80), 0 2px 6px rgba(0, 0, 0, 0.9);
+            text-shadow: 0 4px 16px rgba(0, 0, 0, 0.85), 0 2px 8px rgba(0, 0, 0, 0.95);
         }
 
         .hero-subtitle {
             font-size: 1.22rem;
-            color: #f1f5f9;
+            color: #ffffff;
             margin-bottom: 36px;
             max-width: 620px;
             font-weight: 500;
             line-height: 1.65;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.90), 0 1px 4px rgba(0, 0, 0, 0.95);
         }
 
         .hero-buttons {
@@ -359,27 +369,34 @@
         }
 
         .btn-hero-outline {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #ffffff;
-            font-weight: 700;
+            background: #ffffff !important;
+            color: #0f766e !important;
+            font-weight: 800;
             font-size: 1.05rem;
             padding: 16px 30px;
             border-radius: 12px;
-            text-decoration: none;
+            text-decoration: none !important;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            border: 1.5px solid rgba(255, 255, 255, 0.45);
+            border: 1.5px solid #ffffff;
             transition: all 0.25s ease;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            text-shadow: none;
         }
 
         .btn-hero-outline:hover {
-            background: rgba(255, 255, 255, 0.25);
+            background: #f0fdfa !important;
+            color: #0d9488 !important;
             transform: translateY(-3px);
-            border-color: #ffffff;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        .btn-hero-outline i,
+        .btn-hero-outline svg,
+        .btn-hero-outline [data-lucide] {
+            color: #0f766e !important;
+            stroke: #0f766e !important;
         }
 
         /* Page Hero Banner for inner pages */
@@ -656,6 +673,38 @@
             }
         }
 
+        /* Mobile Floating Sticky CTA Button */
+        .mobile-floating-cta {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-floating-cta {
+                display: block;
+                position: fixed;
+                bottom: 16px;
+                left: 16px;
+                right: 16px;
+                z-index: 9999;
+            }
+
+            .mobile-cta-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+                color: #0f172a !important;
+                text-decoration: none !important;
+                padding: 14px 20px;
+                border-radius: 30px;
+                font-weight: 800;
+                font-size: 1rem;
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5);
+            }
+        }
+
         @keyframes floatSmooth {
             0%, 100% {
                 transform: translateY(0px) rotate(0deg);
@@ -703,15 +752,15 @@
         <!-- Mobile Navigation Dropdown Drawer -->
         <div class="mobile-nav-drawer" id="mobileNavDrawer">
             <ul class="mobile-nav-list">
-                <li><a href="home.html" class="active">🏠 Home</a></li>
-                <li><a href="about-clinic.html">🏥 About Clinic</a></li>
-                <li><a href="our-doctors.html">👨‍⚕️ Our Doctors</a></li>
-                <li><a href="why-us.html">✨ Why Us</a></li>
-                <li><a href="treatments.html">🩺 Treatments</a></li>
-                <li><a href="testimonials.html">⭐ Testimonials</a></li>
+                <li><a href="home.html" class="active"><i data-lucide="home" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;"></i> Home</a></li>
+                <li><a href="about-clinic.html"><i data-lucide="building-2" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;"></i> About Clinic</a></li>
+                <li><a href="our-doctors.html"><i data-lucide="stethoscope" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;"></i> Our Doctors</a></li>
+                <li><a href="why-us.html"><i data-lucide="sparkles" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;"></i> Why Us</a></li>
+                <li><a href="treatments.html"><i data-lucide="activity" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;"></i> Treatments</a></li>
+                <li><a href="testimonials.html"><i data-lucide="star" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 6px;"></i> Testimonials</a></li>
                 <li style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; flex-direction: column; gap: 10px;">
-                    <a href="index.html" class="btn-teal" style="justify-content: center;">📅 Book Appointment</a>
-                    <a href="my-appointments.html" class="btn-teal-outline" style="justify-content: center;">📋 My Appointments</a>
+                    <a href="index.html" class="btn-teal" style="justify-content: center;"><i data-lucide="calendar" style="width: 18px; height: 18px; margin-right: 6px;"></i> Book Appointment</a>
+                    <a href="my-appointments.html" class="btn-teal-outline" style="justify-content: center;"><i data-lucide="clipboard-list" style="width: 18px; height: 18px; margin-right: 6px;"></i> My Appointments</a>
                 </li>
             </ul>
         </div>
@@ -734,34 +783,30 @@
 
         <div class="hero-container">
             <div>
-                <!-- Solid Highlight Badge Box -->
-                <div class="hero-badge">
-                    <span>✨ SmileCare Dental Clinic</span>
-                </div>
                 <h1 class="hero-title">Painless & Modern Dental Care For Your Family</h1>
                 <p class="hero-subtitle">
                     SmileCare Dental Clinic mein aapka swagat hai - personalized care, advanced root canal, cosmetic dentistry, aur friendly atmosphere ke saath. Experience healthier, brighter smiles today!
                 </p>
                 <div class="hero-buttons">
                     <a href="index.html" class="btn-hero-solid">
-                        📅 Book Appointment
+                        <i data-lucide="calendar" style="width: 20px; height: 20px;"></i> Book Appointment
                     </a>
                     <a href="tel:+919876543210" class="btn-hero-outline">
-                        📞 Call Now (+91 98765 43210)
+                        <i data-lucide="phone" style="width: 20px; height: 20px;"></i> Call Now (+91 98765 43210)
                     </a>
                 </div>
 
                 <!-- Rating Indicator & Trust Badges -->
                 <div style="display: inline-flex; align-items: center; gap: 10px; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid rgba(255, 255, 255, 0.25); padding: 8px 18px; border-radius: 30px; margin-bottom: 16px; box-shadow: 0 6px 18px rgba(0,0,0,0.3); color: #ffffff;">
-                    <span style="color: #f59e0b; font-weight: 800; font-size: 0.95rem;">⭐ 4.9 Rating</span>
+                    <span style="color: #f59e0b; font-weight: 800; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="star" style="width: 16px; height: 16px; fill: #f59e0b; color: #f59e0b;"></i> 4.9 Rating</span>
                     <span style="color: rgba(255,255,255,0.4);">|</span>
-                    <span style="color: #5eead4; font-weight: 700; font-size: 0.9rem;">👥 500+ Happy Patients</span>
+                    <span style="color: #5eead4; font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="users" style="width: 16px; height: 16px; color: #5eead4;"></i> 500+ Happy Patients</span>
                 </div>
 
                 <div style="display: flex; gap: 24px; flex-wrap: wrap; font-size: 0.95rem; font-weight: 700; color: #ffffff; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);">
-                    <span>✓ 100% Sterilized & Hygienic</span>
-                    <span>✓ Expert Dentists</span>
-                    <span>✓ Instant Online Booking</span>
+                    <span style="display: inline-flex; align-items: center; gap: 8px;"><i data-lucide="shield-check" style="width: 20px; height: 20px; color: #2dd4bf;"></i> 100% Sterilized & Hygienic</span>
+                    <span style="display: inline-flex; align-items: center; gap: 8px;"><i data-lucide="user-check" style="width: 20px; height: 20px; color: #2dd4bf;"></i> Expert Dentists</span>
+                    <span style="display: inline-flex; align-items: center; gap: 8px;"><i data-lucide="circle-check" style="width: 20px; height: 20px; color: #2dd4bf;"></i> Instant Online Booking</span>
                 </div>
             </div>
 
@@ -771,7 +816,7 @@
                     <h3 style="font-size: 1.45rem; font-weight: 800; color: #ffffff; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8); margin-bottom: 8px; text-align: center;">SmileCare Dental Clinic</h3>
                     <p style="font-size: 0.95rem; color: #cbd5e1; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6); margin-bottom: 22px; text-align: center; line-height: 1.5;">Your Trusted Destination for Family & Cosmetic Dentistry</p>
                     <div style="background: linear-gradient(135deg, rgba(13, 148, 136, 0.6) 0%, rgba(15, 118, 110, 0.8) 100%); border: 1px solid rgba(94, 234, 212, 0.4); padding: 12px 18px; border-radius: 14px; color: #ffffff; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6); font-weight: 700; font-size: 0.92rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <span>🕒</span> <span>Mon - Sat: 9:00 AM - 8:00 PM</span>
+                        <i data-lucide="clock" style="width: 18px; height: 18px; color: #5eead4; flex-shrink: 0;"></i> <span>Mon - Sat: 9:00 AM - 8:00 PM</span>
                     </div>
                 </div>
             </div>
@@ -781,19 +826,16 @@
     <!-- PRE-FOOTER HIGH-IMPACT CTA BANNER -->
     <section class="section-padding" style="background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; text-align: center;">
         <div style="max-width: 800px; margin: 0 auto;" class="animate-on-scroll">
-            <span style="background: rgba(255, 255, 255, 0.2); color: white; padding: 6px 16px; border-radius: 30px; font-size: 0.88rem; font-weight: 700; display: inline-block; margin-bottom: 16px;">
-                ✨ Start Your Journey Today
-            </span>
             <h2 style="color: white; font-size: 2.4rem; font-weight: 800; margin-bottom: 14px;">Experience Healthy, Painless Dental Care</h2>
             <p style="font-size: 1.1rem; opacity: 0.95; margin-bottom: 32px; line-height: 1.6;">
                 Don't wait for dental discomfort to worsen. Schedule a consultation with our experienced dentists now for personalized care.
             </p>
             <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
                 <a href="index.html" class="btn-teal" style="background: white; color: #0f766e !important; padding: 14px 32px; font-size: 1rem; font-weight: 800; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);">
-                    📅 Book Appointment Now
+                    <i data-lucide="calendar" style="width: 20px; height: 20px;"></i> Book Appointment Now
                 </a>
-                <a href="tel:+919876543210" class="btn-teal-outline" style="border-color: white; color: white !important; padding: 14px 30px; font-size: 1rem;">
-                    📞 Call Us: +91 98765 43210
+                <a href="tel:+919876543210" class="btn-white-outline" style="padding: 14px 30px; font-size: 1rem;">
+                    <i data-lucide="phone" style="width: 18px; height: 18px; margin-right: 6px; color:#ffffff;"></i> Call Us: +91 98765 43210
                 </a>
             </div>
         </div>
@@ -852,16 +894,16 @@
                 <div style="color: white; font-size: 1.1rem; font-weight: 800; margin-bottom: 20px; text-align: left;">Contact Information</div>
                 <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.92rem; text-align: left;">
                     <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8;">
-                        <span style="font-size: 1.1rem;">📞</span> <span><strong>Phone:</strong> +91 98765 43210</span>
+                        <i data-lucide="phone" style="width: 20px; height: 20px; color: #2dd4bf; flex-shrink: 0;"></i> <span><strong>Phone:</strong> +91 98765 43210</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8;">
-                        <span style="font-size: 1.1rem;">📧</span> <span><strong>Email:</strong> info@smilecaredental.com</span>
+                        <i data-lucide="mail" style="width: 20px; height: 20px; color: #2dd4bf; flex-shrink: 0;"></i> <span><strong>Email:</strong> info@smilecaredental.com</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8;">
-                        <span style="font-size: 1.1rem;">📍</span> <span><strong>Address:</strong> No. 45, Anna Salai, Near Thousand Lights, Chennai, Tamil Nadu - 600006</span>
+                        <i data-lucide="map-pin" style="width: 20px; height: 20px; color: #2dd4bf; flex-shrink: 0;"></i> <span><strong>Address:</strong> No. 45, Anna Salai, Near Thousand Lights, Chennai, Tamil Nadu - 600006</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px; color: #94a3b8;">
-                        <span style="font-size: 1.1rem;">🕒</span> <span><strong>Timing:</strong> Mon - Sat (9:00 AM - 8:00 PM)</span>
+                        <i data-lucide="clock" style="width: 20px; height: 20px; color: #2dd4bf; flex-shrink: 0;"></i> <span><strong>Timing:</strong> Mon - Sat (9:00 AM - 8:00 PM)</span>
                     </div>
                 </div>
             </div>
@@ -889,7 +931,7 @@
     <div id="enquiryModal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 99999; align-items: center; justify-content: center; padding: 16px;">
         <div style="background: white; border-radius: 16px; max-width: 480px; width: 100%; padding: 28px; box-shadow: 0 20px 30px rgba(0,0,0,0.2);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0; color: #0f172a;">📩 Quick Clinic Enquiry</h3>
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin: 0; color: #0f172a; display: flex; align-items: center; gap: 8px;"><i data-lucide="mail-open" style="width: 22px; height: 22px; color: #0d9488;"></i> Quick Clinic Enquiry</h3>
                 <button type="button" id="closeEnquiryModal" style="background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">&times;</button>
             </div>
             <form id="enquiryForm" style="display: flex; flex-direction: column; gap: 14px;">
@@ -910,9 +952,23 @@
         </div>
     </div>
 
+    <!-- Mobile Floating Sticky CTA Button -->
+    <div class="mobile-floating-cta">
+        <a href="index.html" class="mobile-cta-btn">
+            <i data-lucide="calendar" style="width: 20px; height: 20px; color: #0f172a;"></i> Book Appointment Now
+        </a>
+    </div>
+
     <!-- Shared Background Slideshow JS -->
     <script src="js/background-slideshow.js"></script>
     <!-- Home Page Logic JS -->
     <script src="js/home.js?v=1"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
 </html>
