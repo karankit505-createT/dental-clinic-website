@@ -454,11 +454,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     return `
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border-bottom: 1px solid #f1f5f9; background: white;">
                             <button type="button" onclick="event.stopPropagation(); if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(r.url)}', '${escapeHtml(item.patient_name)}_${escapeHtml(r.name)}')}else{window.open('${escapeHtml(r.url)}', '_blank')}" style="padding: 5px 8px; font-size: 0.76rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; flex: 1; overflow: hidden; text-align: left;" title="View ${escapeHtml(r.name)} (${dateDisplay})">
-                                <span style="font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">📄 ${escapeHtml(r.name)}</span>
-                                <span style="font-size: 0.68rem; color: #0369a1; font-weight: 500; opacity: 0.85;">📅 ${escapeHtml(dateDisplay)}</span>
+                                <span style="font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="file-text" style="width:12px;height:12px;"></i> ${escapeHtml(r.name)}</span>
+                                <span style="font-size: 0.68rem; color: #0369a1; font-weight: 500; opacity: 0.85; display: inline-flex; align-items: center; gap: 3px;"><i data-lucide="calendar" style="width:10px;height:10px;"></i> ${escapeHtml(dateDisplay)}</span>
                             </button>
                             <button type="button" onclick="deleteStaffDoctorReport('${item.id}', ${rIndex}, event)" class="btn-delete-report" style="padding: 4px 6px; font-size: 0.8rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; flex-shrink: 0;" title="Delete report">
-                                🗑️
+                                <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
                             </button>
                         </div>
                     `;
@@ -467,7 +467,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 reportDropdownHtml = `
                     <div style="position: relative; display: inline-block;">
                         <button type="button" class="btn-toggle-reports-dropdown" data-target="${dropdownId}" style="padding: 5px 10px; font-size: 0.75rem; background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
-                            📄 Reports (${existingReports.length}) <span style="font-size: 0.65rem;">▾</span>
+                            <i data-lucide="file-text" style="width:14px;height:14px;"></i> Reports (${existingReports.length}) <span style="font-size: 0.65rem;">▾</span>
                         </button>
                         <div id="${dropdownId}" class="reports-dropdown-menu" style="display: none; position: absolute; right: 0; top: calc(100% + 4px); background: white; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 250px; z-index: 99; overflow: hidden;">
                             ${reportItemsHtml}
@@ -477,7 +477,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             const hasReports = existingReports.length > 0;
-            const uploadBtnLabel = hasReports ? "➕ Add Report" : "📤 Upload Report";
+            const uploadBtnLabel = hasReports ? '<i data-lucide="plus" style="width:14px;height:14px;"></i> Add Report' : '<i data-lucide="upload-cloud" style="width:14px;height:14px;"></i> Upload Report';
             const uploadBtnBg = hasReports 
                 ? "linear-gradient(135deg, #10b981 0%, #059669 100%)" 
                 : "linear-gradient(135deg, #0f766e 0%, #0d9488 100%)";
@@ -518,8 +518,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div style="font-weight: 700; color: #0d9488; font-size: 0.88rem;">${escapeHtml(doctorName)}</div>
                 </td>
                 <td>
-                    <div style="font-weight: 600; color: #1e293b;">📅 ${formattedDate}</div>
-                    <div style="font-size: 0.8rem; color: #0284c7; font-weight: 700;">⏰ ${formattedTime}</div>
+                    <div style="font-weight: 600; color: #1e293b; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="calendar" style="width:14px;height:14px;color:#0d9488;"></i> ${formattedDate}</div>
+                    <div style="font-size: 0.8rem; color: #0284c7; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; margin-top: 2px;"><i data-lucide="clock" style="width:13px;height:13px;color:#0284c7;"></i> ${formattedTime}</div>
                 </td>
                 <td class="col-issue" style="max-width:220px; min-width:160px; white-space:normal; word-break:break-word;">
                     <div style="font-size: 0.85rem; color: #334155; line-height: 1.4;">
@@ -584,6 +584,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 openUploadReportModal(this.getAttribute("data-id"), this.getAttribute("data-name"));
             });
         });
+
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     }
 
     document.addEventListener("click", function () {
@@ -631,7 +635,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        phoneTimeSelect.innerHTML = `<option value="">⌛ Checking available slots...</option>`;
+        phoneTimeSelect.innerHTML = `<option value="">Checking available slots...</option>`;
 
         try {
             const { data, error } = await supabaseClient
@@ -657,9 +661,9 @@ document.addEventListener("DOMContentLoaded", function () {
             standardSlots.forEach(slot => {
                 const norm = normalizeTime(slot);
                 if (bookedTimes.has(norm)) {
-                    optionsHtml += `<option value="${slot}" disabled style="color: #94a3b8; background: #f1f5f9;">🔴 ${slot} (Already Booked)</option>`;
+                    optionsHtml += `<option value="${slot}" disabled style="color: #94a3b8; background: #f1f5f9;">✖ ${slot} (Already Booked)</option>`;
                 } else {
-                    optionsHtml += `<option value="${slot}">🟢 ${slot} (Available)</option>`;
+                    optionsHtml += `<option value="${slot}">✓ ${slot} (Available)</option>`;
                 }
             });
 
@@ -722,7 +726,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (isConflict) {
                         if (typeof showToast === "function") {
-                            showToast(`⚠️ Time slot "${appointment_time}" is ALREADY BOOKED for this doctor on ${appointment_date}! Please select another slot.`, "error");
+                            showToast(`Time slot "${appointment_time}" is ALREADY BOOKED for this doctor on ${appointment_date}! Please select another slot.`, "error");
                         }
                         if (submitBtn) submitBtn.disabled = false;
                         await updatePhoneBookingTimeSlots();
@@ -833,7 +837,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0];
                 const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
-                reportFileNamePreview.innerHTML = `📄 <strong>Selected File:</strong> ${escapeHtml(file.name)} (${sizeMb} MB)`;
+                reportFileNamePreview.innerHTML = `<i data-lucide="file-text" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"></i> <strong>Selected File:</strong> ${escapeHtml(file.name)} (${sizeMb} MB)`;
                 reportFileNamePreview.style.display = "block";
             } else {
                 reportFileNamePreview.textContent = "";
@@ -955,7 +959,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (typeof showToast === "function") showToast("Error uploading report: " + err.message, "error");
             } finally {
                 if (submitBtn) submitBtn.disabled = false;
-                if (submitBtnText) submitBtnText.textContent = "📤 Save & Upload";
+                if (submitBtnText) submitBtnText.innerHTML = `<i data-lucide="upload-cloud" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"></i> Save & Upload`;
             }
         });
     }

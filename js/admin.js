@@ -756,11 +756,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     return `
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border-bottom: 1px solid #f1f5f9; background: white;">
                             <button type="button" onclick="event.stopPropagation(); if(typeof viewPatientDocument==='function'){viewPatientDocument('${escapeHtml(r.url)}', '${escapeHtml(item.patient_name)}_${escapeHtml(r.name)}')}else{window.open('${escapeHtml(r.url)}', '_blank')}" style="padding: 5px 8px; font-size: 0.76rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; flex: 1; overflow: hidden; text-align: left;" title="View ${escapeHtml(r.name)} (${dateDisplay})">
-                                <span style="font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;">📄 ${escapeHtml(r.name)}</span>
-                                <span style="font-size: 0.68rem; color: #0369a1; font-weight: 500; opacity: 0.85;">📅 ${escapeHtml(dateDisplay)}</span>
+                                <span style="font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="file-text" style="width:12px;height:12px;"></i> ${escapeHtml(r.name)}</span>
+                                <span style="font-size: 0.68rem; color: #0369a1; font-weight: 500; opacity: 0.85; display: inline-flex; align-items: center; gap: 3px;"><i data-lucide="calendar" style="width:10px;height:10px;"></i> ${escapeHtml(dateDisplay)}</span>
                             </button>
                             <button type="button" onclick="deleteAdminDoctorReport('${item.id}', ${rIndex}, event)" class="btn-delete-report" style="padding: 4px 6px; font-size: 0.8rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; flex-shrink: 0;" title="Delete report">
-                                🗑️
+                                <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
                             </button>
                         </div>
                     `;
@@ -769,7 +769,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 reportDropdownHtml = `
                     <div style="position: relative; display: inline-block;">
                         <button type="button" class="btn-toggle-reports-dropdown" data-target="${dropdownId}" style="padding: 5px 10px; font-size: 0.75rem; background: #f3e8ff; color: #7e22ce; border: 1px solid #d8b4fe; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
-                            📄 Reports (${existingReports.length}) <span style="font-size: 0.65rem;">▾</span>
+                            <i data-lucide="file-text" style="width:14px;height:14px;"></i> Reports (${existingReports.length}) <span style="font-size: 0.65rem;">▾</span>
                         </button>
                         <div id="${dropdownId}" class="reports-dropdown-menu" style="display: none; position: absolute; right: 0; top: calc(100% + 4px); background: white; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); width: 250px; z-index: 99; overflow: hidden;">
                             ${reportItemsHtml}
@@ -781,20 +781,20 @@ document.addEventListener("DOMContentLoaded", function () {
             // Current Status Pill Badge (Read-only for Admin)
             const currentStatus = isAutoMissed ? "Missed / No-Show" : (item.status || "Pending");
             let badgeStyle = "background: #fef3c7; color: #d97706; border: 1px solid #fcd34d;";
-            let badgeIcon = "⏳";
+            let badgeIcon = `<i data-lucide="clock" style="width:14px;height:14px;"></i>`;
 
             if (currentStatus === "Confirmed") {
                 badgeStyle = "background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd;";
-                badgeIcon = "📅";
+                badgeIcon = `<i data-lucide="calendar" style="width:14px;height:14px;"></i>`;
             } else if (currentStatus === "Completed") {
                 badgeStyle = "background: #dcfce7; color: #15803d; border: 1px solid #86efac;";
-                badgeIcon = "✅";
+                badgeIcon = `<i data-lucide="check-circle-2" style="width:14px;height:14px;"></i>`;
             } else if (currentStatus === "Cancelled") {
                 badgeStyle = "background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3;";
-                badgeIcon = "❌";
+                badgeIcon = `<i data-lucide="x-circle" style="width:14px;height:14px;"></i>`;
             } else if (currentStatus.includes("Missed")) {
                 badgeStyle = "background: #ffedd5; color: #c2410c; border: 1px solid #fdba74;";
-                badgeIcon = "⚠️";
+                badgeIcon = `<i data-lucide="alert-triangle" style="width:14px;height:14px;"></i>`;
             }
 
             const statusCellHtml = `
@@ -808,9 +808,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             let dateBadgeHtml = "";
             if (isTomorrow) {
-                dateBadgeHtml = ` <span class="badge-tag badge-tomorrow-tag">📅 Tomorrow</span>`;
+                dateBadgeHtml = ` <span class="badge-tag badge-tomorrow-tag"><i data-lucide="calendar" style="width:12px;height:12px;vertical-align:middle;margin-right:2px;"></i> Tomorrow</span>`;
             } else if (isToday) {
-                dateBadgeHtml = ` <span class="badge-tag badge-today-tag">📌 Today</span>`;
+                dateBadgeHtml = ` <span class="badge-tag badge-today-tag"><i data-lucide="pin" style="width:12px;height:12px;vertical-align:middle;margin-right:2px;"></i> Today</span>`;
             }
 
             let genderDisplay = item.gender || '-';
@@ -829,10 +829,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const adminActionsHtml = `
                 <div style="display: flex; gap: 6px; align-items: center;">
                     <button type="button" class="btn-edit-appointment" data-id="${item.id}" style="padding: 6px 10px; font-size: 0.76rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="Edit Appointment">
-                        ✏️ Edit
+                        <i data-lucide="pencil" style="width:14px;height:14px;"></i> Edit
                     </button>
                     <button type="button" class="btn-delete-appointment" data-id="${item.id}" data-name="${escapeHtml(item.patient_name)}" style="padding: 6px 10px; font-size: 0.76rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="Delete Appointment">
-                        🗑️ Delete
+                        <i data-lucide="trash-2" style="width:14px;height:14px;"></i> Delete
                     </button>
                 </div>
             `;
@@ -850,8 +850,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div style="font-weight: 700; color: #0d9488; font-size: 0.88rem;">${escapeHtml(doctorName)}</div>
                 </td>
                 <td>
-                    <div style="font-weight: 600; color: #1e293b;">📅 ${formattedDate}${dateBadgeHtml}</div>
-                    <div style="font-size: 0.8rem; color: #0284c7; font-weight: 700;">⏰ ${formattedTime}</div>
+                    <div style="font-weight: 600; color: #1e293b; display: inline-flex; align-items: center; gap: 4px;"><i data-lucide="calendar" style="width:14px;height:14px;color:#0d9488;"></i> ${formattedDate}${dateBadgeHtml}</div>
+                    <div style="font-size: 0.8rem; color: #0284c7; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; margin-top: 2px;"><i data-lucide="clock" style="width:13px;height:13px;color:#0284c7;"></i> ${formattedTime}</div>
                 </td>
                 <td class="col-issue" style="max-width:220px; min-width:160px; white-space:normal; word-break:break-word;">
                     <div style="font-size: 0.85rem; color: #334155; line-height: 1.4;">
@@ -1108,13 +1108,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 tr.innerHTML = `
                     <td style="text-align: left; padding: 14px 16px;"><strong>${idx + 1}</strong></td>
-                    <td style="text-align: left; padding: 14px 16px;"><strong style="color: #0d9488;">👨‍⚕️ ${escapeHtml(cleanName)}</strong></td>
+                    <td style="text-align: left; padding: 14px 16px;"><strong style="color: #0d9488; display: inline-flex; align-items: center; gap: 6px;"><i data-lucide="stethoscope" style="width:16px;height:16px;color:#0d9488;"></i> ${escapeHtml(cleanName)}</strong></td>
                     <td style="text-align: left; padding: 14px 16px;"><span style="display: inline-flex; align-items: center; gap: 4px; background: #e0f2fe; color: #0284c7; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">${escapeHtml(doc.specialization || 'General')}</span></td>
-                    <td style="text-align: left; padding: 14px 16px;"><strong>📱 ${escapeHtml(docMobile)}</strong></td>
+                    <td style="text-align: left; padding: 14px 16px;"><span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 700;"><i data-lucide="phone" style="width:14px;height:14px;color:#64748b;"></i> ${escapeHtml(docMobile)}</span></td>
                     <td style="text-align: left; padding: 14px 16px;">${regDate}</td>
                     <td style="text-align: center; padding: 14px 16px;">
                         <button type="button" class="btn-delete-team-doctor" data-id="${doc.id}" data-name="${escapeHtml(cleanName)}" style="padding: 5px 12px; font-size: 0.78rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;" title="Delete Doctor">
-                            🗑️ Delete
+                            <i data-lucide="trash-2" style="width:14px;height:14px;"></i> Delete
                         </button>
                     </td>
                 `;
@@ -1129,6 +1129,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     promptDeleteDoctor(doctorId, doctorName);
                 });
             });
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
 
         } catch (e) {
             console.error("Error fetching doctors team:", e);
@@ -1166,23 +1168,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const roleStr = st.role || "Staff";
                 const roleBadge = roleStr.toLowerCase().includes("admin")
-                    ? `<span style="display: inline-flex; align-items: center; gap: 4px; background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">🛡️ ${escapeHtml(roleStr)}</span>`
-                    : `<span style="display: inline-flex; align-items: center; gap: 4px; background: #f0fdf4; color: #0d9488; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;">📋 ${escapeHtml(roleStr)}</span>`;
+                    ? `<span style="display: inline-flex; align-items: center; gap: 4px; background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> ${escapeHtml(roleStr)}</span>`
+                    : `<span style="display: inline-flex; align-items: center; gap: 4px; background: #f0fdf4; color: #0d9488; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700;"><i data-lucide="file-text" style="width:14px;height:14px;"></i> ${escapeHtml(roleStr)}</span>`;
 
                 tr.innerHTML = `
                     <td style="text-align: left; padding: 14px 16px;"><strong>${idx + 1}</strong></td>
-                    <td style="text-align: left; padding: 14px 16px;"><strong>👤 ${escapeHtml(st.name)}</strong></td>
+                    <td style="text-align: left; padding: 14px 16px;"><span style="display: inline-flex; align-items: center; gap: 6px; font-weight: 700;"><i data-lucide="user" style="width:16px;height:16px;color:#0284c7;"></i> ${escapeHtml(st.name)}</span></td>
                     <td style="text-align: left; padding: 14px 16px;">${roleBadge}</td>
-                    <td style="text-align: left; padding: 14px 16px;"><strong>📱 ${escapeHtml(stMobile)}</strong></td>
+                    <td style="text-align: left; padding: 14px 16px;"><span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 700;"><i data-lucide="phone" style="width:14px;height:14px;color:#64748b;"></i> ${escapeHtml(stMobile)}</span></td>
                     <td style="text-align: left; padding: 14px 16px;">${regDate}</td>
                     <td style="text-align: center; padding: 14px 16px;">
                         <button type="button" class="btn-delete-team-staff" data-id="${st.id}" data-name="${escapeHtml(st.name)}" style="padding: 5px 12px; font-size: 0.78rem; background: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;" title="Delete Staff Member">
-                            🗑️ Delete
+                            <i data-lucide="trash-2" style="width:14px;height:14px;"></i> Delete
                         </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+
+            if (typeof lucide !== 'undefined') lucide.createIcons();
 
             // Bind click listeners via data attributes to prevent inline JS quote escaping issues
             tbody.querySelectorAll(".btn-delete-team-staff").forEach(btn => {
@@ -1226,7 +1230,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 let cleanDocName = String(doctorName || "").trim();
                 if (!/^dr\.?\s+/i.test(cleanDocName)) cleanDocName = "Dr. " + cleanDocName;
 
-                const warnMsg = `⚠️ ${cleanDocName} has ${count} active appointment(s) (Pending/Confirmed). Please reassign or cancel those appointments before deleting this doctor.`;
+                const warnMsg = `${cleanDocName} has ${count} active appointment(s) (Pending/Confirmed). Please reassign or cancel those appointments before deleting this doctor.`;
                 if (typeof showToast === "function") {
                     showToast(warnMsg, "warning");
                 }
@@ -1244,7 +1248,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.promptDeleteStaff = function (staffId, staffName) {
         // Prevent logged-in admin from deleting their own staff account
         if (currentStaff && String(currentStaff.id) === String(staffId)) {
-            const selfWarn = "⚠️ You cannot delete your own logged-in Admin account.";
+            const selfWarn = "You cannot delete your own logged-in Admin account.";
             if (typeof showToast === "function") showToast(selfWarn, "warning");
             alert(selfWarn);
             return;
@@ -1365,13 +1369,14 @@ document.addEventListener("DOMContentLoaded", function () {
             } catch (err) {
                 console.error("Error deleting team member:", err);
                 const errMsg = err.message || "Database error occurred";
-                alert(`⚠️ Delete Failed: ${errMsg}`);
+                alert(`Delete Failed: ${errMsg}`);
                 if (typeof showToast === "function") {
                     showToast("Failed to remove: " + errMsg, "error");
                 }
             } finally {
                 confirmDeleteTeamBtn.disabled = false;
-                confirmDeleteTeamBtn.innerHTML = "🗑️ Yes, Delete";
+                confirmDeleteTeamBtn.innerHTML = '<i data-lucide="trash-2"></i> Yes, Delete';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
             }
         });
     }
@@ -1530,8 +1535,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (this.files && this.files.length > 0) {
                 const file = this.files[0];
                 const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
-                reportFileNamePreview.innerHTML = `📄 <strong>Selected File:</strong> ${escapeHtml(file.name)} (${sizeMb} MB)`;
+                reportFileNamePreview.innerHTML = `<i data-lucide="file-text"></i> <strong>Selected File:</strong> ${escapeHtml(file.name)} (${sizeMb} MB)`;
                 reportFileNamePreview.style.display = "block";
+                if (typeof lucide !== 'undefined') lucide.createIcons();
             } else {
                 reportFileNamePreview.textContent = "";
                 reportFileNamePreview.style.display = "none";
@@ -1652,7 +1658,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (typeof showToast === "function") showToast("Error uploading report: " + err.message, "error");
             } finally {
                 if (submitBtn) submitBtn.disabled = false;
-                if (submitBtnText) submitBtnText.textContent = "📤 Save & Upload";
+                if (submitBtnText) {
+                    submitBtnText.innerHTML = '<i data-lucide="upload"></i> Save & Upload';
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
             }
         });
     }
@@ -1750,13 +1759,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!hasAmountColumn) {
             contentArea.innerHTML = `
                 <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; padding: 24px; text-align: center;">
-                    <div style="font-size: 2.2rem; margin-bottom: 8px;">💳</div>
+                    <div style="font-size: 2.2rem; margin-bottom: 8px;"><i data-lucide="credit-card" style="width:36px;height:36px;color:#0d9488;"></i></div>
                     <h4 style="font-size: 1.05rem; font-weight: 700; color: #334155; margin: 0 0 6px 0;">Revenue tracking not set up yet</h4>
                     <p style="font-size: 0.85rem; color: #64748b; margin: 0 auto; max-width: 460px;">
                         Billing and amount tracking feature is not configured in appointment database records yet. All clinic bookings are currently tracked without revenue figures.
                     </p>
                 </div>
             `;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
             return;
         }
 
@@ -1842,7 +1852,7 @@ document.addEventListener("DOMContentLoaded", function () {
             html += `
                 <tr style="border-bottom: 1px solid #f1f5f9; font-size: 0.9rem;">
                     <td style="padding: 12px 10px; font-weight: 700; color: #1e293b;">
-                        👨‍⚕️ ${escapeHtml(cleanName)}
+                        <i data-lucide="stethoscope"></i> ${escapeHtml(cleanName)}
                     </td>
                     <td style="padding: 12px 10px; color: #64748b; font-size: 0.85rem;">
                         ${escapeHtml(ds.specialization)}
@@ -1866,6 +1876,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         tbody.innerHTML = html;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     function renderBusiestDays() {
@@ -1898,7 +1909,7 @@ document.addEventListener("DOMContentLoaded", function () {
             html += `
                 <div>
                     <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 4px;">
-                        <span>📅 ${day}</span>
+                        <span style="display:inline-flex;align-items:center;gap:4px;"><i data-lucide="calendar"></i> ${day}</span>
                         <span>${count} bookings (${pct}%)</span>
                     </div>
                     <div style="background: #f1f5f9; height: 8px; border-radius: 4px; overflow: hidden;">
@@ -1909,6 +1920,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         container.innerHTML = html;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     function renderPopularTimeSlots() {
@@ -1942,7 +1954,7 @@ document.addEventListener("DOMContentLoaded", function () {
             html += `
                 <div>
                     <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 4px;">
-                        <span>⏰ ${escapeHtml(time)}</span>
+                        <span style="display:inline-flex;align-items:center;gap:4px;"><i data-lucide="clock"></i> ${escapeHtml(time)}</span>
                         <span>${count} bookings (${pct}%)</span>
                     </div>
                     <div style="background: #f1f5f9; height: 8px; border-radius: 4px; overflow: hidden;">
@@ -1953,6 +1965,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         container.innerHTML = html;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     // Patient Report History Handler
@@ -2013,13 +2026,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (matchedPatients.length === 0) {
             resultsContainer.innerHTML = `
                 <div style="background: white; border-radius: 12px; padding: 48px 24px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
-                    <div style="font-size: 3rem; margin-bottom: 12px;">🔍</div>
+                    <div style="margin-bottom: 12px;"><i data-lucide="search" style="width:48px;height:48px;color:#94a3b8;"></i></div>
                     <h3 style="margin: 0 0 8px 0; font-size: 1.15rem; color: var(--text);">No Patient Reports Found</h3>
                     <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">
                         ${query ? `No medical reports matching "${escapeHtml(query)}" were found.` : 'No patient medical reports have been uploaded yet.'}
                     </p>
                 </div>
             `;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
             return;
         }
 
@@ -2047,11 +2061,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 14px; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
                         <div>
                             <h3 style="margin: 0; font-size: 1.15rem; color: var(--text); display: flex; align-items: center; gap: 8px;">
-                                <span style="background: var(--primary-light); color: var(--primary); width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 700;">👤</span>
+                                <span style="background: var(--primary-light); color: var(--primary); width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.95rem; font-weight: 700;"><i data-lucide="user"></i></span>
                                 <strong>${escapeHtml(p.patientName)}</strong>
                             </h3>
-                            <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 4px; margin-left: 42px;">
-                                📱 Mobile: <strong>${escapeHtml(p.phone)}</strong>
+                            <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 4px; margin-left: 42px; display:flex; align-items:center; gap:4px;">
+                                <i data-lucide="phone"></i> Mobile: <strong>${escapeHtml(p.phone)}</strong>
                             </div>
                         </div>
                         <span style="background: #e0f2fe; color: #0369a1; padding: 5px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;">
@@ -2068,24 +2082,24 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div style="flex: 1; min-width: 250px;">
                             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                                 <span style="background: #e0e7ff; color: #3730a3; padding: 3px 10px; border-radius: 6px; font-size: 0.82rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
-                                    📅 ${escapeHtml(r.uploadDate)}
+                                    <i data-lucide="calendar"></i> ${escapeHtml(r.uploadDate)}
                                 </span>
                                 <span style="font-size: 1.05rem; font-weight: 700; color: var(--text);">
                                     ${escapeHtml(r.reportName)}
                                 </span>
                             </div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; display: flex; gap: 12px; flex-wrap: wrap;">
-                                <span>👨‍⚕️ <strong>Doctor:</strong> ${escapeHtml(r.doctorName)}</span>
+                            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                                <span><i data-lucide="stethoscope"></i> <strong>Doctor:</strong> ${escapeHtml(r.doctorName)}</span>
                                 <span>•</span>
-                                <span>📋 <strong>Visit/Issue:</strong> ${escapeHtml(r.issue)} ${r.appDate ? `(${escapeHtml(r.appDate)})` : ''}</span>
+                                <span><i data-lucide="clipboard-list"></i> <strong>Visit/Issue:</strong> ${escapeHtml(r.issue)} ${r.appDate ? `(${escapeHtml(r.appDate)})` : ''}</span>
                             </div>
                         </div>
                         <div style="display: flex; gap: 8px;">
                             <a href="${r.reportUrl}" target="_blank" class="btn btn-sm btn-outline-primary" style="text-decoration: none; padding: 6px 14px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; border-radius: 8px;">
-                                👁️ View
+                                <i data-lucide="eye"></i> View
                             </a>
                             <a href="${r.reportUrl}" download target="_blank" class="btn btn-sm btn-primary" style="text-decoration: none; padding: 6px 14px; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 4px; border-radius: 8px;">
-                                📥 Download
+                                <i data-lucide="download"></i> Download
                             </a>
                         </div>
                     </div>
@@ -2099,6 +2113,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         resultsContainer.innerHTML = html;
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     const patientHistorySearchInput = document.getElementById("patientHistorySearchInput");

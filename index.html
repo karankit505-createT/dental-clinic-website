@@ -17,8 +17,8 @@
     <script src="js/pdf-generator.js?v=8"></script>
 
     <!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="css/style.css?v=210">
-    <link rel="stylesheet" href="css/background-slideshow.css">
+    <link rel="stylesheet" href="css/style.css?v=320">
+
 </head>
 <body class="patient-body">
 
@@ -89,6 +89,31 @@
                 <!-- Dynamic Alert Banner for Form Errors -->
                 <div id="formAlert" class="alert alert-danger"></div>
 
+                <!-- Form Progress Indicator -->
+                <div class="booking-progress-wrapper">
+                    <div class="progress-header-info">
+                        <span class="progress-title-text"><i data-lucide="list-checks" style="width:18px;height:18px;color:var(--primary);vertical-align:middle;"></i> Form Completion Progress</span>
+                        <span id="progressPercentBadge" class="progress-percent-badge">15%</span>
+                    </div>
+                    <div class="progress-bar-track">
+                        <div id="progressBarFill" class="progress-bar-fill"></div>
+                    </div>
+                    <div class="progress-steps-row">
+                        <div class="progress-step-item active" id="stepItem1">
+                            <span class="step-num-circle" id="stepNum1">1</span>
+                            <span>Doctor & Date</span>
+                        </div>
+                        <div class="progress-step-item" id="stepItem2">
+                            <span class="step-num-circle" id="stepNum2">2</span>
+                            <span>Patient Info</span>
+                        </div>
+                        <div class="progress-step-item" id="stepItem3">
+                            <span class="step-num-circle" id="stepNum3">3</span>
+                            <span>Dental Issue</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Booking Form -->
                 <form id="bookingForm" novalidate>
                     <div class="form-grid">
@@ -96,9 +121,12 @@
                         <!-- Select Doctor -->
                         <div class="form-group full-width">
                             <label for="doctorSelect">Select Doctor <span class="required-star">*</span></label>
-                            <select id="doctorSelect" required>
-                                <option value="" disabled selected>Loading Doctors list...</option>
-                            </select>
+                            <div class="select-wrapper">
+                                <select id="doctorSelect" required>
+                                    <option value="" disabled selected>Loading Doctors list...</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="select-chevron"></i>
+                            </div>
                         </div>
 
                         <!-- Patient Name -->
@@ -116,12 +144,15 @@
                         <!-- Gender -->
                         <div class="form-group">
                             <label for="gender">Gender <span class="required-star">*</span></label>
-                            <select id="gender" required>
-                                <option value="" disabled selected>Select Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                            </select>
+                            <div class="select-wrapper">
+                                <select id="gender" required>
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="select-chevron"></i>
+                            </div>
                         </div>
 
                         <!-- Email -->
@@ -133,7 +164,8 @@
                         <!-- Mobile Number -->
                         <div class="form-group">
                             <label for="mobile">Mobile Number <span class="required-star">*</span></label>
-                            <input type="text" id="mobile" placeholder="10-digit mobile number" maxlength="10" required>
+                            <input type="tel" id="mobile" placeholder="10-digit mobile number" maxlength="10" required>
+                            <span id="mobileError" class="field-error-msg">Please enter a valid 10-digit mobile number</span>
                         </div>
 
                         <!-- Issue / Problem Description -->
@@ -292,8 +324,8 @@
     </footer>
 
     <!-- Logic Script -->
-    <script src="js/background-slideshow.js"></script>
-    <script src="js/booking.js?v=25"></script>
+
+    <script src="js/booking.js?v=300"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof lucide !== 'undefined') {

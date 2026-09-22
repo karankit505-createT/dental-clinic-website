@@ -184,6 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 selectedSlotInfo.innerHTML = `<span class="slot-badge-selected">✓ Selected Time Slot: <strong>${chosenTime}</strong></span>`;
             }
             hideError();
+            updateFormProgress();
         });
     });
 
@@ -196,7 +197,139 @@ document.addEventListener("DOMContentLoaded", function () {
         if (selectedSlotInfo) selectedSlotInfo.innerHTML = "";
         const noticeElem = document.getElementById("bookedSlotsNotice");
         if (noticeElem) noticeElem.innerHTML = "";
+        updateFormProgress();
     }
+
+    // 3b-2. Real-Time Mobile Validation & Form Progress Calculator
+    const mobileInput = document.getElementById("mobile");
+    const mobileError = document.getElementById("mobileError");
+
+    if (mobileInput) {
+        mobileInput.addEventListener("input", function () {
+            // Strip out non-numeric characters automatically
+            this.value = this.value.replace(/\D/g, "");
+
+            if (this.value.length === 0) {
+                this.classList.remove("input-invalid", "input-valid");
+                if (mobileError) mobileError.style.display = "none";
+            } else if (this.value.length === 10) {
+                this.classList.remove("input-invalid");
+                this.classList.add("input-valid");
+                if (mobileError) mobileError.style.display = "none";
+            } else {
+                this.classList.remove("input-valid");
+                this.classList.add("input-invalid");
+                if (mobileError) {
+                    mobileError.textContent = "Please enter a valid 10-digit mobile number";
+                    mobileError.style.display = "block";
+                }
+            }
+            updateFormProgress();
+        });
+
+        mobileInput.addEventListener("blur", function () {
+            if (this.value.length > 0 && this.value.length < 10) {
+                this.classList.remove("input-valid");
+                this.classList.add("input-invalid");
+                if (mobileError) {
+                    mobileError.textContent = "Please enter a valid 10-digit mobile number";
+                    mobileError.style.display = "block";
+                }
+            }
+        });
+    }
+
+    // Function to calculate and update visual Progress Bar
+    function updateFormProgress() {
+        const docVal = doctorSelect ? doctorSelect.value : "";
+        const nameVal = document.getElementById("patientName")?.value.trim() || "";
+        const ageVal = document.getElementById("age")?.value.trim() || "";
+        const genderVal = document.getElementById("gender")?.value || "";
+        const mobVal = mobileInput?.value.trim() || "";
+        const issueVal = document.getElementById("issue")?.value.trim() || "";
+        const dateVal = dateInput?.value || "";
+        const timeVal = hiddenTimeInput?.value || "";
+
+        let filledCount = 0;
+        const totalFields = 8; // doctorSelect, patientName, age, gender, mobile, issue, appointmentDate, appointmentTime
+
+        if (docVal) filledCount++;
+        if (dateVal) filledCount++;
+        if (timeVal) filledCount++;
+        if (nameVal) filledCount++;
+        if (ageVal) filledCount++;
+        if (genderVal) filledCount++;
+        if (mobVal.length === 10) filledCount++;
+        if (issueVal) filledCount++;
+
+        let percentage = Math.round((filledCount / totalFields) * 100);
+        percentage = Math.max(15, percentage); // Keep minimum 15% for visual starting indicator
+
+        const progressBarFill = document.getElementById("progressBarFill");
+        const progressPercentBadge = document.getElementById("progressPercentBadge");
+
+        if (progressBarFill) progressBarFill.style.width = percentage + "%";
+        if (progressPercentBadge) progressPercentBadge.textContent = percentage + "%";
+
+        // Step 1: Doctor & Date & Time
+        const step1Completed = Boolean(docVal && dateVal && timeVal);
+        const stepItem1 = document.getElementById("stepItem1");
+        const stepNum1 = document.getElementById("stepNum1");
+        if (stepItem1 && stepNum1) {
+            if (step1Completed) {
+                stepItem1.className = "progress-step-item completed";
+                stepNum1.textContent = "✓";
+            } else {
+                stepItem1.className = "progress-step-item active";
+                stepNum1.textContent = "1";
+            }
+        }
+
+        // Step 2: Patient Info
+        const step2Completed = Boolean(nameVal && ageVal && genderVal && mobVal.length === 10);
+        const stepItem2 = document.getElementById("stepItem2");
+        const stepNum2 = document.getElementById("stepNum2");
+        if (stepItem2 && stepNum2) {
+            if (step2Completed) {
+                stepItem2.className = "progress-step-item completed";
+                stepNum2.textContent = "✓";
+            } else if (nameVal || ageVal || genderVal || mobVal) {
+                stepItem2.className = "progress-step-item active";
+                stepNum2.textContent = "2";
+            } else {
+                stepItem2.className = "progress-step-item";
+                stepNum2.textContent = "2";
+            }
+        }
+
+        // Step 3: Dental Issue
+        const step3Completed = Boolean(issueVal);
+        const stepItem3 = document.getElementById("stepItem3");
+        const stepNum3 = document.getElementById("stepNum3");
+        if (stepItem3 && stepNum3) {
+            if (step3Completed) {
+                stepItem3.className = "progress-step-item completed";
+                stepNum3.textContent = "✓";
+            } else if (issueVal) {
+                stepItem3.className = "progress-step-item active";
+                stepNum3.textContent = "3";
+            } else {
+                stepItem3.className = "progress-step-item";
+                stepNum3.textContent = "3";
+            }
+        }
+    }
+
+    // Attach listener to all inputs for progress updates
+    if (bookingForm) {
+        bookingForm.querySelectorAll("input, select, textarea").forEach(field => {
+            field.addEventListener("input", updateFormProgress);
+            field.addEventListener("change", updateFormProgress);
+        });
+    }
+
+    // Initial progress calculation
+    updateFormProgress();
 
     // Helper: Normalize time formats (e.g. "11:00:00" -> "11:00 AM", "14:30:00" -> "02:30 PM", "11:00 AM" -> "11:00 AM")
     function normalizeTime(t) {

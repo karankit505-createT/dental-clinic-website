@@ -533,9 +533,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             let dateBadgeHtml = "";
             if (isTomorrow) {
-                dateBadgeHtml = ` <span class="badge-tag badge-tomorrow-tag">📅 Tomorrow</span>`;
+                dateBadgeHtml = ` <span class="badge-tag badge-tomorrow-tag"><i data-lucide="calendar" style="width:12px;height:12px;vertical-align:middle;margin-right:2px;"></i> Tomorrow</span>`;
             } else if (isToday) {
-                dateBadgeHtml = ` <span class="badge-tag badge-today-tag">📌 Today</span>`;
+                dateBadgeHtml = ` <span class="badge-tag badge-today-tag"><i data-lucide="pin" style="width:12px;height:12px;vertical-align:middle;margin-right:2px;"></i> Today</span>`;
             }
 
             let genderDisplay = item.gender || '-';
@@ -639,6 +639,10 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".status-select").forEach(select => {
             select.addEventListener("change", handleStatusChange);
         });
+
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     }
 
     // Global Report Delete Handler (Instant 1-Click Delete)
@@ -795,7 +799,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const file = this.files[0];
                 if (previewElem) {
                     previewElem.style.display = "block";
-                    previewElem.innerHTML = `📄 <strong>Selected File:</strong> ${escapeHtml(file.name)} <span style="font-weight: normal; color: #475569;">(${(file.size / (1024 * 1024)).toFixed(2)} MB)</span>`;
+                    previewElem.innerHTML = `<i data-lucide="file-text" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"></i> <strong>Selected File:</strong> ${escapeHtml(file.name)} <span style="font-weight: normal; color: #475569;">(${(file.size / (1024 * 1024)).toFixed(2)} MB)</span>`;
                 }
             } else {
                 if (previewElem) {
@@ -959,7 +963,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             } finally {
                 if (submitBtn) submitBtn.disabled = false;
-                if (submitBtnText) submitBtnText.textContent = "📤 Save & Upload";
+                if (submitBtnText) submitBtnText.innerHTML = `<i data-lucide="upload-cloud" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"></i> Save & Upload`;
             }
         });
     }
@@ -1038,7 +1042,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     if (payload.new && payload.new.email !== oldEmail) {
                         if (typeof showToast === "function") {
-                            showToast(`📧 Doctor Email updated to '${payload.new.email}' in real-time!`, "success", 4500);
+                            showToast(`Doctor Email updated to '${payload.new.email}' in real-time!`, "success", 4500);
                         }
                     } else {
                         if (typeof showToast === "function") {
@@ -1260,7 +1264,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert("Failed to save availability: " + error.message);
                 } else {
                     if (typeof showToast === "function") {
-                        showToast("✅ Weekly working schedule saved successfully!", "success");
+                        showToast("Weekly working schedule saved successfully!", "success");
                     }
                 }
 
@@ -1269,7 +1273,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } finally {
                 if (saveBtn) {
                     saveBtn.disabled = false;
-                    saveBtn.textContent = "💾 Save Availability";
+                    saveBtn.textContent = "Save Availability";
                 }
             }
         });
@@ -1305,12 +1309,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 html += `
                     <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #fff1f2; border: 1px solid #fecdd3; border-radius: 8px;">
-                        <div>
-                            <strong style="color: #be123c; font-size: 0.95rem;">🗓️ ${formattedLeaveDate}</strong>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <i data-lucide="calendar" style="width:16px;height:16px;color:#be123c;"></i>
+                            <strong style="color: #be123c; font-size: 0.95rem;">${formattedLeaveDate}</strong>
                             <span style="color: #881337; font-size: 0.88rem; margin-left: 6px;">${reasonText}</span>
                         </div>
-                        <button type="button" class="btn-delete-leave" data-leave-id="${item.id}" style="padding: 4px 10px; font-size: 0.78rem; background: #ffe4e6; color: #be123c; border: 1px solid #fca5a5; border-radius: 6px; font-weight: 700; cursor: pointer;">
-                            🗑️ Delete
+                        <button type="button" class="btn-delete-leave" data-leave-id="${item.id}" style="padding: 4px 10px; font-size: 0.78rem; background: #ffe4e6; color: #be123c; border: 1px solid #fca5a5; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                            <i data-lucide="trash-2" style="width:14px;height:14px;"></i> Delete
                         </button>
                     </div>
                 `;
@@ -1318,6 +1323,9 @@ document.addEventListener("DOMContentLoaded", function () {
             html += `</div>`;
 
             leavesListContainer.innerHTML = html;
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
 
             leavesListContainer.querySelectorAll(".btn-delete-leave").forEach(btn => {
                 btn.addEventListener("click", async function () {
@@ -1403,7 +1411,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (leaveDateInput) leaveDateInput.value = "";
 
                     if (typeof showToast === "function") {
-                        showToast(`⚠️ Emergency leave marked & affected appointments cancelled for ${dateVal}!`, "warning");
+                        showToast(`Emergency leave marked & affected appointments cancelled for ${dateVal}!`, "warning");
                     }
 
                     loadUpcomingLeaves();
@@ -1452,7 +1460,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     let appListHtml = `
                         <p style="font-weight: 700; color: #be123c; margin-bottom: 12px; font-size: 0.95rem;">
-                            ⚠️ <strong>${bookedApps.length}</strong> appointment(s) already booked on this date (${dateVal}):
+                            <i data-lucide="alert-triangle" style="width:18px;height:18px;vertical-align:middle;margin-right:4px;color:#e11d48;"></i> <strong>${bookedApps.length}</strong> appointment(s) already booked on this date (${dateVal}):
                         </p>
                         <ul style="padding-left: 20px; margin-bottom: 16px; color: #334155; font-size: 0.9rem;">
                     `;
@@ -1491,7 +1499,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (leaveReasonInput) leaveReasonInput.value = "";
                     if (leaveDateInput) leaveDateInput.value = "";
                     if (typeof showToast === "function") {
-                        showToast(`🏖️ Leave marked for ${dateVal}!`, "success");
+                        showToast(`Leave marked for ${dateVal}!`, "success");
                     }
                     loadUpcomingLeaves();
                 }

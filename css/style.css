@@ -84,8 +84,13 @@ body.dark-mode ::-webkit-scrollbar-thumb {
     border-color: #0f172a;
 }
 
-body.dark-mode ::-webkit-scrollbar-thumb:hover {
-    background: rgba(45, 212, 191, 0.7);
+/* Global Lucide Icons Styling & Alignment */
+[data-lucide], svg.lucide {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+    vertical-align: middle;
+    display: inline-block;
 }
 
 * {
@@ -129,7 +134,7 @@ body.dark-mode {
 
 body.dark-mode.patient-body,
 body.dark-mode {
-    background-image: linear-gradient(rgba(15, 23, 42, 0.93), rgba(15, 23, 42, 0.94)), url('../assets/clinic-bg.jpg') !important;
+    background-image: none !important;
 }
 
 body.dark-mode header,
@@ -361,10 +366,18 @@ body:has(#dashboardState) header .nav-container {
 }
 
 /* Hero Section */
+/* Hero Section & Background Text Readability Overlay */
 .hero-header {
     text-align: center;
     max-width: 780px;
-    margin: 0 auto 42px;
+    margin: 0 auto 32px;
+    padding: 12px 16px;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
 }
 
 .hero-badge {
@@ -381,16 +394,18 @@ body:has(#dashboardState) header .nav-container {
 .hero-title {
     font-size: 2.6rem;
     font-weight: 800;
-    color: var(--text-dark);
+    color: #0f172a;
     margin-bottom: 12px;
     letter-spacing: -0.5px;
     line-height: 1.2;
+    text-shadow: none;
 }
 
 .hero-subtitle {
-    color: var(--text-muted);
+    color: #475569;
     font-size: 1.15rem;
     line-height: 1.6;
+    text-shadow: none;
 }
 
 /* Booking Card Container */
@@ -406,6 +421,135 @@ body:has(#dashboardState) header .nav-container {
     box-shadow: var(--shadow-lg);
     padding: 42px 36px;
     transition: all 0.3s ease;
+}
+
+/* Form Progress Indicator Bar & Steps */
+.booking-progress-wrapper {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.progress-header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.progress-title-text {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.progress-percent-badge {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 3px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(13, 148, 136, 0.2);
+}
+
+.progress-bar-track {
+    width: 100%;
+    height: 8px;
+    background-color: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 15%;
+    background: linear-gradient(90deg, #0d9488, #0284c7);
+    border-radius: 10px;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-steps-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.progress-step-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+.step-num-circle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.progress-step-item.active {
+    color: var(--text-dark);
+}
+
+.progress-step-item.active .step-num-circle {
+    background: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.progress-step-item.completed {
+    color: var(--primary);
+}
+
+.progress-step-item.completed .step-num-circle {
+    background: #10b981;
+    color: #ffffff;
+}
+
+/* Custom Dropdown Select Wrapper & Lucide Chevron Icon */
+.select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.select-wrapper select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 42px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.select-wrapper .select-chevron {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: var(--primary);
+    pointer-events: none;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.select-wrapper:focus-within .select-chevron {
+    color: var(--primary-hover);
+    transform: translateY(-50%) rotate(180deg);
 }
 
 /* Form Styles */
@@ -439,6 +583,7 @@ label .required-star {
 input[type="text"],
 input[type="number"],
 input[type="email"],
+input[type="tel"],
 input[type="date"],
 input[type="time"],
 input[type="password"],
@@ -451,16 +596,39 @@ textarea {
     font-size: 1.02rem;
     color: var(--text-dark);
     background-color: #ffffff;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     outline: none;
     min-height: 48px;
 }
 
+/* Input Fields Focus State */
 input:focus,
 select:focus,
 textarea:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+    border: 2px solid var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.18) !important;
+    outline: none;
+}
+
+/* Input Fields Real-Time Validation Feedback */
+input.input-invalid,
+select.input-invalid,
+textarea.input-invalid {
+    border: 2px solid #e11d48 !important;
+    box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15) !important;
+}
+
+input.input-valid {
+    border: 2px solid #10b981 !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
+}
+
+.field-error-msg {
+    color: #e11d48;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-top: 4px;
+    display: none;
 }
 
 textarea {
@@ -510,10 +678,10 @@ input[type="file"] {
     word-break: break-all;
 }
 
-/* Submit Button */
+/* Submit Button - Teal Green Color Theme */
 .btn-submit {
     width: 100%;
-    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    background: linear-gradient(135deg, #0d9488, #0f766e);
     color: #ffffff;
     border: none;
     padding: 16px 28px;
@@ -525,22 +693,25 @@ input[type="file"] {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    box-shadow: 0 4px 14px rgba(13, 148, 136, 0.30);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
+    box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
 }
 
 .btn-submit:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35);
+    background: linear-gradient(135deg, #0f766e, #115e59);
+    transform: translateY(-2px) scale(1.005);
+    box-shadow: 0 8px 20px rgba(13, 148, 136, 0.45);
 }
 
 .btn-submit:active:not(:disabled) {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    box-shadow: 0 4px 10px rgba(13, 148, 136, 0.3);
 }
 
 .btn-submit:disabled {
     opacity: 0.65;
     cursor: not-allowed;
+    transform: none;
 }
 
 /* Loading Spinner */
@@ -2503,16 +2674,17 @@ a.btn-white-outline:hover {
 }
 
 /* ==========================================
-   ENHANCED PAGE HERO BANNER
+   ENHANCED PAGE HERO BANNER (RICH TEAL GRADIENT WITH MESH BG)
    ========================================== */
 .page-hero-banner {
     position: relative;
-    background: radial-gradient(circle at 50% -10%, rgba(13, 148, 136, 0.25) 0%, rgba(15, 23, 42, 0.95) 75%), linear-gradient(135deg, #0f172a 0%, #064e3b 100%);
-    padding: 36px 24px 30px;
+    background: linear-gradient(135deg, rgba(15, 118, 110, 0.92) 0%, rgba(13, 148, 136, 0.88) 50%, rgba(15, 23, 42, 0.94) 100%), url('../assets/hero-mesh-bg.jpg') center/cover no-repeat;
+    padding: 56px 24px 44px;
     text-align: center;
     color: white;
     overflow: hidden;
-    box-shadow: inset 0 -4px 15px rgba(0, 0, 0, 0.1);
+    border-bottom: 3px solid #2dd4bf;
+    box-shadow: 0 4px 20px rgba(13, 148, 136, 0.12);
 }
 
 .page-hero-banner::before {
@@ -2522,7 +2694,7 @@ a.btn-white-outline:hover {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(94, 234, 212, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(94, 234, 212, 0.4), transparent);
 }
 
 .page-hero-banner::after {
@@ -2532,15 +2704,15 @@ a.btn-white-outline:hover {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(13, 148, 136, 0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.5), transparent);
 }
 
 .hero-badge-pill {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(13, 148, 136, 0.2);
-    border: 1px solid rgba(45, 212, 191, 0.35);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: #5eead4;
     font-size: 0.82rem;
     font-weight: 700;
@@ -2556,37 +2728,47 @@ a.btn-white-outline:hover {
     font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
     font-size: 2.75rem;
     font-weight: 800;
-    background: linear-gradient(135deg, #ffffff 40%, #99f6e4 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #ffffff;
     margin-bottom: 12px;
     letter-spacing: -0.5px;
     line-height: 1.2;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .page-hero-breadcrumb {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #94a3b8;
+    color: #ccfbf1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: rgba(15, 23, 42, 0.5);
-    padding: 6px 18px;
+    background: rgba(15, 23, 42, 0.4);
+    padding: 6px 20px;
     border-radius: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
 }
 
 .page-hero-breadcrumb a {
     color: #5eead4;
     text-decoration: none;
+    font-weight: 600;
     transition: color 0.2s;
 }
 
 .page-hero-breadcrumb a:hover {
     color: #ffffff;
+}
+
+.page-hero-breadcrumb .bc-current {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.page-hero-breadcrumb .bc-sep {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .bc-sep {
