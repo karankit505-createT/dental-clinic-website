@@ -248,6 +248,122 @@
             color: #0d9488;
         }
 
+        /* About Showcase Grid Styles */
+        .about-showcase-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .about-main-title {
+            text-align: left;
+            margin-bottom: 18px;
+        }
+
+        .about-lead-text {
+            font-size: 1.05rem;
+            color: #475569;
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+
+        .about-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .about-check-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.95rem;
+        }
+
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            color: #0f766e;
+            flex-shrink: 0;
+        }
+
+        .about-btn-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .about-btn {
+            padding: 12px 26px;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .about-photo-wrapper {
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 45px rgba(15, 118, 110, 0.15);
+            border: 4px solid white;
+            position: relative;
+        }
+
+        .about-photo {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .about-photo-badge {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(8px);
+            padding: 16px 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .about-badge-title {
+            margin: 0 0 2px 0;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .about-badge-sub {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .about-badge-tag {
+            background: #0f766e;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
         /* Responsive Breakpoints for Mobile & Tablet */
         @media (max-width: 992px) {
             .landing-nav-container {
@@ -266,6 +382,11 @@
             .footer-container {
                 grid-template-columns: 1fr;
                 gap: 36px;
+            }
+            .about-showcase-grid {
+                grid-template-columns: 1fr !important;
+                gap: 32px !important;
+                margin-bottom: 36px !important;
             }
         }
 
@@ -290,10 +411,10 @@
                 font-size: 0.9rem;
             }
             .section-padding {
-                padding: 50px 16px;
+                padding: 36px 16px !important;
             }
             .section-title {
-                font-size: 1.95rem;
+                font-size: 1.7rem !important;
             }
             .section-subtitle {
                 font-size: 0.98rem;
@@ -310,6 +431,60 @@
             }
             .stat-label {
                 font-size: 0.85rem;
+            }
+            .about-showcase-grid {
+                grid-template-columns: 1fr !important;
+                gap: 24px !important;
+                margin-bottom: 28px !important;
+            }
+            .about-main-title {
+                font-size: 1.55rem !important;
+            }
+            .about-lead-text {
+                font-size: 0.95rem !important;
+                margin-bottom: 18px !important;
+            }
+            .about-check-item {
+                font-size: 0.88rem !important;
+            }
+            .about-btn-group {
+                flex-direction: column !important;
+                width: 100% !important;
+                gap: 10px !important;
+            }
+            .about-btn {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+            .about-photo {
+                height: 230px !important;
+            }
+            .about-photo-badge {
+                bottom: 10px !important;
+                left: 10px !important;
+                right: 10px !important;
+                padding: 10px 12px !important;
+                border-radius: 12px !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 6px !important;
+            }
+            .about-badge-title {
+                font-size: 0.88rem !important;
+            }
+            .about-badge-sub {
+                font-size: 0.78rem !important;
+            }
+            .cta-about-section h2 {
+                font-size: 1.5rem !important;
+            }
+            .cta-about-section p {
+                font-size: 0.92rem !important;
+            }
+            .cta-about-section .btn-teal,
+            .cta-about-section .btn-white-outline {
+                width: 100% !important;
+                justify-content: center !important;
             }
         }
     </style>
@@ -376,34 +551,34 @@
     <!-- ABOUT CLINIC & STATS SECTION -->
     <section id="about" class="section-padding" style="background: white;">
         <div style="max-width: 1240px; margin: 0 auto;">
-            <!-- About Showcase 2-Column Grid -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-bottom: 50px;">
+            <!-- About Showcase Grid -->
+            <div class="about-showcase-grid">
                 <div class="animate-on-scroll">
-                    <h2 class="section-title" style="text-align: left; margin-bottom: 18px;">World-Class Oral Healthcare & Gentle Dentistry</h2>
-                    <p style="font-size: 1.05rem; color: #475569; margin-bottom: 24px; line-height: 1.7;">
+                    <h2 class="section-title about-main-title">World-Class Oral Healthcare & Gentle Dentistry</h2>
+                    <p class="about-lead-text">
                         SmileCare Dental Clinic is a premier dental center dedicated to your oral health and beautiful smile. Our clinic is equipped with state-of-the-art equipment, compassionate doctors, and strict international hygiene standards.
                     </p>
                     
-                    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px;">
-                        <div style="display: flex; align-items: center; gap: 12px; font-weight: 600; color: #0f172a; font-size: 0.95rem;">
-                            <i data-lucide="circle-check" style="width: 20px; height: 20px; color: #0f766e; flex-shrink: 0;"></i>
+                    <div class="about-checklist">
+                        <div class="about-check-item">
+                            <i data-lucide="circle-check" class="check-icon"></i>
                             100% Sterilized & International Hygiene Standards
                         </div>
-                        <div style="display: flex; align-items: center; gap: 12px; font-weight: 600; color: #0f172a; font-size: 0.95rem;">
-                            <i data-lucide="circle-check" style="width: 20px; height: 20px; color: #0f766e; flex-shrink: 0;"></i>
+                        <div class="about-check-item">
+                            <i data-lucide="circle-check" class="check-icon"></i>
                             Advanced Digital RVG X-Rays & Painless Rotary Setup
                         </div>
-                        <div style="display: flex; align-items: center; gap: 12px; font-weight: 600; color: #0f172a; font-size: 0.95rem;">
-                            <i data-lucide="circle-check" style="width: 20px; height: 20px; color: #0f766e; flex-shrink: 0;"></i>
+                        <div class="about-check-item">
+                            <i data-lucide="circle-check" class="check-icon"></i>
                             Patient-Centered Care & Transparent Pricing
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-                        <button type="button" id="openEnquireBtn" class="btn-teal" style="padding: 12px 28px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px;">
+                    <div class="about-btn-group">
+                        <button type="button" id="openEnquireBtn" class="btn-teal about-btn">
                             <i data-lucide="mail" style="width:18px;height:18px;"></i> Enquire Now
                         </button>
-                        <a href="index.html" class="btn-teal-outline" style="padding: 12px 26px; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 8px;">
+                        <a href="index.html" class="btn-teal-outline about-btn">
                             <i data-lucide="calendar" style="width:18px;height:18px;"></i> Book Appointment
                         </a>
                     </div>
@@ -411,15 +586,15 @@
 
                 <!-- Clinic Photo Showcase Card -->
                 <div style="position: relative;" class="animate-on-scroll">
-                    <div style="border-radius: 24px; overflow: hidden; box-shadow: 0 20px 45px rgba(15, 118, 110, 0.15); border: 4px solid white; position: relative;">
-                        <img src="assets/clinic-photo.jpg" alt="SmileCare Modern Dental Clinic Interior" style="width: 100%; height: 380px; object-fit: cover; display: block;">
+                    <div class="about-photo-wrapper">
+                        <img src="assets/clinic-photo.jpg" alt="SmileCare Modern Dental Clinic Interior" class="about-photo">
                         
-                        <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(8px); padding: 16px 20px; border-radius: 16px; border: 1px solid rgba(226, 232, 240, 0.8); display: flex; align-items: center; justify-content: space-between;">
+                        <div class="about-photo-badge">
                             <div>
-                                <h4 style="margin: 0 0 2px 0; font-size: 1rem; font-weight: 800; color: #0f172a;">Modern & Hygienic Facility</h4>
-                                <p style="margin: 0; font-size: 0.85rem; color: #64748b;">Designed for maximum patient comfort & safety</p>
+                                <h4 class="about-badge-title">Modern & Hygienic Facility</h4>
+                                <p class="about-badge-sub">Designed for maximum patient comfort & safety</p>
                             </div>
-                            <span style="background: #0f766e; color: white; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;">
+                            <span class="about-badge-tag">
                                 <i data-lucide="star" style="width:14px;height:14px;fill:white;color:white;"></i> 5.0 Rated Clinic
                             </span>
                         </div>
@@ -454,7 +629,7 @@
     </section>
 
     <!-- PRE-FOOTER HIGH-IMPACT CTA BANNER -->
-    <section class="section-padding" style="background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; text-align: center;">
+    <section class="section-padding cta-about-section" style="background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); color: white; text-align: center;">
         <div style="max-width: 800px; margin: 0 auto;" class="animate-on-scroll">
             <h2 style="color: white; font-size: 2.4rem; font-weight: 800; margin-bottom: 14px;">Experience Healthy, Painless Dental Care</h2>
             <p style="font-size: 1.1rem; opacity: 0.95; margin-bottom: 32px; line-height: 1.6;">
