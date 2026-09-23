@@ -2983,28 +2983,55 @@ html, body {
 
 /* Tablet & Mobile Screens (max-width: 768px) */
 @media (max-width: 768px) {
+    /* Prevent horizontal scrolling & force responsive box sizing */
+    html, body {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+        width: 100% !important;
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box !important;
+    }
+
     /* Background Attachment Scroll Fix for Mobile Devices */
     body, .hero-section, .page-hero-banner, .cta-section, section {
         background-attachment: scroll !important;
     }
 
-    /* Navigation Bar Mobile Layout */
+    /* Navigation Bar Mobile Layout & Hamburger Menu */
     .mobile-menu-btn {
         display: inline-flex !important;
         align-items: center;
         justify-content: center;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        font-size: 1.5rem !important;
+        padding: 6px 12px !important;
+        border-radius: 10px !important;
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        cursor: pointer;
+        z-index: 10001;
     }
 
     .landing-nav-links {
         display: none !important;
     }
 
+    .landing-nav-actions .btn-teal-outline,
+    .landing-nav-actions .btn-teal {
+        display: none !important;
+    }
+
     .landing-nav-container, .nav-container {
         padding: 10px 16px !important;
+        justify-content: space-between !important;
     }
 
     .landing-logo-text, .brand-title {
-        font-size: 1.2rem !important;
+        font-size: 1.25rem !important;
     }
 
     .brand-logo-img, .logo-icon img, .landing-logo-icon img {
@@ -3012,13 +3039,33 @@ html, body {
         height: 36px !important;
     }
 
-    .landing-nav-actions .btn-teal-outline,
-    .landing-nav-actions .btn-teal {
-        padding: 8px 12px !important;
-        font-size: 0.85rem !important;
+    /* Mobile Drawer Full Width Slide-Down */
+    .mobile-nav-drawer {
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.15) !important;
+        border-bottom: 3px solid #0d9488 !important;
+        padding: 16px 20px !important;
+        z-index: 99999 !important;
+        box-sizing: border-box !important;
     }
 
-    /* Prevent iOS browser auto-zoom on form inputs & ensure touch target heights */
+    .mobile-nav-list a {
+        min-height: 46px !important;
+        padding: 12px 16px !important;
+        font-size: 0.98rem !important;
+        font-weight: 600 !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    /* Form Inputs & Touch Targets (At least 44x44px for tapping) */
     input[type="text"],
     input[type="number"],
     input[type="email"],
@@ -3029,37 +3076,51 @@ html, body {
     select,
     textarea {
         font-size: 16px !important;
-        min-height: 48px;
-        padding: 12px 14px;
-        border-radius: 10px;
+        min-height: 48px !important;
+        padding: 12px 14px !important;
+        border-radius: 10px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     button, .btn-submit, .btn-teal, .btn-teal-outline, .time-slot-btn, .mobile-menu-btn {
         touch-action: manipulation;
         -webkit-tap-highlight-color: transparent;
+        min-height: 44px;
     }
 
-    /* Hero Section Mobile Adaptations */
+    /* Hero Section Mobile Vertical Stacking */
     .hero-section {
         min-height: auto !important;
-        padding: 48px 16px 40px 16px !important;
+        padding: 36px 16px 36px 16px !important;
     }
 
     .hero-container {
         grid-template-columns: 1fr !important;
         gap: 32px !important;
+        text-align: center !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .hero-content {
+        text-align: center !important;
+        width: 100% !important;
     }
 
     .hero-title {
-        font-size: 2.1rem !important;
-        line-height: 1.22 !important;
-        margin-bottom: 16px !important;
+        font-size: 1.95rem !important;
+        line-height: 1.25 !important;
+        margin-bottom: 14px !important;
+        letter-spacing: -0.3px !important;
+        text-align: center !important;
     }
 
     .hero-subtitle {
-        font-size: 1rem !important;
-        margin-bottom: 24px !important;
+        font-size: 0.96rem !important;
+        margin-bottom: 20px !important;
         line-height: 1.55 !important;
+        text-align: center !important;
     }
 
     .hero-buttons {
@@ -3070,8 +3131,10 @@ html, body {
 
     .hero-buttons a, .hero-buttons button {
         width: 100% !important;
+        min-height: 48px !important;
         justify-content: center !important;
-        text-align: center;
+        text-align: center !important;
+        font-size: 0.98rem !important;
     }
 
     .trust-badges, .hero-trust-badges, .trust-badge-group {
@@ -3079,9 +3142,16 @@ html, body {
         flex-wrap: wrap !important;
         justify-content: center !important;
         gap: 10px !important;
+        width: 100% !important;
     }
 
-    /* Grid Layouts to 1-Column on Mobile */
+    .hero-visual, .hero-card-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* All Multi-Column Grids Stack into 1-Column on Mobile */
     .why-grid, 
     .treatments-grid, 
     .doctors-grid, 
@@ -3090,15 +3160,34 @@ html, body {
     .features-grid,
     .testimonials-grid,
     .dashboard-stats-grid,
-    .quick-actions-grid {
+    .quick-actions-grid,
+    .doctor-showcase-grid,
+    .about-grid {
         grid-template-columns: 1fr !important;
-        gap: 16px !important;
+        gap: 18px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
-    /* Form Grids to 1-Column */
+    /* Form Grids to Single Column */
     .form-grid, .form-row {
         grid-template-columns: 1fr !important;
         gap: 16px !important;
+        width: 100% !important;
+    }
+
+    /* Section Padding Optimization */
+    .section-padding {
+        padding: 44px 16px !important;
+    }
+
+    .section-title {
+        font-size: 1.8rem !important;
+        line-height: 1.3 !important;
+    }
+
+    .section-subtitle {
+        font-size: 0.94rem !important;
     }
 
     /* Filter Controls Stack Vertically */
@@ -3115,13 +3204,16 @@ html, body {
     }
 
     .booking-card-wrapper {
-        width: 100%;
-        padding: 0 2px;
+        width: 100% !important;
+        padding: 0 2px !important;
+        box-sizing: border-box !important;
     }
 
     .card {
-        padding: 20px 16px !important;
-        border-radius: 16px !important;
+        padding: 22px 16px !important;
+        border-radius: 18px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     .slots-grid {
@@ -3138,29 +3230,30 @@ html, body {
     }
 
     .btn-submit {
-        min-height: 50px !important;
+        min-height: 52px !important;
         font-size: 1.05rem !important;
         width: 100% !important;
         border-radius: 12px !important;
     }
 
     .testimonial-card-slide {
-        width: 300px !important;
-        padding: 20px 18px !important;
+        width: 290px !important;
+        padding: 20px 16px !important;
         border-radius: 16px !important;
     }
 
     .testimonial-marquee-wrapper::before,
     .testimonial-marquee-wrapper::after {
-        width: 40px !important;
+        width: 30px !important;
     }
 
     .page-hero-banner {
-        padding: 32px 16px 24px !important;
+        padding: 36px 16px 28px !important;
     }
 
     .page-hero-title {
-        font-size: 1.85rem !important;
+        font-size: 1.8rem !important;
+        line-height: 1.25 !important;
     }
 }
 
@@ -3178,26 +3271,42 @@ html, body {
 /* Small Smartphone Screens (max-width: 480px) */
 @media (max-width: 480px) {
     main {
-        padding: 14px 12px 40px !important;
+        padding: 14px 10px 36px !important;
     }
 
-    .hero-header {
-        margin-bottom: 24px !important;
+    .hero-section {
+        padding: 28px 12px 28px 12px !important;
     }
 
     .hero-title {
-        font-size: 1.75rem !important; /* ~28-32px */
+        font-size: 1.65rem !important;
         line-height: 1.25 !important;
     }
 
     .hero-subtitle {
-        font-size: 0.95rem !important;
+        font-size: 0.92rem !important;
     }
 
-    .hero-badge {
-        font-size: 0.8rem !important;
-        padding: 6px 14px !important;
+    .page-hero-title {
+        font-size: 1.55rem !important;
     }
+
+    .section-title {
+        font-size: 1.5rem !important;
+    }
+
+    .section-padding {
+        padding: 32px 12px !important;
+    }
+
+    .hero-card-box {
+        padding: 24px 14px !important;
+    }
+
+    .card {
+        padding: 18px 14px !important;
+    }
+}
 
     .card {
         padding: 16px 14px !important;
