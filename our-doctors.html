@@ -237,9 +237,9 @@
         .doctor-image-wrapper {
             position: relative;
             z-index: 2;
-            width: 230px;
-            height: 230px;
-            border-radius: 50%;
+            width: 260px;
+            height: 320px;
+            border-radius: 20px;
             border: 4px solid #ffffff;
             outline: 3px solid #0d9488;
             outline-offset: 3px;
@@ -253,7 +253,7 @@
         }
 
         .doctor-card-showcase:hover .doctor-image-wrapper {
-            transform: scale(1.05);
+            transform: translateY(-4px) scale(1.02);
             outline-color: #2dd4bf;
             box-shadow: 0 20px 45px rgba(15, 118, 110, 0.32);
         }
@@ -262,8 +262,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: center 12%;
-            transform: scale(1.25);
+            object-position: center top;
+            transform: none;
             display: block;
         }
 
@@ -574,9 +574,6 @@
                         <div class="doctor-image-wrapper">
                             <img src="assets/doctor-1.jpg" alt="Dr. Rajesh Sharma" class="doctor-photo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                             <div class="doctor-avatar-circle" style="display: none;">DR</div>
-                            <div class="doctor-exp-badge">
-                                <i data-lucide="award" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;color:#0d9488;"></i> 12+ Yrs Exp | Implant Specialist
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -609,9 +606,6 @@
                         <div class="doctor-image-wrapper">
                             <img src="assets/doctor-2.jpg" alt="Dr. Priya Verma" class="doctor-photo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                             <div class="doctor-avatar-circle" style="display: none;">DP</div>
-                            <div class="doctor-exp-badge">
-                                <i data-lucide="award" style="width:14px;height:14px;vertical-align:middle;margin-right:4px;color:#0d9488;"></i> 8+ Yrs Exp | Orthodontic Expert
-                            </div>
                         </div>
                     </div>
                 </div>

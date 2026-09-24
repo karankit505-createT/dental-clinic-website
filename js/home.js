@@ -132,9 +132,6 @@ async function loadDoctorsFromSupabase() {
                             <div class="doctor-image-wrapper">
                                 ${photoUrl ? `<img src="${photoUrl}" alt="${escapeHtml(displayName)}" class="doctor-photo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : ''}
                                 <div class="doctor-avatar-circle" style="${photoUrl ? 'display: none;' : ''}">${escapeHtml(initials)}</div>
-                                <div class="doctor-exp-badge">
-                                    ${escapeHtml(expBadge)}
-                                </div>
                             </div>
                         </div>
                     </div>
